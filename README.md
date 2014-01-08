@@ -15,7 +15,7 @@ Then, add it to your `gulpfile.js`:
 ```javascript
 var inject = require("gulp-inject");
 
-gulp.src("./src/*.ext")
+gulp.src("./src/*.ext", {read: false}) // Not necessary to read the files (will speed up things), we're only after their paths
 	.pipe(inject("path/to/your/index.html"))
 	.pipe(gulp.dest("./dist"));
 ```
