@@ -56,7 +56,7 @@ module.exports = function(fileName, opt){
       collection[tag] = {ext: ext, starttag: tag, endtag: getTag(opt.endtag, ext), files: []};
     }
 
-    var filepath = addRootSlash(removeBasePath([file.cwd].concat(opt.ignorePath), unixify(file.path)));
+    var filepath = addRootSlash(removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path)));
 
     collection[tag].files.push({file: file, filepath: filepath});
   }
