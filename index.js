@@ -56,7 +56,7 @@ module.exports = function(fileName, opt){
       collection[tag] = {ext: ext, starttag: tag, endtag: getTag(opt.endtag, ext), files: []};
     }
 
-    var filepath = addRootSlash(removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path)));
+    var filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
 
     collection[tag].files.push({file: file, filepath: filepath});
   }
@@ -118,9 +118,6 @@ function escapeForRegExp (str) {
 
 function unixify (filepath) {
   return filepath.replace(/\\/g, '/');
-}
-function addRootSlash (filepath) {
-  return filepath.replace(/^\/*([^\/])/, '/$1');
 }
 
 function removeBasePath (basedir, filepath) {
