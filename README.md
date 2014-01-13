@@ -69,13 +69,13 @@ Default: `NULL`
 
 A path or paths that should be removed from each injected file path.
 
-#### options.addRootPath
+#### options.addRootSlash 
 Type: `Boolean`
 
 Default: `true`
 
 
-The root path is automatically added at the beginning of the path ('/').
+The root slash is automatically added at the beginning of the path ('/').
 
 #### options.starttag
 Type: `String`
