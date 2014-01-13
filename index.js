@@ -57,7 +57,7 @@ module.exports = function(fileName, opt){
     }
     
     var filepath;
-    if (opt.addRootSlash !== false) {
+    if (opt.addRootSlash === true) {
         filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
     } else {
         filepath = addRootSlash(removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path)));
