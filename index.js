@@ -55,8 +55,13 @@ module.exports = function(fileName, opt){
     if (!collection[tag]) {
       collection[tag] = {ext: ext, starttag: tag, endtag: getTag(opt.endtag, ext), files: []};
     }
-
-    var filepath = addRootSlash(removeBasePath([file.cwd].concat(opt.ignorePath), unixify(file.path)));
+    
+    var filepath;
+    if (opt.addRootSlash === true) {
+        filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
+    } else {
+        filepath = addRootSlash(removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path)));
+    }
 
     collection[tag].files.push({file: file, filepath: filepath});
   }
