@@ -55,8 +55,13 @@ module.exports = function(fileName, opt){
     if (!collection[tag]) {
       collection[tag] = {ext: ext, starttag: tag, endtag: getTag(opt.endtag, ext), files: []};
     }
-
-    var filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
+    
+    var filepath;
+    if (opt.addRootSlash !== false) {
+        filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
+    } else {
+        filepath = addRootSlash(removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path)));
+    }
 
     collection[tag].files.push({file: file, filepath: filepath});
   }
@@ -118,6 +123,9 @@ function escapeForRegExp (str) {
 
 function unixify (filepath) {
   return filepath.replace(/\\/g, '/');
+}
+function addRootSlash (filepath) {
+  return filepath.replace(/^\/*([^\/])/, '/$1');
 }
 
 function removeBasePath (basedir, filepath) {
