@@ -1,6 +1,6 @@
 {
   "name": "gulp-inject",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "A javascript, stylesheet and webcomponent injection plugin for Gulp",
   "keywords": [
     "gulpplugin",
@@ -29,7 +29,7 @@
     "through": "~2.3.4"
   },
   "devDependencies": {
-    "mocha": "~1.14.0",
+    "mocha": "~1.17.0",
     "should": "~2.1.0"
   },
   "engines": {
