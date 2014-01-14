@@ -1,6 +1,6 @@
 {
   "name": "gulp-inject",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "A javascript, stylesheet and webcomponent injection plugin for Gulp",
   "keywords": [
     "gulpplugin",
@@ -9,8 +9,8 @@
     "scripts",
     "index"
   ],
-  "homepage": "https://github.com/klei-dev/gulp-inject",
-  "bugs": "https://github.com/klei-dev/gulp-inject/issues",
+  "homepage": "https://github.com/klei/gulp-inject",
+  "bugs": "https://github.com/klei/gulp-inject/issues",
   "author": {
     "name": "Joakim Bengtson",
     "email": "joakim@klei.se",
@@ -19,7 +19,7 @@
   "main": "./index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/klei-dev/gulp-inject.git"
+    "url": "git://github.com/klei/gulp-inject.git"
   },
   "scripts": {
     "test": "mocha -R spec"

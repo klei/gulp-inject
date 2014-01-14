@@ -69,7 +69,7 @@ Default: `NULL`
 
 A path or paths that should be removed from each injected file path.
 
-#### options.addRootSlash 
+#### options.addRootSlash
 Type: `Boolean`
 
 Default: `true`
@@ -128,8 +128,8 @@ If set the given function is used as the compareFunction for the array sort func
 [npm-url]: https://npmjs.org/package/gulp-inject
 [npm-image]: https://badge.fury.io/js/gulp-inject.png
 
-[travis-url]: http://travis-ci.org/klei-dev/gulp-inject
-[travis-image]: https://secure.travis-ci.org/klei-dev/gulp-inject.png?branch=master
+[travis-url]: http://travis-ci.org/klei/gulp-inject
+[travis-image]: https://secure.travis-ci.org/klei/gulp-inject.png?branch=master
 
-[depstat-url]: https://david-dm.org/klei-dev/gulp-inject
-[depstat-image]: https://david-dm.org/klei-dev/gulp-inject.png
+[depstat-url]: https://david-dm.org/klei/gulp-inject
+[depstat-image]: https://david-dm.org/klei/gulp-inject.png
