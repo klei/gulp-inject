@@ -94,6 +94,37 @@ describe('gulp-inject', function () {
     stream.end();
   });
 
+  it('should inject stylesheets, scripts and html components without root slash if `addRootSlash` is `false`', function (done) {
+
+    var sources = [
+      fixture('lib.js'),
+      fixture('component.html'),
+      fixture('styles.css')
+    ];
+
+    var stream = inject('fixtures/template.html', {addRootSlash: false});
+
+    stream.on('error', function(err) {
+      should.exist(err);
+      done(err);
+    });
+
+    stream.on('data', function (newFile) {
+
+      should.exist(newFile);
+      should.exist(newFile.contents);
+
+      String(newFile.contents).should.equal(String(expectedFile('noRootSlash.html').contents));
+      done();
+    });
+
+    sources.forEach(function (src) {
+      stream.write(src);
+    });
+
+    stream.end();
+  });
+
   it('should use templateString as template if specified', function (done) {
 
     var sources = [

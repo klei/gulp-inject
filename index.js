@@ -26,6 +26,7 @@ module.exports = function(fileName, opt){
   opt.starttag = opt.starttag || '<!-- inject:{{ext}} -->';
   opt.endtag = opt.endtag || '<!-- endinject -->';
   opt.ignorePath = toArray(opt.ignorePath);
+  opt.addRootSlash = typeof opt.addRootSlash !== 'undefined' ? !!opt.addRootSlash : true;
   opt.transform = opt.transform || function (filepath) {
     switch(extname(filepath)) {
       case 'css':
@@ -55,12 +56,11 @@ module.exports = function(fileName, opt){
     if (!collection[tag]) {
       collection[tag] = {ext: ext, starttag: tag, endtag: getTag(opt.endtag, ext), files: []};
     }
-    
-    var filepath;
-    if (opt.addRootSlash === true) {
-        filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
-    } else {
-        filepath = addRootSlash(removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path)));
+
+    var filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
+
+    if (opt.addRootSlash) {
+        filepath = addRootSlash(filepath);
     }
 
     collection[tag].files.push({file: file, filepath: filepath});
