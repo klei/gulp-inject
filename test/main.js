@@ -50,6 +50,7 @@ describe('gulp-inject', function () {
 
       should.exist(newFile);
       should.exist(newFile.contents);
+      newFile.base.should.equal(path.join(__dirname, 'fixtures'));
 
       String(newFile.contents).should.equal(String(expectedFile('defaults.html').contents));
       done();
