@@ -93,7 +93,7 @@ module.exports = function(fileName, opt){
 
     var templateFile = new File({
       cwd: firstFile.cwd,
-      base: path.basename(templatePath),
+      base: path.dirname(templatePath),
       path: templatePath,
       contents: new Buffer(template)
     });
