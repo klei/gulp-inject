@@ -35,6 +35,8 @@ module.exports = function(fileName, opt){
         return '<script src="' + filepath + '"></script>';
       case 'html':
         return '<link rel="import" href="' + filepath + '">';
+      case 'clear':
+        return '';
     }
   };
 
