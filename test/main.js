@@ -3,29 +3,31 @@
 
 var fs = require('fs'),
   path = require('path'),
+  es = require('event-stream'),
   should = require('should');
+
 require('mocha');
 
 var gutil = require('gulp-util'),
   inject = require('../');
 
 function expectedFile (file) {
-  var filepath = path.join('test/expected', file);
+  var filepath = path.join(__dirname, 'expected', file);
   return new gutil.File({
     path: filepath,
-    cwd: 'test/',
-    base: path.basename(filepath),
+    cwd: __dirname,
+    base: path.join(__dirname, 'expected', path.dirname(file)),
     contents: fs.readFileSync(filepath)
   });
 }
 
-function fixture (file) {
-  var filepath = path.join('test/fixtures', file);
+function fixture (file, read) {
+  var filepath = path.join(__dirname, 'fixtures', file);
   return new gutil.File({
     path: filepath,
-    cwd: 'test/',
-    base: path.basename(filepath),
-    contents: null
+    cwd: __dirname,
+    base: path.join(__dirname, 'fixtures', path.dirname(file)),
+    contents: read ? fs.readFileSync(filepath) : null
   });
 }
 
@@ -63,6 +65,44 @@ describe('gulp-inject', function () {
     stream.end();
   });
 
+  it('should take a Vinyl File Stream with files to inject into current stream', function (done) {
+
+    var source = es.readArray([
+      fixture('template.html', true),
+      fixture('template2.html', true)
+    ]);
+    source.pause();
+    var toInject = es.readArray([
+      fixture('lib.js'),
+      fixture('component.html'),
+      fixture('styles.css')
+    ]);
+    toInject.pause();
+
+    var stream = source.pipe(inject(toInject));
+
+    stream.on('error', function(err) {
+      should.exist(err);
+      done(err);
+    });
+
+    var received = 0;
+    stream.on('data', function (newFile) {
+      should.exist(newFile);
+      should.exist(newFile.contents);
+
+      String(newFile.contents).should.equal(String(expectedFile(received ? 'defaults2.html' : 'defaults.html').contents));
+
+      if (++received === 2) {
+        done();
+      }
+    });
+
+    source.resume();
+
+    toInject.resume();
+  });
+
   it('should inject stylesheets, scripts and html components with `ignorePath` removed from file path', function (done) {
 
     var sources = [
@@ -72,7 +112,7 @@ describe('gulp-inject', function () {
       fixture('styles.css')
     ];
 
-    var stream = inject('fixtures/template.html', {ignorePath: 'fixtures'});
+    var stream = inject('fixtures/template.html', {ignorePath: '/fixtures'});
 
     stream.on('error', function(err) {
       should.exist(err);
