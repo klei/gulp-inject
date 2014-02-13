@@ -60,7 +60,7 @@ module.exports = function(fileName, opt){
     var filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
 
     if (opt.addRootSlash) {
-        filepath = addRootSlash(filepath);
+      filepath = addRootSlash(filepath);
     }
 
     collection[tag].files.push({file: file, filepath: filepath});
