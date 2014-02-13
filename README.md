@@ -12,13 +12,32 @@ npm install --save-dev gulp-inject
 
 Then, add it to your `gulpfile.js`:
 
+### Mode 1: Given a Vinyl File Stream
+
+**Note:** New from `v.0.3`. Here you pipe `inject` through *where* to inject.
+
 ```javascript
 var inject = require("gulp-inject");
 
-gulp.src("./src/*.ext", {read: false}) // Not necessary to read the files (will speed up things), we're only after their paths
+gulp.src('./src/index.html')
+  .pipe(inject(gulp.src(["./src/*.js", "./src/*.css"], {read: false})) // Not necessary to read the files (will speed up things), we're only after their paths
+  .pipe(gulp.dest("./dist"));
+```
+
+### Mode 2: Given a path to html template
+
+**Note:** Old behavior. Here you pipe `inject` through *what* to inject.
+
+```javascript
+var inject = require("gulp-inject");
+
+gulp.src(["./src/*.js", "./src/*.css"], {read: false}) // Not necessary to read the files (will speed up things), we're only after their paths
 	.pipe(inject("path/to/your/index.html"))
 	.pipe(gulp.dest("./dist"));
 ```
+
+
+### Template contents (regarding of mode above)
 
 Add injection tags to your `index.html`:
 
@@ -45,13 +64,18 @@ Add injection tags to your `index.html`:
 
 ## API
 
-### inject(filename, options)
+### inject(fileOrStream, options)
 
-#### filename
-Type: `String`
+#### fileOrStream
+Type: `Stream` or `String`
 
+**If `Stream`**
 
-Path to template file (where your injection tags are). Is also used as filename for the plugin's output file.
+Since `v.0.3` you can provide a Vinyl File Stream as input to `inject`, see Mode 1 in the example above.
+
+**If `String`**
+
+Can also be a path to the template file (where your injection tags are). Is also used as filename for the plugin's output file.
 
 #### options.templateString
 Type: `String`
@@ -59,7 +83,7 @@ Type: `String`
 Default: `NULL`
 
 
-Is used as template instead of the contents of given `filename`.
+Is used as template instead of the contents of given `filename`. (Only used if `fileOrStream` is a `String`)
 
 #### options.ignorePath
 Type: `String` or `Array`
