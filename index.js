@@ -159,6 +159,10 @@ function collector (collection, opt, cb) {
 
     var filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
 
+    if (opt.addPrefix) {
+      filepath = addPrefix(filepath, opt.addPrefix);
+    }
+
     if (opt.addRootSlash) {
       filepath = addRootSlash(filepath);
     } else if (filepath[0] === '/') {
@@ -223,6 +227,9 @@ function unixify (filepath) {
 }
 function addRootSlash (filepath) {
   return filepath.replace(/^\/*([^\/])/, '/$1');
+}
+function addPrefix (filepath, prefix) {
+  return  prefix + filepath;
 }
 
 function removeBasePath (basedir, filepath) {
