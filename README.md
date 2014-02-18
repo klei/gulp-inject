@@ -93,6 +93,14 @@ Default: `NULL`
 
 A path or paths that should be removed from each injected file path.
 
+#### options.addPrefix
+Type: `String`
+
+Default: `NULL`
+
+
+A path that should be prefixed to each injected file path.
+
 #### options.addRootSlash
 Type: `Boolean`
 
