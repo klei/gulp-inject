@@ -135,6 +135,38 @@ describe('gulp-inject', function () {
     stream.end();
   });
 
+  it('should inject stylesheets, scripts and html components with `addPrefix` added to file path', function (done) {
+
+    var sources = [
+      fixture('lib.js'),
+      fixture('component.html'),
+      fixture('lib2.js'),
+      fixture('styles.css')
+    ];
+
+    var stream = inject('fixtures/template.html', {addPrefix: 'my-test-dir'});
+
+    stream.on('error', function(err) {
+      should.exist(err);
+      done(err);
+    });
+
+    stream.on('data', function (newFile) {
+
+      should.exist(newFile);
+      should.exist(newFile.contents);
+
+      String(newFile.contents).should.equal(String(expectedFile('addPrefix.html').contents));
+      done();
+    });
+
+    sources.forEach(function (src) {
+      stream.write(src);
+    });
+
+    stream.end();
+  });
+
   it('should inject stylesheets, scripts and html components without root slash if `addRootSlash` is `false`', function (done) {
 
     var sources = [
