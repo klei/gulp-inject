@@ -20,7 +20,7 @@ Then, add it to your `gulpfile.js`:
 var inject = require("gulp-inject");
 
 gulp.src('./src/index.html')
-  .pipe(inject(gulp.src(["./src/*.js", "./src/*.css"], {read: false})) // Not necessary to read the files (will speed up things), we're only after their paths
+  .pipe(inject(gulp.src(["./src/*.js", "./src/*.css"], {read: false}))) // Not necessary to read the files (will speed up things), we're only after their paths
   .pipe(gulp.dest("./dist"));
 ```
 
