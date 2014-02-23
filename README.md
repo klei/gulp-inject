@@ -2,7 +2,7 @@
 
 > A stylesheet, javascript and webcomponent reference injection plugin for [gulp](https://github.com/wearefractal/gulp). No more manual editing of your index.html!
 
-## Usage
+## Installation
 
 First, install `gulp-inject` as a development dependency:
 
@@ -10,7 +10,9 @@ First, install `gulp-inject` as a development dependency:
 npm install --save-dev gulp-inject
 ```
 
-Then, add it to your `gulpfile.js`:
+## Basic usage
+
+In your `gulpfile.js`:
 
 ### Mode 1: Given a Vinyl File Stream
 
@@ -36,7 +38,6 @@ gulp.src(["./src/*.js", "./src/*.css"], {read: false}) // Not necessary to read 
 	.pipe(gulp.dest("./dist"));
 ```
 
-
 ### Template contents (regardless of mode above)
 
 Add injection tags to your `index.html`:
@@ -60,6 +61,161 @@ Add injection tags to your `index.html`:
   <!-- endinject -->
 </body>
 </html>
+```
+
+## More examples
+
+### Injecting files from multiple streams
+
+This example demonstrates how to inject files from multiple different streams into the same injection placeholder.
+
+Install [`event-stream`](https://www.npmjs.org/package/event-stream) with: `npm install --save-dev event-stream` and use its [`merge`](https://github.com/dominictarr/event-stream#merge-stream1streamn) function.
+
+**Code:**
+
+```javascript
+var es = require('event-stream'),
+    inject = require('gulp-inject');
+
+// Concatenate vendor scripts
+var vendorStream = gulp.src(['./src/vendors/*.js'])
+  .pipe(concat('vendors.js'))
+  .pipe(gulp.dest('./dist'));
+
+// Concatenate AND minify app sources
+var appStream = gulp.src(['./src/app/*.js'])
+  .pipe(concat('app.js'))
+  .pipe(uglify())
+  .pipe(gulp.dest('./dist'));
+
+gulp.src('./src/index.html')
+  .pipe(inject(es.merge(vendorStream, appStream)))
+  .pipe(gulp.dest('./dist'));
+```
+
+### Injecting some files into `<head>` and some into `<body>`
+
+Use `gulp-inject`'s `starttag` option.
+
+**Code:**
+
+```javascript
+var inject = require('gulp-inject');
+
+gulp.src('./src/index.html')
+  .pipe(inject(gulp.src('./src/importantFile.js', {read: false}), {starttag: '<!-- inject:head:{{ext}} -->'}))
+  .pipe(inject(gulp.src(['./src/*.js', '!./src/importantFile.js'], {read: false})))
+  .pipe(gulp.dest('./dist'));
+```
+
+And in your `./src/index.html`:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My index</title>
+  <!-- inject:head:js -->
+  <!-- only importantFile.js will be injected here -->
+  <!-- endinject -->
+</head>
+<body>
+
+  <!-- inject:js -->
+  <!-- the rest of the *.js files will be injected here -->
+  <!-- endinject -->
+</body>
+</html>
+```
+
+### Injecting all files for development
+
+If you use [Bower](http://bower.io/) for frontend dependencies I recommend using [`gulp-bower-files`](https://www.npmjs.org/package/gulp-bower-files) and injecting them as well.
+
+**Code:**
+
+```javascript
+var bowerFiles = require('gulp-bower-files'),
+    inject = require('gulp-inject'),
+    stylus = require('gulp-stylus'),
+    es = require('event-stream');
+
+var cssFiles = gulp.src('./src/**/*.styl')
+  .pipe(stylus())
+  .pipe(gulp.dest('./build'));
+
+gulp.src('./src/index.html')
+  .pipe(inject(es.merge(
+    bowerFiles({read: false}),
+    cssFiles,
+    gulp.src('./src/app/**/*.js', {read: false})
+  )))
+  .pipe(gulp.dest('./build'));
+```
+
+**Note** remember to mount `./bower_components`, `./build` and `./src/app` as static resources in your server to make this work.
+
+### Injecting into a json-file
+
+You can customize `gulp-inject` further by using the `transform` function option, e.g. by injecting files into a json-file.
+
+**Code:**
+
+```javascript
+gulp.src('./files.json')
+  .pipe(inject(gulp.src(['./src/*.js', './src/*.css', './src/*.html'], {read: false}), {
+    starttag: '"{{ext}}": [',
+    endtag: ']',
+    transform: function (filepath, file, i, length) {
+      return '  "' + filepath + '"' + (i + 1 < length ? ',' : '');
+    }
+  }))
+  .pipe(gulp.dest('./'));
+```
+
+Initial contents of `files.json`:
+
+```json
+{
+  "js": [
+  ],
+  "css": [
+  ],
+  "html": [
+  ]
+}
+```
+
+### Injecting dist files into bower.json's main section
+
+**Code:**
+
+```javascript
+gulp.src('./bower.json')
+  .pipe(inject(gulp.src(['./dist/app.min.js', './dist/app.min.css'], {read: false}), {
+    starttag: '"main": [',
+    endtag: ']',
+    function (filepath, file, i, length) {
+      return '  "' + filepath + '"' + (i + 1 < length ? ',' : '');
+    }
+  }))
+  .pipe(gulp.dest('./'));
+```
+
+### Injecting all javascript files into a karma config file
+
+**Code:**
+
+```javascript
+gulp.src('./karma.conf.js')
+  .pipe(inject(gulp.src(['./src/**/*.js'], {read: false}), {
+    starttag: 'files: [',
+    endtag: ']',
+    function (filepath, file, i, length) {
+      return '  "' + filepath + '"' + (i + 1 < length ? ',' : '');
+    }
+  }))
+  .pipe(gulp.dest('./'));
 ```
 
 ## API
