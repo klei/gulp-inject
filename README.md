@@ -37,7 +37,7 @@ gulp.src(["./src/*.js", "./src/*.css"], {read: false}) // Not necessary to read 
 ```
 
 
-### Template contents (regarding of mode above)
+### Template contents (regardless of mode above)
 
 Add injection tags to your `index.html`:
 
