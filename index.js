@@ -32,7 +32,7 @@ module.exports = function(fileOrStream, opt){
       case 'css':
         return '<link rel="stylesheet" href="' + filepath + '">';
       case 'js':
-        return '<script src="' + filepath + '"></script>';
+        return '<script charset="utf-8" src="' + filepath + '"></script>';
       case 'html':
         return '<link rel="import" href="' + filepath + '">';
     }
