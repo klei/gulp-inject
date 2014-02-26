@@ -279,7 +279,7 @@ Type: `String`
 Default: `<!-- endinject -->`
 
 
-Set the end tag that the injector is looking for. `{{ext}}` is replaced with file extension name, e.g. "css", "js" or "html".
+Set the end tag that the injector is looking for.
 
 #### options.transform
 Type: `Function(filepath, file, index, length)`
