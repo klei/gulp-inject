@@ -35,6 +35,8 @@ module.exports = function(fileOrStream, opt){
         return '<script src="' + filepath + '"></script>';
       case 'html':
         return '<link rel="import" href="' + filepath + '">';
+      case 'coffee':
+        return '<script type="text/coffeescript" src="' + filepath + '"></script>';  
     }
   };
 
