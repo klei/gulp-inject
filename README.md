@@ -314,10 +314,10 @@ If set the given function is used as the compareFunction for the array sort func
 [MIT License](http://en.wikipedia.org/wiki/MIT_License)
 
 [npm-url]: https://npmjs.org/package/gulp-inject
-[npm-image]: https://badge.fury.io/js/gulp-inject.png
+[npm-image]: https://badge.fury.io/js/gulp-inject.svg
 
 [travis-url]: http://travis-ci.org/klei/gulp-inject
-[travis-image]: https://secure.travis-ci.org/klei/gulp-inject.png?branch=master
+[travis-image]: https://secure.travis-ci.org/klei/gulp-inject.svg?branch=master
 
 [depstat-url]: https://david-dm.org/klei/gulp-inject
-[depstat-image]: https://david-dm.org/klei/gulp-inject.png
+[depstat-image]: https://david-dm.org/klei/gulp-inject.svg
