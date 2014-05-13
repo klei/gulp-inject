@@ -195,7 +195,7 @@ gulp.src('./bower.json')
   .pipe(inject(gulp.src(['./dist/app.min.js', './dist/app.min.css'], {read: false}), {
     starttag: '"main": [',
     endtag: ']',
-    function (filepath, file, i, length) {
+    transform: function (filepath, file, i, length) {
       return '  "' + filepath + '"' + (i + 1 < length ? ',' : '');
     }
   }))
@@ -211,7 +211,7 @@ gulp.src('./karma.conf.js')
   .pipe(inject(gulp.src(['./src/**/*.js'], {read: false}), {
     starttag: 'files: [',
     endtag: ']',
-    function (filepath, file, i, length) {
+    transform: function (filepath, file, i, length) {
       return '  "' + filepath + '"' + (i + 1 < length ? ',' : '');
     }
   }))
