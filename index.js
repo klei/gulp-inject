@@ -25,7 +25,7 @@ module.exports = function(fileOrStream, opt){
   // Defaults:
   opt.starttag = opt.starttag || '<!-- inject:{{ext}} -->';
   opt.endtag = opt.endtag || '<!-- endinject -->';
-  opt.ignorePath = toArray(opt.ignorePath);
+  opt.ignorePath = toArray(opt.ignorePath).map(unixify);
   opt.addRootSlash = typeof opt.addRootSlash !== 'undefined' ? !!opt.addRootSlash : true;
   opt.transform = opt.transform || function (filepath) {
     switch(extname(filepath)) {
