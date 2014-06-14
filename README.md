@@ -220,7 +220,7 @@ gulp.src('./karma.conf.js')
 
 ### Injecting files contents
 
-In order to inject files contents you have to provide custom `transform` function, that will return file contents as string. You also have to omit `{read: false}` option of `gulp.src` in this case. Example below shows how to inject contents of html files into head of `index.html`:
+In order to inject files contents you have to provide custom `transform` function, that will return file contents as string. You also have to omit `{read: false}` option of `gulp.src` in this case. Example below shows how to inject contents of html partials into head of `index.html`:
 
 ***Code:***
 
