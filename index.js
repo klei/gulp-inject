@@ -25,18 +25,25 @@ module.exports = function(fileOrStream, opt){
   // Defaults:
   opt.starttag = opt.starttag || '<!-- inject:{{ext}} -->';
   opt.endtag = opt.endtag || '<!-- endinject -->';
+  opt.selfClosingTag = opt.selfClosingTag || false;
   opt.ignorePath = toArray(opt.ignorePath).map(unixify);
   opt.addRootSlash = typeof opt.addRootSlash !== 'undefined' ? !!opt.addRootSlash : true;
   opt.transform = opt.transform || function (filepath) {
+    var end = opt.selfClosingTag ? ' />' : '>';
     switch(extname(filepath)) {
       case 'css':
-        return '<link rel="stylesheet" href="' + filepath + '">';
+        return '<link rel="stylesheet" href="' + filepath + '"' + end;
       case 'js':
         return '<script src="' + filepath + '"></script>';
       case 'html':
-        return '<link rel="import" href="' + filepath + '">';
+        return '<link rel="import" href="' + filepath + '"' + end;
+      case 'png':
+      case 'gif':
+      case 'jpg':
+      case 'jpeg':
+        return '<img src="' + filepath + '"' + end;
       case 'coffee':
-        return '<script type="text/coffeescript" src="' + filepath + '"></script>';  
+        return '<script type="text/coffeescript" src="' + filepath + '"></script>';
     }
   };
 
@@ -167,8 +174,8 @@ function collector (collection, opt, cb) {
 
     if (opt.addRootSlash) {
       filepath = addRootSlash(filepath);
-    } else if (filepath[0] === '/') {
-      filepath = filepath.slice(1);
+    } else {
+      filepath = removeRootSlash(filepath);
     }
 
     collection[tag].files.push({file: file, filepath: filepath});
@@ -229,6 +236,9 @@ function unixify (filepath) {
 }
 function addRootSlash (filepath) {
   return filepath.replace(/^\/*([^\/])/, '/$1');
+}
+function removeRootSlash (filepath) {
+  return filepath.replace(/^\/+/, '');
 }
 function addPrefix (filepath, prefix) {
   return  prefix + filepath;

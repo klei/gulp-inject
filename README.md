@@ -55,6 +55,18 @@ Add injection tags to your `index.html`:
   <!-- endinject -->
 </head>
 <body>
+  <!-- inject:png -->
+  <!-- any *.png files among your sources will go here as: <img src="FILE"> -->
+  <!-- endinject -->
+  <!-- inject:gif -->
+  <!-- any *.gif files among your sources will go here as: <img src="FILE"> -->
+  <!-- endinject -->
+  <!-- inject:jpg -->
+  <!-- any *.jpg files among your sources will go here as: <img src="FILE"> -->
+  <!-- endinject -->
+  <!-- inject:jpeg -->
+  <!-- any *.jpeg files among your sources will go here as: <img src="FILE"> -->
+  <!-- endinject -->
 
   <!-- inject:js -->
   <!-- any *.js files among your sources will go here as: <script src="FILE"></script> -->
@@ -297,7 +309,7 @@ Type: `Boolean`
 Default: `true`
 
 
-The root slash is automatically added at the beginning of the path ('/').
+The root slash is automatically added at the beginning of the path ('/'), or removed if set to `false`.
 
 #### options.starttag
 Type: `String`
@@ -315,6 +327,14 @@ Default: `<!-- endinject -->`
 
 Set the end tag that the injector is looking for. `{{ext}}` is replaced with file extension name, e.g. "css", "js" or "html".
 
+#### options.selfClosingTag
+Type: `Boolean`
+
+Default: `false`
+
+Affects the default `options.transform` function, see below.
+
+
 #### options.transform
 Type: `Function(filepath, file, index, length)`
 
@@ -329,9 +349,15 @@ Default: a function that returns:
 * For css files: `<link rel="stylesheet" href="<filename>.css">`
 * For js files: `<script src="<filename>.js"></script>`
 * For html files: `<link rel="import" href="<filename>.html">`
+* For png files: `<img src="<filename>.png">`
+* For gif files: `<img src="<filename>.gif">`
+* For jpg files: `<img src="<filename>.jpg">`
+* For jpeg files: `<img src="<filename>.jpeg">`
 
 
 Used to generate the content to inject for each file.
+
+If `options.selfClosingTag` is `true` the default transformer above will make the `<link>` and `<img>` tags self close, i.e: `<link ... />` and `<img ... />` respectively.
 
 #### options.sort
 Type: `Function(a, b)`

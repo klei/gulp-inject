@@ -33,12 +33,13 @@ function fixture (file, read) {
 
 describe('gulp-inject', function () {
 
-  it('should inject stylesheets, scripts and html components into desired file', function (done) {
+  it('should inject stylesheets, scripts, images and html components into desired file', function (done) {
 
     var sources = [
       fixture('lib.js'),
       fixture('component.html'),
-      fixture('styles.css')
+      fixture('styles.css'),
+      fixture('image.png'),
     ];
 
     var stream = inject('fixtures/template.html');
@@ -75,7 +76,8 @@ describe('gulp-inject', function () {
     var toInject = es.readArray([
       fixture('lib.js'),
       fixture('component.html'),
-      fixture('styles.css')
+      fixture('styles.css'),
+      fixture('image.png')
     ]);
     toInject.pause();
 
@@ -167,6 +169,36 @@ describe('gulp-inject', function () {
     stream.end();
   });
 
+  it('should inject stylesheets and html components with self closing tags if `selfClosingTag` is truthy', function (done) {
+
+    var sources = [
+      fixture('component.html'),
+      fixture('styles.css')
+    ];
+
+    var stream = inject('fixtures/template.html', {selfClosingTag: true});
+
+    stream.on('error', function(err) {
+      should.exist(err);
+      done(err);
+    });
+
+    stream.on('data', function (newFile) {
+
+      should.exist(newFile);
+      should.exist(newFile.contents);
+
+      String(newFile.contents).should.equal(String(expectedFile('selfClosingTag.html').contents));
+      done();
+    });
+
+    sources.forEach(function (src) {
+      stream.write(src);
+    });
+
+    stream.end();
+  });
+
   it('should inject stylesheets, scripts and html components without root slash if `addRootSlash` is `false`', function (done) {
 
     var sources = [
@@ -188,6 +220,37 @@ describe('gulp-inject', function () {
       should.exist(newFile.contents);
 
       String(newFile.contents).should.equal(String(expectedFile('noRootSlash.html').contents));
+      done();
+    });
+
+    sources.forEach(function (src) {
+      stream.write(src);
+    });
+
+    stream.end();
+  });
+
+  it('should inject stylesheets, scripts and html components without root slash if `addRootSlash` is `false` and `ignorePath` is set', function (done) {
+
+    var sources = [
+      fixture('a/folder/lib.js'),
+      fixture('a/folder/component.html'),
+      fixture('a/folder/styles.css')
+    ];
+
+    var stream = inject('fixtures/template.html', {addRootSlash: false, ignorePath: 'fixtures'});
+
+    stream.on('error', function(err) {
+      should.exist(err);
+      done(err);
+    });
+
+    stream.on('data', function (newFile) {
+
+      should.exist(newFile);
+      should.exist(newFile.contents);
+
+      String(newFile.contents).should.equal(String(expectedFile('noRootSlashWithIgnorePath.html').contents));
       done();
     });
 
