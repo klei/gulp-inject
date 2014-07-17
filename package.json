@@ -30,8 +30,8 @@
     "event-stream": "~3.1.0"
   },
   "devDependencies": {
-    "mocha": "~1.17.0",
-    "should": "~2.1.0"
+    "mocha": "~1.20.1",
+    "should": "~4.0.4"
   },
   "engines": {
     "node": ">=0.10.0",
