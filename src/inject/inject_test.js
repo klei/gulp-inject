@@ -6,27 +6,25 @@ var fs = require('fs'),
   es = require('event-stream'),
   should = require('should');
 
-require('mocha');
-
 var gutil = require('gulp-util'),
-  inject = require('../');
+  inject = require('./');
 
 function expectedFile (file) {
-  var filepath = path.join(__dirname, 'expected', file);
+  var filepath = path.resolve(__dirname, 'expected', file);
   return new gutil.File({
     path: filepath,
     cwd: __dirname,
-    base: path.join(__dirname, 'expected', path.dirname(file)),
+    base: path.resolve(__dirname, 'expected', path.dirname(file)),
     contents: fs.readFileSync(filepath)
   });
 }
 
 function fixture (file, read) {
-  var filepath = path.join(__dirname, 'fixtures', file);
+  var filepath = path.resolve(__dirname, 'fixtures', file);
   return new gutil.File({
     path: filepath,
     cwd: __dirname,
-    base: path.join(__dirname, 'fixtures', path.dirname(file)),
+    base: path.resolve(__dirname, 'fixtures', path.dirname(file)),
     contents: read ? fs.readFileSync(filepath) : null
   });
 }
@@ -135,6 +133,40 @@ describe('gulp-inject', function () {
     });
 
     stream.end();
+  });
+
+  it('should inject stylesheets, scripts and html components with relative paths if `relative` is truthy', function (done) {
+    var source = es.readArray([
+      fixture('template.html', true)
+    ]);
+    source.pause();
+    var toInject = es.readArray([
+      fixture('../../folder/lib.js'),
+      fixture('../../another/component.html'),
+      fixture('../a-folder/lib2.js'),
+      fixture('../../yet-another/styles.css')
+    ]);
+    toInject.pause();
+
+    var stream = source.pipe(inject(toInject));
+
+    stream.on('error', function(err) {
+      should.exist(err);
+      done(err);
+    });
+
+    stream.on('data', function (newFile) {
+      should.exist(newFile);
+      should.exist(newFile.contents);
+
+      String(newFile.contents).should.equal(String(expectedFile('relative.html').contents));
+
+      done();
+    });
+
+    source.resume();
+
+    toInject.resume();
   });
 
   it('should inject stylesheets, scripts and html components with `addPrefix` added to file path', function (done) {

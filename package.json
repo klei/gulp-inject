@@ -17,7 +17,7 @@
     "email": "joakim@klei.se",
     "url": "http://joakim.beng.se"
   },
-  "main": "./index.js",
+  "main": "src/inject/index.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/klei/gulp-inject.git"
