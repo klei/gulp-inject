@@ -222,6 +222,19 @@ describe('transform', function () {
       .should.equal(transform.jade.image(sourceFile.path));
   });
 
+  it('should default to the html target transformer for other files', function () {
+    var targetFile = fixture('plain.txt');
+    var sourceFile = fixture('image.gif');
+    transform(sourceFile.path, null, null, sourceFile, targetFile)
+      .should.equal(transform.html.image(sourceFile.path));
+  });
+
+  it('should default to the html target transformer for unknown files', function () {
+    var sourceFile = fixture('image.gif');
+    transform(sourceFile.path, null, null, sourceFile)
+      .should.equal(transform.html.image(sourceFile.path));
+  });
+
 });
 
 function fixture (file, read) {

@@ -7,7 +7,7 @@ var fs = require('fs'),
     PluginError = gutil.PluginError,
     File = gutil.File;
 
-module.exports = function(fileOrStream, opt){
+module.exports = exports = function(fileOrStream, opt){
   if (!fileOrStream) {
     throw new PluginError('gulp-inject',  'Missing fileOrStream option for gulp-inject');
   }
@@ -25,27 +25,10 @@ module.exports = function(fileOrStream, opt){
   // Defaults:
   opt.starttag = opt.starttag || '<!-- inject:{{ext}} -->';
   opt.endtag = opt.endtag || '<!-- endinject -->';
-  opt.selfClosingTag = opt.selfClosingTag || false;
   opt.ignorePath = toArray(opt.ignorePath).map(unixify);
   opt.addRootSlash = typeof opt.addRootSlash !== 'undefined' ? !!opt.addRootSlash : true;
-  opt.transform = opt.transform || function (filepath) {
-    var end = opt.selfClosingTag ? ' />' : '>';
-    switch(extname(filepath)) {
-      case 'css':
-        return '<link rel="stylesheet" href="' + filepath + '"' + end;
-      case 'js':
-        return '<script src="' + filepath + '"></script>';
-      case 'html':
-        return '<link rel="import" href="' + filepath + '"' + end;
-      case 'png':
-      case 'gif':
-      case 'jpg':
-      case 'jpeg':
-        return '<img src="' + filepath + '"' + end;
-      case 'coffee':
-        return '<script type="text/coffeescript" src="' + filepath + '"></script>';
-    }
-  };
+  opt.transform = opt.transform || exports.transform;
+  exports.transform.selfClosingTag = opt.selfClosingTag || false;
 
   // Is the first parameter a Vinyl File Stream:
   if (typeof fileOrStream.on === 'function' && typeof fileOrStream.pipe === 'function') {
@@ -81,6 +64,8 @@ module.exports = function(fileOrStream, opt){
     }
   }), endStream);
 };
+
+exports.transform = require('../transform');
 
 /**
  * Handle injection when files to

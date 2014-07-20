@@ -6,13 +6,20 @@ var path = require('path');
  */
 var TARGET_TYPES = ['html', 'jade', 'jsx'];
 var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
+var DEFAULT_TARGET = TARGET_TYPES[0];
 
 /**
  * Transform module
  */
 var transform = module.exports = exports = function (filepath, i, length, sourceFile, targetFile) {
-  var ext = path.extname(targetFile.path).slice(1);
-  var type = typeFromExt(ext);
+  var type;
+  if (targetFile && targetFile.path) {
+    var ext = path.extname(targetFile.path).slice(1);
+    type = typeFromExt(ext);
+  }
+  if (!isTargetType(type)) {
+    type = DEFAULT_TARGET;
+  }
   var func = transform[type];
   if (func) {
     return func.apply(transform, arguments);
@@ -108,4 +115,11 @@ function typeFromExt (ext) {
 
 function isImage (ext) {
   return IMAGES.indexOf(ext) > -1;
+}
+
+function isTargetType (type) {
+  if (!type) {
+    return false;
+  }
+  return TARGET_TYPES.indexOf(type) > -1;
 }
