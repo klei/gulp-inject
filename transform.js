@@ -11,7 +11,12 @@ var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
  * Transform module
  */
 var transform = module.exports = exports = function (filepath, i, length, sourceFile, targetFile) {
-
+  var ext = path.extname(targetFile.path).slice(1);
+  var type = typeFromExt(ext);
+  var func = transform[type];
+  if (func) {
+    return func.apply(transform, arguments);
+  }
 };
 
 /**
