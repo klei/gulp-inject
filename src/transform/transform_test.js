@@ -10,7 +10,7 @@ describe('transform', function () {
 
   it('should not crash when required', function () {
     should(function () {
-      transform = require('../transform');
+      transform = require('./');
     }).not.throw();
   });
 
