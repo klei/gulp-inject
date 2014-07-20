@@ -124,6 +124,29 @@ describe('transform function', function () {
         transform.jsx.image.should.be.type('function');
         transform.jsx.image('test-file.png').should.equal('<img src="test-file.png" />');
       });
+
+      it('should use the css transformer for css files automatically', function () {
+        transform.jsx('test-file.css').should.equal(transform.jsx.css('test-file.css'));
+      });
+
+      it('should use the html transformer for html files automatically', function () {
+        transform.jsx('test-file.html').should.equal(transform.jsx.html('test-file.html'));
+      });
+
+      it('should use the js transformer for js files automatically', function () {
+        transform.jsx('test-file.js').should.equal(transform.jsx.js('test-file.js'));
+      });
+
+      it('should use the coffee transformer for coffee files automatically', function () {
+        transform.jsx('test-file.coffee').should.equal(transform.jsx.coffee('test-file.coffee'));
+      });
+
+      it('should use the image transformer for png, gif, jpg and jpeg files automatically', function () {
+        transform.jsx('test-file.png').should.equal(transform.jsx.image('test-file.png'));
+        transform.jsx('test-file.gif').should.equal(transform.jsx.image('test-file.gif'));
+        transform.jsx('test-file.jpg').should.equal(transform.jsx.image('test-file.jpg'));
+        transform.jsx('test-file.jpeg').should.equal(transform.jsx.image('test-file.jpeg'));
+      });
     });
 
     describe('jade as target', function () {
@@ -150,6 +173,29 @@ describe('transform function', function () {
       it('should transform an image to a self closing img tag', function () {
         transform.jade.image.should.be.type('function');
         transform.jade.image('test-file.png').should.equal('img(src="test-file.png")');
+      });
+
+      it('should use the css transformer for css files automatically', function () {
+        transform.jade('test-file.css').should.equal(transform.jade.css('test-file.css'));
+      });
+
+      it('should use the html transformer for html files automatically', function () {
+        transform.jade('test-file.html').should.equal(transform.jade.html('test-file.html'));
+      });
+
+      it('should use the js transformer for js files automatically', function () {
+        transform.jade('test-file.js').should.equal(transform.jade.js('test-file.js'));
+      });
+
+      it('should use the coffee transformer for coffee files automatically', function () {
+        transform.jade('test-file.coffee').should.equal(transform.jade.coffee('test-file.coffee'));
+      });
+
+      it('should use the image transformer for png, gif, jpg and jpeg files automatically', function () {
+        transform.jade('test-file.png').should.equal(transform.jade.image('test-file.png'));
+        transform.jade('test-file.gif').should.equal(transform.jade.image('test-file.gif'));
+        transform.jade('test-file.jpg').should.equal(transform.jade.image('test-file.jpg'));
+        transform.jade('test-file.jpeg').should.equal(transform.jade.image('test-file.jpeg'));
       });
     });
   });

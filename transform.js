@@ -4,12 +4,13 @@ var path = require('path');
 /**
  * Constants
  */
+var TARGET_TYPES = ['html', 'jade', 'jsx'];
 var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
 
 /**
  * Transform module
  */
-var transform = module.exports = exports = function (filepath) {
+var transform = module.exports = exports = function (filepath, i, length, sourceFile, targetFile) {
 
 };
 
@@ -22,15 +23,16 @@ transform.selfClosingTag = false;
 /**
  * Transform functions
  */
-
-transform.html = function (filepath) {
-  var ext = path.extname(filepath).slice(1);
-  var type = typeFromExt(ext);
-  var func = transform.html[type];
-  if (func) {
-    return func.apply(transform.html, arguments);
-  }
-};
+TARGET_TYPES.forEach(function (targetType) {
+  transform[targetType] = function (filepath) {
+    var ext = path.extname(filepath).slice(1);
+    var type = typeFromExt(ext);
+    var func = transform[targetType][type];
+    if (func) {
+      return func.apply(transform[targetType], arguments);
+    }
+  };
+});
 
 transform.html.css = function (filepath) {
   return '<link rel="stylesheet" href="' + filepath + '"' + end();
@@ -52,10 +54,6 @@ transform.html.image = function (filepath) {
   return '<img src="' + filepath + '"' + end();
 };
 
-transform.jade = function (filepath) {
-
-};
-
 transform.jade.css = function (filepath) {
   return 'link(rel="stylesheet", href="' + filepath + '")';
 };
@@ -74,11 +72,6 @@ transform.jade.coffee = function (filepath) {
 
 transform.jade.image = function (filepath) {
   return 'img(src="' + filepath + '")';
-};
-
-
-transform.jsx = function (filepath) {
-
 };
 
 /**
