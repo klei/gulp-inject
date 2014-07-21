@@ -1,90 +1,74 @@
 'use strict';
 
-var fs = require('fs'),
-    es = require('event-stream'),
-    path = require('path'),
-    gutil = require('gulp-util'),
-    PluginError = gutil.PluginError,
-    File = gutil.File;
+var fs = require('fs');
+var es = require('event-stream');
+var path = require('path');
+var gutil = require('gulp-util');
+var transform = require('../transform');
+var PluginError = gutil.PluginError;
+var File = gutil.File;
 
-module.exports = exports = function(fileOrStream, opt){
-  if (!fileOrStream) {
-    throw new PluginError('gulp-inject',  'Missing fileOrStream option for gulp-inject');
+module.exports = exports = function(sources, opt){
+  if (!sources) {
+    throw new PluginError('gulp-inject',  'Missing sources stream!');
   }
   if (!opt) {
     opt = {};
   }
 
+  if (opt.sort) {
+    throw new PluginError('gulp-inject', 'sort option is deprecated! Use `sort-stream` module instead!');
+  }
+  if (opt.templateString) {
+    throw new PluginError('gulp-inject', '`templateString` option is deprecated! Create a virtual `vinyl` file instead!');
+  }
   if (opt.transform && typeof opt.transform !== 'function') {
     throw new PluginError('gulp-inject', 'transform option must be a function');
   }
-  if (opt.sort && typeof opt.sort !== 'function') {
-    throw new PluginError('gulp-inject', 'sort option must be a function');
-  }
 
   // Defaults:
-  opt.starttag = opt.starttag || '<!-- inject:{{ext}} -->';
-  opt.endtag = opt.endtag || '<!-- endinject -->';
+  opt.starttag = defaults(opt, 'starttag', '<!-- inject:{{ext}} -->');
+  opt.endtag = defaults(opt, 'endtag', '<!-- endinject -->');
   opt.ignorePath = toArray(opt.ignorePath).map(unixify);
-  opt.addRootSlash = typeof opt.addRootSlash !== 'undefined' ? !!opt.addRootSlash : true;
-  opt.transform = opt.transform || exports.transform;
-  exports.transform.selfClosingTag = opt.selfClosingTag || false;
+  opt.relative = bool(opt, 'relative', false);
+  opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
+  opt.transform = defaults(opt, 'transform', transform);
+  transform.selfClosingTag = bool(opt, 'selfClosingTag', false);
 
   // Is the first parameter a Vinyl File Stream:
-  if (typeof fileOrStream.on === 'function' && typeof fileOrStream.pipe === 'function') {
-    return handleVinylStream(fileOrStream, opt);
+  if (typeof sources.on === 'function' && typeof sources.pipe === 'function') {
+    return handleVinylStream(sources, opt);
   }
 
-  // The first parameter is a filepath:
-  var collection = {};
-  var firstFile = null;
-
-  function endStream(){
-    /* jshint validthis:true */
-    if (Object.keys(collection).length === 0) {
-      return this.emit('end');
-    }
-    var templatePath = path.resolve(firstFile.cwd, fileOrStream);
-    var template = opt.templateString || fs.readFileSync(templatePath, 'utf8');
-
-    var templateFile = new File({
-      cwd: firstFile.cwd,
-      base: path.dirname(templatePath),
-      path: templatePath,
-      contents: getNewContent(template, collection, opt)
-    });
-
-    this.emit('data', templateFile);
-    this.emit('end');
-  }
-
-  return es.through(collector(collection, opt, function (file) {
-    if (!firstFile) {
-      firstFile = file;
-    }
-  }), endStream);
+  throw new PluginError('gulp-inject', 'passing target file as a string is deprecated! Pass a vinyl file stream (i.e. use `gulp.src`)!');
 };
 
-exports.transform = require('../transform');
+function defaults (options, prop, defaultValue) {
+  return options[prop] || defaultValue;
+}
+
+function bool (options, prop, defaultVal) {
+  return typeof options[prop] !== 'undefined' ? !!options[prop] : defaultVal;
+}
 
 /**
  * Handle injection when files to
  * inject comes from a Vinyl File Stream
  *
- * @param {Stream} toInject
+ * @param {Stream} sources
  * @param {Object} opt
  * @returns {Stream}
  */
-function handleVinylStream (toInject, opt) {
-  var collected = collectFilesToInject(toInject, opt);
+function handleVinylStream (sources, opt) {
+  var collected = collectFilesToInject(sources, opt);
 
-  return es.map(function (source, cb) {
-    if (source.isStream()) {
-      return cb(new PluginError('gulp-inject', 'Streams not supported for source templates!'));
+  return es.map(function (target, cb) {
+    if (target.isStream()) {
+      return cb(new PluginError('gulp-inject', 'Streams not supported for target templates!'));
     }
     collected(function (collection) {
-      source.contents = getNewContent(source.contents, collection, opt);
-      cb(null, source);
+      target.contents = getNewContent(target, collection, opt);
+      cb(null, target);
     });
   });
 }
@@ -96,14 +80,14 @@ function handleVinylStream (toInject, opt) {
  * called multiple times with a callback, that will be
  * resolved with the result of the file collection.
  *
- * @param {Stream} toInject
+ * @param {Stream} sources
  * @param {Object} opt
  * @returns {Function}
  */
-function collectFilesToInject (toInject, opt) {
-  var collection = {}, done = false, queue = [];
+function collectFilesToInject (sources, opt) {
+  var collection = [], done = false, queue = [];
 
-  toInject.pipe(es.through(collector(collection, opt), function () {
+  sources.pipe(es.through(collector(collection, opt), function () {
     done = true;
     while (queue.length) {
       resolve(queue.shift());
@@ -129,41 +113,17 @@ function collectFilesToInject (toInject, opt) {
  * Create a file collecting function
  * to be used in es.through
  *
- * @param {Object} collection  Collection to fill with files
+ * @param {Array} collection  Collection to fill with files
  * @param {Object} opt
- * @param {Function} cb  Optional callback which will be called for each file
  * @returns {Function}
  */
-function collector (collection, opt, cb) {
+function collector (collection, opt) {
   return function (file) {
     if (!file.path) {
       return;
     }
 
-    if (cb) {
-      cb(file);
-    }
-
-    var ext = extname(file.path),
-        tag = getTag(opt.starttag, ext);
-
-    if (!collection[tag]) {
-      collection[tag] = {ext: ext, starttag: tag, endtag: getTag(opt.endtag, ext), files: []};
-    }
-
-    var filepath = removeBasePath([unixify(file.cwd)].concat(opt.ignorePath), unixify(file.path));
-
-    if (opt.addPrefix) {
-      filepath = addPrefix(filepath, opt.addPrefix);
-    }
-
-    if (opt.addRootSlash) {
-      filepath = addRootSlash(filepath);
-    } else {
-      filepath = removeRootSlash(filepath);
-    }
-
-    collection[tag].files.push({file: file, filepath: filepath});
+    collection.push(file);
   };
 }
 
@@ -171,33 +131,63 @@ function collector (collection, opt, cb) {
  * Get new content for template
  * with all injections made
  *
- * @param {String|Buffer} oldContent
- * @param {Object} collection
+ * @param {Object} target
+ * @param {Array} collection
  * @param {Object} opt
  * @returns {Buffer}
  */
-function getNewContent (oldContent, collection, opt) {
-  var keys = Object.keys(collection);
-  if (keys.length) {
-    return new Buffer(keys.reduce(function eachInCollection (contents, key) {
-      var tagInfo = collection[key];
-      if (opt.sort) {
-        tagInfo.files.sort(opt.sort);
-      }
-      return contents.replace(
-        getInjectorTagsRegExp(tagInfo.starttag, tagInfo.endtag),
-        function injector (match, starttag, indent, content, endtag) {
-          return [starttag]
-            .concat(tagInfo.files.map(function transformFile (file, i, files) {
-              return opt.transform(file.filepath, file.file, i, files.length);
-            }))
-            .concat([endtag])
-            .join(indent);
-        }
-      );
-    }, String(oldContent)));
+function getNewContent (target, collection, opt) {
+  var oldContent = target.contents;
+  if (!collection.length) {
+    return oldContent;
   }
-  return oldContent;
+
+  var filesPerExtension = groupBy(collection, function (file) {
+    return extname(file.path);
+  });
+
+  var extensions = Object.keys(filesPerExtension);
+
+  return new Buffer(extensions.reduce(function eachInCollection (contents, ext) {
+    var startTag = getTag(opt.starttag, ext);
+    var endTag = getTag(opt.endtag, ext);
+    var files = filesPerExtension[ext];
+
+    return contents.replace(
+      getInjectorTagsRegExp(startTag, endTag),
+      function injector (match, starttag, indent, content, endtag) {
+        return [starttag]
+          .concat(files.map(function transformFile (file, i) {
+            var filepath = getFilepath(file, target, opt);
+            return opt.transform(filepath, file, i, files.length, target);
+          }))
+          .concat([endtag])
+          .join(indent);
+      }
+    );
+  }, String(oldContent)));
+}
+
+function getFilepath (sourceFile, targetFile, opt) {
+  var base = opt.relative ? path.dirname(targetFile.path) : sourceFile.cwd;
+
+  var filepath = unixify(path.relative(base, sourceFile.path));
+
+  if (opt.ignorePath.length) {
+    filepath = removeBasePath(opt.ignorePath, filepath);
+  }
+
+  if (opt.addPrefix) {
+    filepath = addPrefix(filepath, opt.addPrefix);
+  }
+
+  if (opt.addRootSlash) {
+    filepath = addRootSlash(filepath);
+  } else {
+    filepath = removeRootSlash(filepath);
+  }
+
+  return filepath;
 }
 
 function getTag (tag, ext) {
@@ -226,13 +216,16 @@ function removeRootSlash (filepath) {
   return filepath.replace(/^\/+/, '');
 }
 function addPrefix (filepath, prefix) {
-  return  prefix + filepath;
+  return  prefix + addRootSlash(filepath);
 }
 
 function removeBasePath (basedir, filepath) {
   return toArray(basedir).reduce(function (path, remove) {
     if (path[0] === '/' && remove[0] !== '/') {
       remove = '/' + remove;
+    }
+    if (path[0] !== '/' && remove[0] === '/') {
+      path = '/' + path;
     }
     if (remove && path.indexOf(remove) === 0) {
       return path.slice(remove.length);
@@ -246,4 +239,16 @@ function toArray (arr) {
     return arr ? [arr] : [];
   }
   return arr;
+}
+
+function groupBy (arr, cb) {
+  var result = {};
+  for (var i = 0; i < arr.length; i++) {
+    var key = cb(arr[i]);
+    if (!result[key]) {
+      result[key] = [];
+    }
+    result[key].push(arr[i]);
+  }
+  return result;
 }

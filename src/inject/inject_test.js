@@ -30,17 +30,42 @@ function fixture (file, read) {
 }
 
 describe('gulp-inject', function () {
+  it('should throw an error when the old api with target as string is used', function () {
+    should(function () {
+      var stream = inject('fixtures/template.html');
+    }).throw();
+  });
+
+  it('should throw an error if sources stream is undefined', function () {
+    should(function () {
+      var stream = inject();
+    }).throw();
+  });
+
+  it('should throw an error if `templateString` option is specified', function () {
+    should(function () {
+      src(['template.html'], {read: true})
+        .pipe(inject(src(['file.js']), {templateString: '<html></html>'}));
+    }).throw();
+  });
+
+  it('should throw an error if `sort` option is specified', function () {
+    should(function () {
+      src(['template.html'], {read: true})
+        .pipe(inject(src(['file.js']), {sort: function () {}}));
+    }).throw();
+  });
 
   it('should inject stylesheets, scripts, images and html components into desired file', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css',
+      'image.png',
+    ]);
 
-    var sources = [
-      fixture('lib.js'),
-      fixture('component.html'),
-      fixture('styles.css'),
-      fixture('image.png'),
-    ];
-
-    var stream = inject('fixtures/template.html');
+    var stream = target.pipe(inject(sources));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -57,29 +82,21 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
   it('should take a Vinyl File Stream with files to inject into current stream', function (done) {
 
-    var source = es.readArray([
-      fixture('template.html', true),
-      fixture('template2.html', true)
+    var target = src(['template.html', 'template2.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css',
+      'image.png'
     ]);
-    source.pause();
-    var toInject = es.readArray([
-      fixture('lib.js'),
-      fixture('component.html'),
-      fixture('styles.css'),
-      fixture('image.png')
-    ]);
-    toInject.pause();
 
-    var stream = source.pipe(inject(toInject));
+    var stream = target.pipe(inject(sources));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -98,21 +115,20 @@ describe('gulp-inject', function () {
       }
     });
 
-    source.resume();
-
-    toInject.resume();
+    target.resume();
+    sources.resume();
   });
 
   it('should inject stylesheets, scripts and html components with `ignorePath` removed from file path', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'lib2.js',
+      'styles.css'
+    ]);
 
-    var sources = [
-      fixture('lib.js'),
-      fixture('component.html'),
-      fixture('lib2.js'),
-      fixture('styles.css')
-    ];
-
-    var stream = inject('fixtures/template.html', {ignorePath: '/fixtures'});
+    var stream = target.pipe(inject(sources, {ignorePath: '/fixtures'}));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -128,27 +144,20 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
   it('should inject stylesheets, scripts and html components with relative paths if `relative` is truthy', function (done) {
-    var source = es.readArray([
-      fixture('template.html', true)
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      '../../folder/lib.js',
+      '../../another/component.html',
+      '../a-folder/lib2.js',
+      '../../yet-another/styles.css'
     ]);
-    source.pause();
-    var toInject = es.readArray([
-      fixture('../../folder/lib.js'),
-      fixture('../../another/component.html'),
-      fixture('../a-folder/lib2.js'),
-      fixture('../../yet-another/styles.css')
-    ]);
-    toInject.pause();
 
-    var stream = source.pipe(inject(toInject));
+    var stream = target.pipe(inject(sources, {relative: true}));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -164,21 +173,20 @@ describe('gulp-inject', function () {
       done();
     });
 
-    source.resume();
-
-    toInject.resume();
+    target.resume();
+    sources.resume();
   });
 
   it('should inject stylesheets, scripts and html components with `addPrefix` added to file path', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'lib2.js',
+      'styles.css'
+    ]);
 
-    var sources = [
-      fixture('lib.js'),
-      fixture('component.html'),
-      fixture('lib2.js'),
-      fixture('styles.css')
-    ];
-
-    var stream = inject('fixtures/template.html', {addPrefix: 'my-test-dir'});
+    var stream = target.pipe(inject(sources, {addPrefix: 'my-test-dir'}));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -194,21 +202,18 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
   it('should inject stylesheets and html components with self closing tags if `selfClosingTag` is truthy', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'component.html',
+      'styles.css'
+    ]);
 
-    var sources = [
-      fixture('component.html'),
-      fixture('styles.css')
-    ];
-
-    var stream = inject('fixtures/template.html', {selfClosingTag: true});
+    var stream = target.pipe(inject(sources, {selfClosingTag: true}));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -224,22 +229,19 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
   it('should inject stylesheets, scripts and html components without root slash if `addRootSlash` is `false`', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css'
+    ]);
 
-    var sources = [
-      fixture('lib.js'),
-      fixture('component.html'),
-      fixture('styles.css')
-    ];
-
-    var stream = inject('fixtures/template.html', {addRootSlash: false});
+    var stream = target.pipe(inject(sources, {addRootSlash: false}));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -255,22 +257,19 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
   it('should inject stylesheets, scripts and html components without root slash if `addRootSlash` is `false` and `ignorePath` is set', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'a/folder/lib.js',
+      'a/folder/component.html',
+      'a/folder/styles.css'
+    ]);
 
-    var sources = [
-      fixture('a/folder/lib.js'),
-      fixture('a/folder/component.html'),
-      fixture('a/folder/styles.css')
-    ];
-
-    var stream = inject('fixtures/template.html', {addRootSlash: false, ignorePath: 'fixtures'});
+    var stream = target.pipe(inject(sources, {addRootSlash: false, ignorePath: 'fixtures'}));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -286,61 +285,22 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
-  });
-
-  it('should use templateString as template if specified', function (done) {
-
-    var sources = [
-      fixture('lib.js'),
-      fixture('component.html'),
-      fixture('lib2.js'),
-      fixture('styles.css')
-    ];
-
-    var stream = inject('fixtures/templateString.html', {
-      ignorePath: 'fixtures',
-      templateString: '<!DOCTYPE html><!-- inject:js --><!-- endinject --><h1>Hello world</h1>'
-    });
-
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('templateString.html').contents));
-      done();
-    });
-
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
   it('should use starttag and endtag if specified', function (done) {
+    var target = src(['templateCustomTags.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'lib2.js'
+    ]);
 
-    var sources = [
-      fixture('lib.js'),
-      fixture('lib2.js')
-    ];
-
-    var stream = inject('fixtures/templateString.html', {
+    var stream = target.pipe(inject(sources, {
       ignorePath: 'fixtures',
       starttag: '<!DOCTYPE html>',
-      endtag: '<h1>',
-      templateString: '<!DOCTYPE html><h1>Hello world</h1>'
-    });
+      endtag: '<h1>'
+    }));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -356,27 +316,23 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
   it('should replace {{ext}} in starttag and endtag with current file extension if specified', function (done) {
+    var target = src(['templateTagsWithExt.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'lib2.js'
+    ]);
 
-    var sources = [
-      fixture('lib.js'),
-      fixture('component.html'),
-      fixture('lib2.js')
-    ];
-
-    var stream = inject('fixtures/templateString.html', {
+    var stream = target.pipe(inject(sources, {
       ignorePath: 'fixtures',
       starttag: '<!-- {{ext}}: -->',
-      endtag: '<!-- /{{ext}} -->',
-      templateString: '<!DOCTYPE html><!-- js: --><!-- /js --><h1>Hello world</h1>'
-    });
+      endtag: '<!-- /{{ext}} -->'
+    }));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -392,26 +348,22 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
   it('should replace existing data within start and end tag', function (done) {
+    var target = src(['templateWithExistingData.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'lib2.js',
+      'styles.css'
+    ]);
 
-    var sources = [
-      fixture('lib.js'),
-      fixture('component.html'),
-      fixture('lib2.js'),
-      fixture('styles.css')
-    ];
-
-    var stream = inject('fixtures/templateString.html', {
+    var stream = target.pipe(inject(sources, {
       ignorePath: 'fixtures',
-      templateString: '<!DOCTYPE html>\n<!-- inject:js -->\n<script src="/aLib.js"></script>\n<!-- endinject -->\n<h1>Hello world</h1>'
-    });
+    }));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -427,31 +379,27 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
   it('should use custom transform function for each file if specified', function (done) {
+    var target = src(['template.json'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'lib2.js',
+      'styles.css'
+    ]);
 
-    var sources = [
-      fixture('lib.js'),
-      fixture('component.html'),
-      fixture('lib2.js'),
-      fixture('styles.css')
-    ];
-
-    var stream = inject('fixtures/customTransform.json', {
+    var stream = target.pipe(inject(sources, {
       ignorePath: 'fixtures',
-      templateString: '{\n  "js": [\n  ]\n}',
       starttag: '"{{ext}}": [',
       endtag: ']',
       transform: function (srcPath, file, i, length) {
         return '  "' + srcPath + '"' + (i + 1 < length ? ',' : '');
       }
-    });
+    }));
 
     stream.on('error', function(err) {
       should.exist(err);
@@ -467,46 +415,17 @@ describe('gulp-inject', function () {
       done();
     });
 
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
-  });
-
-  it('should inject files ordered with a custom sorting function if specified', function (done) {
-
-    var sources = [
-      fixture('lib.js'),
-      fixture('lib2.js')
-    ];
-
-    var stream = inject('fixtures/template.html', {
-      ignorePath: 'fixtures',
-      sort: function (a, b) {
-        return b.filepath.localeCompare(a.filepath);
-      }
-    });
-
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('customSort.html').contents));
-      done();
-    });
-
-    sources.forEach(function (src) {
-      stream.write(src);
-    });
-
-    stream.end();
+    target.resume();
+    sources.resume();
   });
 
 });
+
+function src (files, opt) {
+  opt = opt || {};
+  var stream = es.readArray(files.map(function (file) {
+    return fixture(file, opt.read);
+  }));
+  stream.pause();
+  return stream;
+}

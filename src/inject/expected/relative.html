@@ -3,8 +3,10 @@
 <head>
   <title>gulp-inject</title>
   <!-- inject:html -->
+  <link rel="import" href="../../another/component.html">
   <!-- endinject -->
   <!-- inject:css -->
+  <link rel="stylesheet" href="../../yet-another/styles.css">
   <!-- endinject -->
 </head>
 <body>
@@ -12,8 +14,8 @@
   <!-- endinject -->
 
   <!-- inject:js -->
-  <script src="/lib2.js"></script>
-  <script src="/lib.js"></script>
+  <script src="../../folder/lib.js"></script>
+  <script src="../a-folder/lib2.js"></script>
   <!-- endinject -->
 </body>
 </html>
