@@ -5,6 +5,7 @@ var es = require('event-stream');
 var path = require('path');
 var gutil = require('gulp-util');
 var transform = require('../transform');
+var tags = require('../tags');
 var PluginError = gutil.PluginError;
 var File = gutil.File;
 
@@ -27,8 +28,6 @@ module.exports = exports = function(sources, opt){
   }
 
   // Defaults:
-  opt.starttag = defaults(opt, 'starttag', '<!-- inject:{{ext}} -->');
-  opt.endtag = defaults(opt, 'endtag', '<!-- endinject -->');
   opt.ignorePath = toArray(opt.ignorePath).map(unixify);
   opt.relative = bool(opt, 'relative', false);
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
@@ -146,11 +145,12 @@ function getNewContent (target, collection, opt) {
     return extname(file.path);
   });
 
+  var targetExt = extname(target.path);
   var extensions = Object.keys(filesPerExtension);
 
   return new Buffer(extensions.reduce(function eachInCollection (contents, ext) {
-    var startTag = getTag(opt.starttag, ext);
-    var endTag = getTag(opt.endtag, ext);
+    var startTag = tags.start(targetExt, ext, opt.starttag);
+    var endTag = tags.end(targetExt, ext, opt.endtag);
     var files = filesPerExtension[ext];
 
     return contents.replace(

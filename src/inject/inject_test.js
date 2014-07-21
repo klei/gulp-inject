@@ -9,26 +9,6 @@ var fs = require('fs'),
 var gutil = require('gulp-util'),
   inject = require('./');
 
-function expectedFile (file) {
-  var filepath = path.resolve(__dirname, 'expected', file);
-  return new gutil.File({
-    path: filepath,
-    cwd: __dirname,
-    base: path.resolve(__dirname, 'expected', path.dirname(file)),
-    contents: fs.readFileSync(filepath)
-  });
-}
-
-function fixture (file, read) {
-  var filepath = path.resolve(__dirname, 'fixtures', file);
-  return new gutil.File({
-    path: filepath,
-    cwd: __dirname,
-    base: path.resolve(__dirname, 'fixtures', path.dirname(file)),
-    contents: read ? fs.readFileSync(filepath) : null
-  });
-}
-
 describe('gulp-inject', function () {
   it('should throw an error when the old api with target as string is used', function () {
     should(function () {
@@ -235,6 +215,32 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['customTransform.json'], done);
   });
 
+  it('should use special default tags when injecting into jsx files', function (done) {
+    var target = src(['template.jsx'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.jsx'], done);
+  });
+
+  it('should use special default tags when injecting into jade files', function (done) {
+    var target = src(['template.jade'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.jade'], done);
+  });
+
 });
 
 function src (files, opt) {
@@ -261,10 +267,34 @@ function streamShouldContain (stream, files, done) {
     should.exist(newFile);
     should.exist(newFile.contents);
 
-    contents.should.containEql(String(newFile.contents));
+    if (contents.length === 1) {
+      contents[0].should.equal(String(newFile.contents));
+    } else {
+      contents.should.containEql(String(newFile.contents));
+    }
 
     if (++received === files.length) {
       done();
     }
+  });
+}
+
+function expectedFile (file) {
+  var filepath = path.resolve(__dirname, 'expected', file);
+  return new gutil.File({
+    path: filepath,
+    cwd: __dirname,
+    base: path.resolve(__dirname, 'expected', path.dirname(file)),
+    contents: fs.readFileSync(filepath)
+  });
+}
+
+function fixture (file, read) {
+  var filepath = path.resolve(__dirname, 'fixtures', file);
+  return new gutil.File({
+    path: filepath,
+    cwd: __dirname,
+    base: path.resolve(__dirname, 'fixtures', path.dirname(file)),
+    contents: read ? fs.readFileSync(filepath) : null
   });
 }
