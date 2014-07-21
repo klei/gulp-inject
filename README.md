@@ -2,9 +2,13 @@
 
 > A stylesheet, javascript and webcomponent reference injection plugin for [gulp](https://github.com/wearefractal/gulp). No more manual editing of your index.html!
 
+`gulp-inject` takes a stream of source files, transforms each file to a string and injects each transformed string into placeholders in the target stream files. See [Basic usage](#basic-usage) and [More examples](#more-examples) below.
+
+Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade` and `jsx` files.
+
 ## Installation
 
-First, install `gulp-inject` as a development dependency:
+Install `gulp-inject` as a development dependency:
 
 ```shell
 npm install --save-dev gulp-inject
@@ -12,50 +16,59 @@ npm install --save-dev gulp-inject
 
 ## Basic usage
 
-In your `gulpfile.js`:
+**The target file `src/index.html`:**
 
-```javascript
-var inject = require("gulp-inject");
-
-gulp.src('./src/index.html')
-  .pipe(inject(gulp.src(["./src/*.js", "./src/*.css"], {read: false}))) // Not necessary to read the files (will speed up things), we're only after their paths
-  .pipe(gulp.dest("./dist"));
-```
-
-**N.B:** The old behavior, where you specify target as a string is deprecated since `v.1.0`.
-
-### Template contents
-
-Add injection tags to your `index.html`:
+Each pair of comments are the injection placeholders (aka. tags, see [`options.starttag`](#optionsstarttag) and [`options.endtag`](#optionsendtag)).
 
 ```html
 <!DOCTYPE html>
 <html>
 <head>
   <title>My index</title>
-  <!-- inject:html -->
-  <!-- any *.html files among your sources will go here as: <link rel="import" href="FILE"> -->
-  <!-- endinject -->
   <!-- inject:css -->
-  <!-- any *.css files among your sources will go here as: <link rel="stylesheet" href="FILE"> -->
   <!-- endinject -->
 </head>
 <body>
-  <!-- inject:png -->
-  <!-- any *.png files among your sources will go here as: <img src="FILE"> -->
-  <!-- endinject -->
-  <!-- inject:gif -->
-  <!-- any *.gif files among your sources will go here as: <img src="FILE"> -->
-  <!-- endinject -->
-  <!-- inject:jpg -->
-  <!-- any *.jpg files among your sources will go here as: <img src="FILE"> -->
-  <!-- endinject -->
-  <!-- inject:jpeg -->
-  <!-- any *.jpeg files among your sources will go here as: <img src="FILE"> -->
-  <!-- endinject -->
 
   <!-- inject:js -->
-  <!-- any *.js files among your sources will go here as: <script src="FILE"></script> -->
+  <!-- endinject -->
+</body>
+</html>
+```
+
+**The `gulpfile.js`:**
+
+```javascript
+var gulp = require('gulp');
+var inject = require("gulp-inject");
+
+gulp.task('index', function () {
+  var target = gulp.src('./src/index.html');
+  // It's not necessary to read the files (will speed up things), we're only after their paths:
+  var sources = gulp.src(['./src/**/*.js', './src/**/*.css'], {read: false});
+
+  return target.pipe(inject(sources))
+    .pipe(gulp.dest('./src'));
+});
+```
+
+**`src/index.html` after running `gulp index`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My index</title>
+  <!-- inject:css -->
+  <link rel="stylesheet" href="/src/style1.css">
+  <link rel="stylesheet" href="/src/style2.css">
+  <!-- endinject -->
+</head>
+<body>
+
+  <!-- inject:js -->
+  <script src="/src/lib1.js"></script>
+  <script src="/src/lib2.js"></script>
   <!-- endinject -->
 </body>
 </html>
@@ -63,7 +76,101 @@ Add injection tags to your `index.html`:
 
 ## More examples
 
-### Injecting files from multiple streams
+### Injecting files relative to target files
+
+By default the injected file paths are relative to each source file's `cwd` (see [`options.ignorePath`](#optionsignorepath)). If `options.relative` is set to `true` each injected path will be relative to each target file's directory instead.
+
+**Project structure:**
+
+```
+└── src
+    ├── module
+    │   ├── module.js
+    │   └── module.html
+    └── app
+        ├── main.js
+        └── index.html
+```
+
+**`src/app/index.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Index</title>
+</head>
+<body>
+  <h1>Home</h1>
+  <!-- inject:js -->
+  <!-- endinject -->
+</body>
+</html>
+```
+
+**`src/module/module.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Module</title>
+</head>
+<body>
+  <h1>Module</h1>
+  <!-- inject:js -->
+  <!-- endinject -->
+</body>
+</html>
+```
+
+**`gulpfile.js`:**
+
+```javascript
+var inject = require('gulp-inject');
+
+gulp.src('./src/**/*.html')
+  .pipe(inject(gulp.src('./src/**/*.js', {read: false}), {relative: true}))
+  .pipe('./src');
+```
+
+**Resulting `src/app/index.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My Index</title>
+</head>
+<body>
+  <h1>Home</h1>
+  <!-- inject:js -->
+  <script src="main.js"></script>
+  <script src="../module/module.js"></script>
+  <!-- endinject -->
+</body>
+</html>
+```
+
+**Resulting `src/module/module.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Module</title>
+</head>
+<body>
+  <h1>Home</h1>
+  <!-- inject:js -->
+  <script src="../app/main.js"></script>
+  <script src="module.js"></script>
+  <!-- endinject -->
+</body>
+</html>
+```
+
+### Injecting files from multiple source streams
 
 This example demonstrates how to inject files from multiple different streams into the same injection placeholder.
 
@@ -203,6 +310,75 @@ Initial contents of `files.json`:
 }
 ```
 
+### Injecting with custom `transform` function with default fallback
+
+The default `transform` function is available to use e.g. as a default fallback.
+
+Used to inject Word documents as `<a>` tags below:
+
+**`index.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My documents</title>
+</head>
+<body>
+  <h1>Documents</h1>
+  <ul>
+    <!-- inject:docx -->
+    <!-- endinject -->
+  </ul>
+  <!-- inject:js -->
+  <!-- endinject -->
+</body>
+</html>
+```
+
+**`gulpfile.js`:**
+
+```javascript
+var inject = require('gulp-inject');
+
+gulp.src('./index.html')
+  .pipe(inject(
+    gulp.src(['./*.js', './docs/*.docx'], {read: false}), {
+      transform: function (filepath) {
+        if (filepath.slice(-5) === '.docx') {
+          return '<li><a href="' + filepath + '">' + filepath + '</a></li>';
+        }
+        return inject.transform.apply(inject.transform, arguments);
+      }
+    }
+  ))
+  .pipe(gulp.dest('./'));
+```
+
+**Resulting `index.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My documents</title>
+</head>
+<body>
+  <h1>Documents</h1>
+  <ul>
+    <!-- inject:docx -->
+    <li><a href="/docs/document1.docx"></a></li>
+    <li><a href="/docs/document2.docx"></a></li>
+    <!-- endinject -->
+  </ul>
+  <!-- inject:js -->
+  <script src="/lib1.js"></script>
+  <script src="/lib2.js"></script>
+  <!-- endinject -->
+</body>
+</html>
+```
+
 ### Injecting dist files into bower.json's main section
 
 **Code:**
@@ -278,6 +454,8 @@ Type: `Stream`
 
 Provide a Vinyl File Stream as input to `inject`, see examples above.
 
+**N.B:** The old behavior, where you specify target as a string is deprecated since `v.1.0`.
+
 #### options.ignorePath
 Type: `String` or `Array`
 
@@ -285,6 +463,18 @@ Default: `NULL`
 
 
 A path or paths that should be removed from each injected file path.
+
+This could also be solved by setting the `cwd` option for your `gulp.src` streams, each source file's `cwd` is automatically removed from its path before injection (if not [`options.relative`](#optionsrelative) is set to `true`, see below).
+
+
+#### options.relative
+Type: `Boolean`
+
+Default: `false`
+
+
+If set to `true` paths for the injected files will be relative to each target file, this also means that each source file's `cwd` is not necessary to remove from its path.
+
 
 #### options.addPrefix
 Type: `String`
@@ -297,34 +487,52 @@ A path that should be prefixed to each injected file path.
 #### options.addRootSlash
 Type: `Boolean`
 
-Default: `true`
+Default: `![options.relative](#optionsrelative)`
 
 
 The root slash is automatically added at the beginning of the path ('/'), or removed if set to `false`.
 
 #### options.starttag
-Type: `String`
 
-Default: `<!-- inject:{{ext}} -->`
+**Type:** `String`|`Function(targetExt, sourceExt)`
 
+**Params (if function):**
+  - `targetExt` - The file extension of the target file
+  - `sourceExt` - The file extension of source file
 
-Set the start tag that the injector is looking for. `{{ext}}` is replaced with file extension name, e.g. "css", "js" or "html".
+**Purpose:**
+
+Used to dynamically set starting placeholder tag depending on file extensions.
+In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html".
+
+##### Default:
+
+A function dependent on target file type and source file type that returns:
+
+* html as target: `<!-- inject:{{ext}} -->`
+* jade as target: `//- inject:{{ext}}`
+* jsx as target: `{/* inject:{{ext}} */}`
 
 #### options.endtag
-Type: `String`
 
-Default: `<!-- endinject -->`
+**Type:** `String`|`Function(targetExt, sourceExt)`
 
+**Params (if function):**
+  - `targetExt` - The file extension of the target file
+  - `sourceExt` - The file extension of source file
 
-Set the end tag that the injector is looking for. `{{ext}}` is replaced with file extension name, e.g. "css", "js" or "html".
+**Purpose:**
 
-#### options.selfClosingTag
-Type: `Boolean`
+Used to dynamically set ending placeholder tag depending on file extensions.
+In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html".
 
-Default: `false`
+##### Default:
 
-Affects the default `options.transform` function, see below.
+A function dependent on target file type and source file type that returns:
 
+* html as target: `<!-- endinject -->`
+* jade as target: `//- endinject`
+* jsx as target: `{/* endinject */}`
 
 #### options.transform
 
@@ -360,7 +568,7 @@ If `options.selfClosingTag` is `true` the default transformer above will make th
 
 **Injecting into `jsx`**
 
-The same as for injecting into `html` above with `options.selfClosingTag` set to `true`.
+The same as for injecting into `html` above with [`options.selfClosingTag`](#optionsselfclosingtag) set to `true`.
 
 **Injecting into `jade`**
 
@@ -372,6 +580,14 @@ The same as for injecting into `html` above with `options.selfClosingTag` set to
 * gif files: `img(src="<filename>.gif")`
 * jpg files: `img(src="<filename>.jpg")`
 * jpeg files: `img(src="<filename>.jpeg")`
+
+#### options.selfClosingTag
+Type: `Boolean`
+
+Default: `false`
+
+Affects the default `options.transform` function, see above.
+
 
 #### ~~options.templateString~~
 
