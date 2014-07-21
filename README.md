@@ -14,10 +14,6 @@ npm install --save-dev gulp-inject
 
 In your `gulpfile.js`:
 
-### Mode 1: Given a Vinyl File Stream
-
-**Note:** New from `v.0.3`. Here you pipe `inject` through *where* to inject.
-
 ```javascript
 var inject = require("gulp-inject");
 
@@ -26,19 +22,9 @@ gulp.src('./src/index.html')
   .pipe(gulp.dest("./dist"));
 ```
 
-### Mode 2: Given a path to html template
+**N.B:** The old behavior, where you specify target as a string is deprecated since `v.1.0`.
 
-**Note:** Old behavior. Here you pipe `inject` through *what* to inject.
-
-```javascript
-var inject = require("gulp-inject");
-
-gulp.src(["./src/*.js", "./src/*.css"], {read: false}) // Not necessary to read the files (will speed up things), we're only after their paths
-	.pipe(inject("path/to/your/index.html"))
-	.pipe(gulp.dest("./dist"));
-```
-
-### Template contents (regardless of mode above)
+### Template contents
 
 Add injection tags to your `index.html`:
 
@@ -142,12 +128,12 @@ And in your `./src/index.html`:
 
 ### Injecting all files for development
 
-If you use [Bower](http://bower.io/) for frontend dependencies I recommend using [`gulp-bower-files`](https://www.npmjs.org/package/gulp-bower-files) and injecting them as well.
+If you use [Bower](http://bower.io/) for frontend dependencies I recommend using [`main-bower-files`](https://www.npmjs.org/package/main-bower-files) and injecting them as well.
 
 **Code:**
 
 ```javascript
-var bowerFiles = require('gulp-bower-files'),
+var bowerFiles = require('main-bower-files'),
     inject = require('gulp-inject'),
     stylus = require('gulp-stylus'),
     es = require('event-stream');
@@ -158,7 +144,7 @@ var cssFiles = gulp.src('./src/**/*.styl')
 
 gulp.src('./src/index.html')
   .pipe(inject(es.merge(
-    bowerFiles({read: false}),
+    gulp.src(bowerFiles(), {read: false}),
     cssFiles,
     gulp.src('./src/app/**/*.js', {read: false})
   )))
@@ -166,6 +152,25 @@ gulp.src('./src/index.html')
 ```
 
 **Note** remember to mount `./bower_components`, `./build` and `./src/app` as static resources in your server to make this work.
+
+### Injecting AngularJS scripts for development
+
+If you're writing an AngularJS application and follow [Google's Angular APP Structure Recommendations](https://docs.google.com/document/d/1XXMvReO8-Awi1EZXAXS4PzDzdNvV6pGcuaF4Q9821Es/pub), which I think you should, it's important that the script files are injected in the correct order to avoid module instantiation problems like `Uncaught Error: [$injector:modulerr]`.
+
+To do this you can use [`gulp-angular-filesort`](https://www.npmjs.org/package/gulp-angular-filesort) together with `gulp-inject` like so:
+
+```javascript
+var angularFilesort = require('gulp-angular-filesort'),
+    inject = require('gulp-inject');
+
+gulp.src('./src/index.html')
+  .pipe(inject(
+    gulp.src('./src/app/**/*.js') // gulp-angular-filesort depends on file contents, so don't use {read: false} here
+      .pipe(angularFilesort())
+    }
+  )))
+  .pipe(gulp.dest('./build'));
+```
 
 ### Injecting into a json-file
 
@@ -266,26 +271,12 @@ And in your `./src/index.html`:
 
 ## API
 
-### inject(fileOrStream, options)
+### inject(sources, options)
 
-#### fileOrStream
-Type: `Stream` or `String`
+#### sources
+Type: `Stream`
 
-**If `Stream`**
-
-Since `v.0.3` you can provide a Vinyl File Stream as input to `inject`, see Mode 1 in the example above.
-
-**If `String`**
-
-Can also be a path to the template file (where your injection tags are). Is also used as filename for the plugin's output file.
-
-#### options.templateString
-Type: `String`
-
-Default: `NULL`
-
-
-Is used as template instead of the contents of given `filename`. (Only used if `fileOrStream` is a `String`)
+Provide a Vinyl File Stream as input to `inject`, see examples above.
 
 #### options.ignorePath
 Type: `String` or `Array`
@@ -336,38 +327,89 @@ Affects the default `options.transform` function, see below.
 
 
 #### options.transform
-Type: `Function(filepath, file, index, length)`
 
-Params:
-  - `filepath` - The "unixified" path to the file with any `ignorePath`'s removed
-  - `file` - The [File object](https://github.com/wearefractal/vinyl) given from `gulp.src`
-  - `index` (0-based file index)
-  - `length` (total number of files to inject)
+**Type**: `Function(filepath, file, index, length, targetFile)`
 
-Default: a function that returns:
+**Params:**
+  - `filepath` - The "unixified" path to the file with any `ignorePath`'s removed and `addPrefix` added
+  - `file` - The [File object](https://github.com/wearefractal/vinyl) to inject given from `gulp.src`
+  - `index` - 0-based file index
+  - `length` - Total number of files to inject for the current file extension
+  - `targetFile` - The target [file](https://github.com/wearefractal/vinyl) to inject into
 
-* For css files: `<link rel="stylesheet" href="<filename>.css">`
-* For js files: `<script src="<filename>.js"></script>`
-* For html files: `<link rel="import" href="<filename>.html">`
-* For png files: `<img src="<filename>.png">`
-* For gif files: `<img src="<filename>.gif">`
-* For jpg files: `<img src="<filename>.jpg">`
-* For jpeg files: `<img src="<filename>.jpeg">`
-
+**Purpose:**
 
 Used to generate the content to inject for each file.
 
+##### Default:
+
+A function dependent on target file type and source file type that returns:
+
+**Injecting into `html`**
+
+* css files: `<link rel="stylesheet" href="<filename>.css">`
+* js files: `<script src="<filename>.js"></script>`
+* coffee files: `<script type="text/coffeescript" src="<filename>.coffee"></script>`
+* html files: `<link rel="import" href="<filename>.html">`
+* png files: `<img src="<filename>.png">`
+* gif files: `<img src="<filename>.gif">`
+* jpg files: `<img src="<filename>.jpg">`
+* jpeg files: `<img src="<filename>.jpeg">`
+
 If `options.selfClosingTag` is `true` the default transformer above will make the `<link>` and `<img>` tags self close, i.e: `<link ... />` and `<img ... />` respectively.
 
-#### options.sort
-Type: `Function(a, b)`
+**Injecting into `jsx`**
 
-Params: `a`, `b` (is used as `compareFunction` for [Array.prototype.sort](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort))
+The same as for injecting into `html` above with `options.selfClosingTag` set to `true`.
 
-Default: `NULL`
+**Injecting into `jade`**
 
+* css files: `link(rel="stylesheet", href="<filename>.css")`
+* js files: `script(src="<filename>.js")`
+* coffee files: `script(type="text/coffeescript", src="<filename>.coffee")`
+* html files: `link(rel="import", href="<filename>.html")`
+* png files: `img(src="<filename>.png")`
+* gif files: `img(src="<filename>.gif")`
+* jpg files: `img(src="<filename>.jpg")`
+* jpeg files: `img(src="<filename>.jpeg")`
 
-If set the given function is used as the compareFunction for the array sort function, to sort the source files by.
+#### ~~options.templateString~~
+
+***DEPRECATED!***
+
+*Deprecated since `v.1.0`. Use [`gulp-file`](https://www.npmjs.org/package/gulp-file) instead:*
+
+```javascript
+var gulp = require('gulp');
+var file = require('gulp-file');
+var inject = require('gulp-inject');
+
+file('index.html', '<html><head></head></html>')
+  .pipe(inject(gulp.src(['./src/app/**/*.js']), {
+    starttag: '<head>',
+    endtag: '</head>'
+  }))
+  .pipe(gulp.dest('./dest'));
+```
+
+#### ~~options.sort~~
+
+***DEPRECATED!***
+
+*Deprecated since `v.1.0`. Use [`sort-stream`](https://www.npmjs.org/package/sort-stream) instead:*
+
+```javascript
+var gulp = require('gulp');
+var sort = require('sort-stream');
+var inject = require('gulp-inject');
+
+gulp.src('index.html')
+  .pipe(inject(gulp.src(['./src/app/**/*.js'])))
+  .pipe(sort(function (a, b) {
+    // Sort condition here...
+  }))
+  .pipe(gulp.dest('./dest'));
+```
 
 ## License
 
