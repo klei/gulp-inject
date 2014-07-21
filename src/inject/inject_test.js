@@ -312,7 +312,7 @@ describe('gulp-inject', function () {
       should.exist(newFile);
       should.exist(newFile.contents);
 
-      String(newFile.contents).should.equal(String(expectedFile('templateStringCustomTags.html').contents));
+      String(newFile.contents).should.equal(String(expectedFile('customTags.html').contents));
       done();
     });
 
@@ -344,7 +344,7 @@ describe('gulp-inject', function () {
       should.exist(newFile);
       should.exist(newFile.contents);
 
-      String(newFile.contents).should.equal(String(expectedFile('templateStringCustomTagsWithExt.html').contents));
+      String(newFile.contents).should.equal(String(expectedFile('customTagsWithExt.html').contents));
       done();
     });
 
@@ -375,7 +375,7 @@ describe('gulp-inject', function () {
       should.exist(newFile);
       should.exist(newFile.contents);
 
-      String(newFile.contents).should.equal(String(expectedFile('templateStringWithExisting.html').contents));
+      String(newFile.contents).should.equal(String(expectedFile('existingData.html').contents));
       done();
     });
 
