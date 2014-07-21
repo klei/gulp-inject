@@ -67,26 +67,10 @@ describe('gulp-inject', function () {
 
     var stream = target.pipe(inject(sources));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-      newFile.base.should.equal(path.join(__dirname, 'fixtures'));
-
-      String(newFile.contents).should.equal(String(expectedFile('defaults.html').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['defaults.html'], done);
   });
 
-  it('should take a Vinyl File Stream with files to inject into current stream', function (done) {
+  it('should inject sources into multiple targets', function (done) {
 
     var target = src(['template.html', 'template2.html'], {read: true});
     var sources = src([
@@ -98,25 +82,7 @@ describe('gulp-inject', function () {
 
     var stream = target.pipe(inject(sources));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    var received = 0;
-    stream.on('data', function (newFile) {
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile(received ? 'defaults2.html' : 'defaults.html').contents));
-
-      if (++received === 2) {
-        done();
-      }
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['defaults.html', 'defaults2.html'], done);
   });
 
   it('should inject stylesheets, scripts and html components with `ignorePath` removed from file path', function (done) {
@@ -130,25 +96,10 @@ describe('gulp-inject', function () {
 
     var stream = target.pipe(inject(sources, {ignorePath: '/fixtures'}));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('ignorePath.html').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['ignorePath.html'], done);
   });
 
-  it('should inject stylesheets, scripts and html components with relative paths if `relative` is truthy', function (done) {
+  it('should inject stylesheets, scripts and html components with relative paths to target file if `relative` is truthy', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([
       '../../folder/lib.js',
@@ -159,22 +110,7 @@ describe('gulp-inject', function () {
 
     var stream = target.pipe(inject(sources, {relative: true}));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('relative.html').contents));
-
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['relative.html'], done);
   });
 
   it('should inject stylesheets, scripts and html components with `addPrefix` added to file path', function (done) {
@@ -188,22 +124,7 @@ describe('gulp-inject', function () {
 
     var stream = target.pipe(inject(sources, {addPrefix: 'my-test-dir'}));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('addPrefix.html').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['addPrefix.html'], done);
   });
 
   it('should inject stylesheets and html components with self closing tags if `selfClosingTag` is truthy', function (done) {
@@ -215,22 +136,7 @@ describe('gulp-inject', function () {
 
     var stream = target.pipe(inject(sources, {selfClosingTag: true}));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('selfClosingTag.html').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['selfClosingTag.html'], done);
   });
 
   it('should inject stylesheets, scripts and html components without root slash if `addRootSlash` is `false`', function (done) {
@@ -243,22 +149,7 @@ describe('gulp-inject', function () {
 
     var stream = target.pipe(inject(sources, {addRootSlash: false}));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('noRootSlash.html').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['noRootSlash.html'], done);
   });
 
   it('should inject stylesheets, scripts and html components without root slash if `addRootSlash` is `false` and `ignorePath` is set', function (done) {
@@ -271,22 +162,7 @@ describe('gulp-inject', function () {
 
     var stream = target.pipe(inject(sources, {addRootSlash: false, ignorePath: 'fixtures'}));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('noRootSlashWithIgnorePath.html').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['noRootSlashWithIgnorePath.html'], done);
   });
 
   it('should use starttag and endtag if specified', function (done) {
@@ -302,22 +178,7 @@ describe('gulp-inject', function () {
       endtag: '<h1>'
     }));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('customTags.html').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['customTags.html'], done);
   });
 
   it('should replace {{ext}} in starttag and endtag with current file extension if specified', function (done) {
@@ -334,22 +195,7 @@ describe('gulp-inject', function () {
       endtag: '<!-- /{{ext}} -->'
     }));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('customTagsWithExt.html').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['customTagsWithExt.html'], done);
   });
 
   it('should replace existing data within start and end tag', function (done) {
@@ -365,22 +211,7 @@ describe('gulp-inject', function () {
       ignorePath: 'fixtures',
     }));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('existingData.html').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['existingData.html'], done);
   });
 
   it('should use custom transform function for each file if specified', function (done) {
@@ -401,22 +232,7 @@ describe('gulp-inject', function () {
       }
     }));
 
-    stream.on('error', function(err) {
-      should.exist(err);
-      done(err);
-    });
-
-    stream.on('data', function (newFile) {
-
-      should.exist(newFile);
-      should.exist(newFile.contents);
-
-      String(newFile.contents).should.equal(String(expectedFile('customTransform.json').contents));
-      done();
-    });
-
-    target.resume();
-    sources.resume();
+    streamShouldContain(stream, ['customTransform.json'], done);
   });
 
 });
@@ -426,6 +242,29 @@ function src (files, opt) {
   var stream = es.readArray(files.map(function (file) {
     return fixture(file, opt.read);
   }));
-  stream.pause();
   return stream;
+}
+
+function streamShouldContain (stream, files, done) {
+  var received = 0;
+
+  stream.on('error', function(err) {
+    should.exist(err);
+    done(err);
+  });
+
+  var contents = files.map(function (file) {
+    return String(expectedFile(file).contents);
+  });
+
+  stream.on('data', function (newFile) {
+    should.exist(newFile);
+    should.exist(newFile.contents);
+
+    contents.should.containEql(String(newFile.contents));
+
+    if (++received === files.length) {
+      done();
+    }
+  });
 }
