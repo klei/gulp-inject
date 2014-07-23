@@ -372,9 +372,9 @@ Initial contents of `files.json`:
 
 ### Injecting with custom `transform` function with default fallback
 
-The default `transform` function is available to use e.g. as a default fallback.
+The [default `transform`](#injecttransform) function is available to use e.g. as a default fallback.
 
-Used to inject Word documents as `<a>` tags below:
+Used here to inject Word documents as `<a>` tags below:
 
 **`index.html`:**
 
@@ -408,6 +408,7 @@ gulp.src('./index.html')
         if (filepath.slice(-5) === '.docx') {
           return '<li><a href="' + filepath + '">' + filepath + '</a></li>';
         }
+        // Use the default transform as fallback:
         return inject.transform.apply(inject.transform, arguments);
       }
     }
@@ -620,7 +621,7 @@ Used to generate the content to inject for each file.
 
 ##### Default:
 
-A function dependent on target file type and source file type that returns:
+[A function](#injecttransform) dependent on target file type and source file type that returns:
 
 **Injecting into `html`**
 
@@ -695,6 +696,25 @@ gulp.src('index.html')
   }))
   .pipe(gulp.dest('./dest'));
 ```
+
+### inject.transform
+
+The default transform function is exposed in the public API.
+
+For more details see [the code with tests](https://github.com/klei/gulp-inject/tree/master/src/transform).
+
+#### inject.transform.html
+
+The default transform function for files into `html`, or other file types not `jade` or `jsx`.
+
+#### inject.transform.jade
+
+The default transform function for files into `jade`.
+
+#### inject.transform.jsx
+
+The default transform function for files into `jsx`.
+
 
 ## License
 
