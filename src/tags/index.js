@@ -2,12 +2,13 @@
 /**
  * Constants
  */
+var DEFAULT_NAME = 'inject';
 var DEFAULT_TARGET = 'html';
 var DEFAULTS = {
   STARTS: {
-    'html': '<!-- inject:{{ext}} -->',
-    'jsx': '{/* inject:{{ext}} */}',
-    'jade': '//- inject:{{ext}}'
+    'html': '<!-- {{name}}:{{ext}} -->',
+    'jsx': '{/* {{name}}:{{ext}} */}',
+    'jade': '//- {{name}}:{{ext}}'
   },
   ENDS: {
     'html': '<!-- endinject -->',
@@ -16,6 +17,7 @@ var DEFAULTS = {
   }
 };
 
+exports.name = DEFAULT_NAME;
 exports.start = getTag.bind(null, DEFAULTS.STARTS);
 exports.end = getTag.bind(null, DEFAULTS.ENDS);
 
@@ -29,7 +31,8 @@ function getTag (defaults, targetExt, sourceExt, defaultValue) {
   if (!tag) {
     return;
   }
-  return tag.replace(new RegExp(escapeForRegExp('{{ext}}'), 'g'), sourceExt);
+  tag = tag.replace(new RegExp(escapeForRegExp('{{ext}}'), 'g'), sourceExt);
+  return tag.replace(new RegExp(escapeForRegExp('{{name}}'), 'g'), exports.name);
 }
 
 function escapeForRegExp (str) {

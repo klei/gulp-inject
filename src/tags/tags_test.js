@@ -53,6 +53,10 @@ describe('tags', function () {
       it('should leave strings without "{{ext}}" as is', function () {
         tags.start('txt', 'html', '# inject\n').should.equal('# inject\n');
       });
+
+      it('should return strings with "{{name}}" replaced by `tags.name`', function () {
+        tags.start('txt', 'html', '# {{name}}\n').should.equal('# ' + tags.name + '\n');
+      });
     });
 
     describe('given a function as default', function () {
@@ -73,6 +77,12 @@ describe('tags', function () {
         tags.start('txt', 'html', function () {
           return '# inject\n';
         }).should.equal('# inject\n');
+      });
+
+      it('should return strings with "{{name}}" replaced by `tags.name`', function () {
+        tags.start('txt', 'html', function () {
+          return '# {{name}}\n';
+        }).should.equal('# ' + tags.name + '\n');
       });
     });
   });
@@ -104,6 +114,10 @@ describe('tags', function () {
       it('should leave strings without "{{ext}}" as is', function () {
         tags.end('txt', 'html', '# endinject\n').should.equal('# endinject\n');
       });
+
+      it('should return strings with "{{name}}" replaced by `tags.name`', function () {
+        tags.end('txt', 'html', '# {{name}}\n').should.equal('# ' + tags.name + '\n');
+      });
     });
 
     describe('given a function as default', function () {
@@ -124,6 +138,12 @@ describe('tags', function () {
         tags.end('txt', 'html', function () {
           return '# endinject\n';
         }).should.equal('# endinject\n');
+      });
+
+      it('should return strings with "{{name}}" replaced by `tags.name`', function () {
+        tags.end('txt', 'html', function () {
+          return '# {{name}}\n';
+        }).should.equal('# ' + tags.name + '\n');
       });
     });
   });

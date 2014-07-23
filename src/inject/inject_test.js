@@ -161,6 +161,18 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['customTags.html'], done);
   });
 
+  it('should use starttag and endtag with specified name if specified', function (done) {
+    var target = src(['templateCustomName.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'lib2.js'
+    ]);
+
+    var stream = target.pipe(inject(sources, {name: 'head'}));
+
+    streamShouldContain(stream, ['customName.html'], done);
+  });
+
   it('should replace {{ext}} in starttag and endtag with current file extension if specified', function (done) {
     var target = src(['templateTagsWithExt.html'], {read: true});
     var sources = src([
@@ -268,7 +280,7 @@ function streamShouldContain (stream, files, done) {
     should.exist(newFile.contents);
 
     if (contents.length === 1) {
-      contents[0].should.equal(String(newFile.contents));
+      String(newFile.contents).should.equal(contents[0]);
     } else {
       contents.should.containEql(String(newFile.contents));
     }

@@ -200,9 +200,9 @@ gulp.src('./src/index.html')
 
 ### Injecting some files into `<head>` and some into `<body>`
 
-Use `gulp-inject`'s `starttag` option.
+#### Method 1: Use `gulp-inject`'s `starttag` option.
 
-**Code:**
+**`gulpfile.js`:**
 
 ```javascript
 var inject = require('gulp-inject');
@@ -213,7 +213,7 @@ gulp.src('./src/index.html')
   .pipe(gulp.dest('./dist'));
 ```
 
-And in your `./src/index.html`:
+**And in your `./src/index.html`:**
 
 ```html
 <!DOCTYPE html>
@@ -233,11 +233,45 @@ And in your `./src/index.html`:
 </html>
 ```
 
+#### Method 2: Use `gulp-inject`'s `name` option.
+
+**`gulpfile.js`:**
+
+```javascript
+var inject = require('gulp-inject');
+
+gulp.src('./src/index.html')
+  .pipe(inject(gulp.src('./src/importantFile.js', {read: false}), {name: 'head'}))
+  .pipe(inject(gulp.src(['./src/*.js', '!./src/importantFile.js'], {read: false})))
+  .pipe(gulp.dest('./dist'));
+```
+
+**And in your `./src/index.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My index</title>
+  <!-- head:js -->
+  <!-- only importantFile.js will be injected here -->
+  <!-- endinject -->
+</head>
+<body>
+
+  <!-- inject:js -->
+  <!-- the rest of the *.js files will be injected here -->
+  <!-- endinject -->
+</body>
+</html>
+```
+
+
 ### Injecting all files for development
 
 If you use [Bower](http://bower.io/) for frontend dependencies I recommend using [`main-bower-files`](https://www.npmjs.org/package/main-bower-files) and injecting them as well.
 
-**Code:**
+**`gulpfile.js`:**
 
 ```javascript
 var bowerFiles = require('main-bower-files'),
@@ -250,12 +284,38 @@ var cssFiles = gulp.src('./src/**/*.styl')
   .pipe(gulp.dest('./build'));
 
 gulp.src('./src/index.html')
+  .pipe(inject(gulp.src(bowerFiles(), {read: false}), {name: 'bower'}))
   .pipe(inject(es.merge(
-    gulp.src(bowerFiles(), {read: false}),
     cssFiles,
     gulp.src('./src/app/**/*.js', {read: false})
   )))
   .pipe(gulp.dest('./build'));
+```
+
+**`src/index.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My index</title>
+  <!-- bower:css -->
+  <!-- bower installed css files will go here... -->
+  <!-- endinject -->
+  <!-- inject:css -->
+  <!-- built css files will go here... -->
+  <!-- endinject -->
+</head>
+<body>
+
+  <!-- bower:js -->
+  <!-- bower installed scripts will go here... -->
+  <!-- endinject -->
+  <!-- inject:js -->
+  <!-- app scripts will go here... -->
+  <!-- endinject -->
+</body>
+</html>
 ```
 
 **Note** remember to mount `./bower_components`, `./build` and `./src/app` as static resources in your server to make this work.
@@ -492,6 +552,15 @@ Default: `![options.relative](#optionsrelative)`
 
 The root slash is automatically added at the beginning of the path ('/'), or removed if set to `false`.
 
+#### options.name
+Type: `String`
+
+Default: `"inject"`
+
+
+Used in the default [start](#optionsstarttag) and [end](#optionsendtag) tags below.
+
+
 #### options.starttag
 
 **Type:** `String`|`Function(targetExt, sourceExt)`
@@ -503,15 +572,15 @@ The root slash is automatically added at the beginning of the path ('/'), or rem
 **Purpose:**
 
 Used to dynamically set starting placeholder tag depending on file extensions.
-In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html".
+In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`option.name`](#optionname).
 
 ##### Default:
 
 A function dependent on target file type and source file type that returns:
 
-* html as target: `<!-- inject:{{ext}} -->`
-* jade as target: `//- inject:{{ext}}`
-* jsx as target: `{/* inject:{{ext}} */}`
+* html as target: `<!-- {{name}}:{{ext}} -->`
+* jade as target: `//- {{name}}:{{ext}}`
+* jsx as target: `{/* {{name}}:{{ext}} */}`
 
 #### options.endtag
 
@@ -524,7 +593,7 @@ A function dependent on target file type and source file type that returns:
 **Purpose:**
 
 Used to dynamically set ending placeholder tag depending on file extensions.
-In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html".
+In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`option.name`](#optionname).
 
 ##### Default:
 
