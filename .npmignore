@@ -1,2 +1,6 @@
 .*
-test/
+src/inject/expected/
+src/inject/fixtures/
+src/inject/*_test.js
+src/tags/*_test.js
+src/transform/*_test.js
