@@ -152,6 +152,7 @@ function collector (collection, opt) {
 function getNewContent (target, collection, opt) {
   var oldContent = target.contents;
   if (!collection.length) {
+    log('Nothing to inject into ' + magenta(target.relative) + '.');
     return oldContent;
   }
 
