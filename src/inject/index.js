@@ -33,6 +33,7 @@ module.exports = exports = function(sources, opt){
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
   opt.transform = defaults(opt, 'transform', transform);
   transform.selfClosingTag = bool(opt, 'selfClosingTag', false);
+  tags.name = defaults(opt, 'name', 'inject');
 
   // Is the first parameter a Vinyl File Stream:
   if (typeof sources.on === 'function' && typeof sources.pipe === 'function') {
