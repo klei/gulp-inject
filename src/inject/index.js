@@ -8,23 +8,36 @@ var transform = require('../transform');
 var tags = require('../tags');
 var PluginError = gutil.PluginError;
 var File = gutil.File;
+var magenta = gutil.colors.magenta;
+var cyan = gutil.colors.cyan;
+var red = gutil.colors.red;
+
+/**
+ * Constants
+ */
+var PLUGIN_NAME = 'gulp-inject';
 
 module.exports = exports = function(sources, opt){
   if (!sources) {
-    throw new PluginError('gulp-inject',  'Missing sources stream!');
+    throw error('Missing sources stream!');
   }
   if (!opt) {
     opt = {};
   }
 
   if (opt.sort) {
-    throw new PluginError('gulp-inject', 'sort option is deprecated! Use `sort-stream` module instead!');
+    throw error('sort option is deprecated! Use `sort-stream` module instead!');
   }
   if (opt.templateString) {
-    throw new PluginError('gulp-inject', '`templateString` option is deprecated! Create a virtual `vinyl` file instead!');
+    throw error('`templateString` option is deprecated! Create a virtual `vinyl` file instead!');
   }
   if (opt.transform && typeof opt.transform !== 'function') {
-    throw new PluginError('gulp-inject', 'transform option must be a function');
+    throw error('transform option must be a function');
+  }
+
+  // Notify people of common mistakes...
+  if (opt.read) {
+    warn('There is no ' + magenta('`read`') + ' option. Did you mean to provide it for ' + magenta('`gulp.src`') + ' perhaps?');
   }
 
   // Defaults:
@@ -40,7 +53,7 @@ module.exports = exports = function(sources, opt){
     return handleVinylStream(sources, opt);
   }
 
-  throw new PluginError('gulp-inject', 'passing target file as a string is deprecated! Pass a vinyl file stream (i.e. use `gulp.src`)!');
+  throw error('passing target file as a string is deprecated! Pass a vinyl file stream (i.e. use `gulp.src`)!');
 };
 
 function defaults (options, prop, defaultValue) {
@@ -64,7 +77,7 @@ function handleVinylStream (sources, opt) {
 
   return es.map(function (target, cb) {
     if (target.isStream()) {
-      return cb(new PluginError('gulp-inject', 'Streams not supported for target templates!'));
+      return cb(error('Streams not supported for target templates!'));
     }
     collected(function (collection) {
       target.contents = getNewContent(target, collection, opt);
@@ -149,10 +162,13 @@ function getNewContent (target, collection, opt) {
   var targetExt = extname(target.path);
   var extensions = Object.keys(filesPerExtension);
 
+  log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
+
   return new Buffer(extensions.reduce(function eachInCollection (contents, ext) {
     var startTag = tags.start(targetExt, ext, opt.starttag);
     var endTag = tags.end(targetExt, ext, opt.endtag);
     var files = filesPerExtension[ext];
+
 
     return contents.replace(
       getInjectorTagsRegExp(startTag, endTag),
@@ -252,4 +268,16 @@ function groupBy (arr, cb) {
     result[key].push(arr[i]);
   }
   return result;
+}
+
+function log (message) {
+  gutil.log(magenta(PLUGIN_NAME), message);
+}
+
+function warn (message) {
+  log(red('WARNING') + ' ' + message);
+}
+
+function error (message) {
+  return new PluginError(PLUGIN_NAME, message);
 }
