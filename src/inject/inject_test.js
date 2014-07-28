@@ -253,6 +253,24 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['defaults.jade'], done);
   });
 
+  it('should be able to chain inject calls with different names without overrides (Issue #39)', function (done) {
+    var target = src(['issue39.html'], {read: true});
+    var sources1 = src([
+      'lib1.js',
+      'lib3.js'
+    ]);
+    var sources2 = src([
+      'lib2.js',
+      'lib4.js'
+    ]);
+
+    var stream = target
+      .pipe(inject(sources1, {name: 'head'}))
+      .pipe(inject(sources2));
+
+    streamShouldContain(stream, ['issue39.html'], done);
+  });
+
 });
 
 function src (files, opt) {
