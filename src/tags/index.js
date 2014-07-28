@@ -17,9 +17,16 @@ var DEFAULTS = {
   }
 };
 
-exports.name = DEFAULT_NAME;
-exports.start = getTag.bind(null, DEFAULTS.STARTS);
-exports.end = getTag.bind(null, DEFAULTS.ENDS);
+module.exports = function tags () {
+  var tags = {
+    name: DEFAULT_NAME
+  };
+
+  tags.start = getTag.bind(tags, DEFAULTS.STARTS);
+  tags.end = getTag.bind(tags, DEFAULTS.ENDS);
+
+  return tags;
+};
 
 function getTag (defaults, targetExt, sourceExt, defaultValue) {
   var tag = defaultValue;
@@ -32,7 +39,7 @@ function getTag (defaults, targetExt, sourceExt, defaultValue) {
     return;
   }
   tag = tag.replace(new RegExp(escapeForRegExp('{{ext}}'), 'g'), sourceExt);
-  return tag.replace(new RegExp(escapeForRegExp('{{name}}'), 'g'), exports.name);
+  return tag.replace(new RegExp(escapeForRegExp('{{name}}'), 'g'), this.name);
 }
 
 function escapeForRegExp (str) {

@@ -6,12 +6,25 @@ var fs = require('fs');
 var gutil = require('gulp-util');
 
 describe('tags', function () {
-  var tags;
+  var tags, tagsModule;
 
   it('should not crash when required', function () {
     should(function () {
-      tags = require('./');
+      tagsModule = require('./');
     }).not.throw();
+  });
+
+  beforeEach(function () {
+    if (!tagsModule) {
+      return;
+    }
+    tags = tagsModule();
+  });
+
+  describe('name', function () {
+    it('should be "inject" by default', function () {
+      tags.name.should.equal('inject');
+    });
   });
 
   describe('start()', function () {

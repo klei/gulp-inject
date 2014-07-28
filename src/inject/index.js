@@ -45,8 +45,9 @@ module.exports = exports = function(sources, opt){
   opt.relative = bool(opt, 'relative', false);
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
   opt.transform = defaults(opt, 'transform', transform);
+  opt.tags = tags();
+  opt.tags.name = defaults(opt, 'name', 'inject');
   transform.selfClosingTag = bool(opt, 'selfClosingTag', false);
-  tags.name = defaults(opt, 'name', 'inject');
 
   // Is the first parameter a Vinyl File Stream:
   if (typeof sources.on === 'function' && typeof sources.pipe === 'function') {
@@ -166,8 +167,8 @@ function getNewContent (target, collection, opt) {
   log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
 
   return new Buffer(extensions.reduce(function eachInCollection (contents, ext) {
-    var startTag = tags.start(targetExt, ext, opt.starttag);
-    var endTag = tags.end(targetExt, ext, opt.endtag);
+    var startTag = opt.tags.start(targetExt, ext, opt.starttag);
+    var endTag = opt.tags.end(targetExt, ext, opt.endtag);
     var files = filesPerExtension[ext];
 
 
