@@ -449,6 +449,7 @@ gulp.src('./bower.json')
   .pipe(inject(gulp.src(['./dist/app.min.js', './dist/app.min.css'], {read: false}), {
     starttag: '"main": [',
     endtag: ']',
+    ignoreExtensions: true,
     transform: function (filepath, file, i, length) {
       return '  "' + filepath + '"' + (i + 1 < length ? ',' : '');
     }
@@ -552,6 +553,14 @@ Default: `![options.relative](#optionsrelative)`
 
 
 The root slash is automatically added at the beginning of the path ('/'), or removed if set to `false`.
+
+#### options.ignoreExtensions
+Type: `Boolean`
+
+Default: `false`
+
+
+This prevents the source files from being grouped by extension.
 
 #### options.name
 Type: `String`

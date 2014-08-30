@@ -158,7 +158,7 @@ function getNewContent (target, collection, opt) {
   }
 
   var filesPerExtension = groupBy(collection, function (file) {
-    return extname(file.path);
+    return opt.ignoreExtensions ? '*' : extname(file.path);
   });
 
   var targetExt = extname(target.path);
