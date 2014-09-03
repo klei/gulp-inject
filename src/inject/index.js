@@ -156,21 +156,28 @@ function getNewContent (target, collection, opt) {
     log('Nothing to inject into ' + magenta(target.relative) + '.');
     return oldContent;
   }
+  var tags = {};
+  var targetExt = extname(target.path);
 
-  var filesPerExtension = groupBy(collection, function (file) {
-    return extname(file.path);
+  var filesPerTags = groupBy(collection, function (file) {
+    var ext = extname(file.path);
+    var startTag = opt.tags.start(targetExt, ext, opt.starttag);
+    var endTag = opt.tags.end(targetExt, ext, opt.endtag);
+    var tag = startTag + endTag;
+    if (!tags[tag]) {
+      tags[tag] = {start: startTag, end: endTag};
+    }
+    return tag;
   });
 
-  var targetExt = extname(target.path);
-  var extensions = Object.keys(filesPerExtension);
+  var startAndEndTags = Object.keys(filesPerTags);
 
   log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
 
-  return new Buffer(extensions.reduce(function eachInCollection (contents, ext) {
-    var startTag = opt.tags.start(targetExt, ext, opt.starttag);
-    var endTag = opt.tags.end(targetExt, ext, opt.endtag);
-    var files = filesPerExtension[ext];
-
+  return new Buffer(startAndEndTags.reduce(function eachInCollection (contents, tag) {
+    var files = filesPerTags[tag];
+    var startTag = tags[tag].start;
+    var endTag = tags[tag].end;
 
     return contents.replace(
       getInjectorTagsRegExp(startTag, endTag),
