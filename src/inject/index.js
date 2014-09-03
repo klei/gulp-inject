@@ -202,7 +202,7 @@ function getFilepath (sourceFile, targetFile, opt) {
 
   if (opt.addRootSlash) {
     filepath = addRootSlash(filepath);
-  } else {
+  } else if(!opt.addPrefix) {
     filepath = removeRootSlash(filepath);
   }
 
