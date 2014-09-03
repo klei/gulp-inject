@@ -1,6 +1,6 @@
 {
   "name": "gulp-inject",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A javascript, stylesheet and webcomponent injection plugin for Gulp, i.e. inject file references into your index.html",
   "keywords": [
     "gulpplugin",
