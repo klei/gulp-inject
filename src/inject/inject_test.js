@@ -149,7 +149,8 @@ describe('gulp-inject', function () {
     var target = src(['templateCustomTags.html'], {read: true});
     var sources = src([
       'lib.js',
-      'lib2.js'
+      'lib2.js',
+      'style.css'
     ]);
 
     var stream = target.pipe(inject(sources, {
