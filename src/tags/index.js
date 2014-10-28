@@ -8,12 +8,14 @@ var DEFAULTS = {
   STARTS: {
     'html': '<!-- {{name}}:{{ext}} -->',
     'jsx': '{/* {{name}}:{{ext}} */}',
-    'jade': '//- {{name}}:{{ext}}'
+    'jade': '//- {{name}}:{{ext}}',
+    'slm': '/ {{name}}:{{ext}}'
   },
   ENDS: {
     'html': '<!-- endinject -->',
     'jsx': '{/* endinject */}',
-    'jade': '//- endinject'
+    'jade': '//- endinject',
+    'slm': '/ endinject'
   }
 };
 
