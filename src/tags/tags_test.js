@@ -50,6 +50,13 @@ describe('tags', function () {
         tags.start('jade', 'UNKNOWN').should.equal('//- inject:UNKNOWN');
       });
 
+      it('should return slm comments for slm target files', function () {
+        tags.start('slm', 'css').should.equal('/ inject:css');
+        tags.start('slm', 'html').should.equal('/ inject:html');
+        tags.start('slm', 'js').should.equal('/ inject:js');
+        tags.start('slm', 'UNKNOWN').should.equal('/ inject:UNKNOWN');
+      });
+
       it('should return html comment tag for other target files', function () {
         tags.start('txt', 'css').should.equal('<!-- inject:css -->');
         tags.start('txt', 'html').should.equal('<!-- inject:html -->');
@@ -112,6 +119,10 @@ describe('tags', function () {
 
       it('should return jade comments for jade target files', function () {
         tags.end('jade', 'UNKNOWN').should.equal('//- endinject');
+      });
+
+      it('should return slm comments for slm target files', function () {
+        tags.end('slm', 'UNKNOWN').should.equal('/ endinject');
       });
 
       it('should return html comment tag for other target files', function () {
