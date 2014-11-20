@@ -4,7 +4,7 @@
 
 `gulp-inject` takes a stream of source files, transforms each file to a string and injects each transformed string into placeholders in the target stream files. See [Basic usage](#basic-usage) and [More examples](#more-examples) below.
 
-Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `jsx` and `slm` files.
+Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `jsx` , `slm` and `haml` files.
 
 ## Installation
 
@@ -580,6 +580,7 @@ In the provided string, or the string returned from the given function, the stri
 A function dependent on target file type and source file type that returns:
 
 * html as target: `<!-- {{name}}:{{ext}} -->`
+* haml as target: `-# {{name}}:{{ext}}`
 * jade as target: `//- {{name}}:{{ext}}`
 * jsx as target: `{/* {{name}}:{{ext}} */}`
 * slm as target: `/ {{name}}:{{ext}}`
@@ -602,6 +603,7 @@ In the provided string, or the string returned from the given function, the stri
 A function dependent on target file type and source file type that returns:
 
 * html as target: `<!-- endinject -->`
+* haml as target: `-# endinject`
 * jade as target: `//- endinject`
 * jsx as target: `{/* endinject */}`
 * slm as target: `/ endinject`
@@ -664,6 +666,17 @@ The same as for injecting into `html` above with [`options.selfClosingTag`](#opt
 * jpg files: `img src="<filename>.jpg"`
 * jpeg files: `img src="<filename>.jpeg"`
 
+**Injecting into `haml`**
+
+* css files: `%link{rel:"stylesheet", href:"<filename>.css"}`
+* js files: `%script{src:"<filename>.js"}`
+* coffee files: `%script{type:"text/coffeescript", src:"<filename>.coffee"}`
+* html files: `%link{rel:"import", href:"<filename>.html"}`
+* png files: `%img{src:"<filename>.png"}`
+* gif files: `%img{src:"<filename>.gif"}`
+* jpg files: `%img{src:"<filename>.jpg"}`
+* jpeg files: `%img{src:"<filename>.jpeg"}`
+
 #### options.selfClosingTag
 Type: `Boolean`
 
@@ -718,7 +731,7 @@ For more details see [the code with tests](https://github.com/klei/gulp-inject/t
 
 #### inject.transform.html
 
-The default transform function for files into `html`, or other file types not `jade`, `jsx` or `slm`.
+The default transform function for files into `html`, or other file types not `jade`, `jsx`, `slm` or `haml`.
 
 #### inject.transform.jade
 
@@ -731,6 +744,10 @@ The default transform function for files into `jsx`.
 #### inject.transform.slm
 
 The default transform function for files into `slm`.
+
+#### inject.transform.haml
+
+The default transform function for files into `haml`.
 
 
 ## License
