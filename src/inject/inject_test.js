@@ -50,8 +50,31 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['defaults.html'], done);
   });
 
-  it('should inject sources into multiple targets', function (done) {
+  it('should inject stylesheets, scripts, images and html components even with read: false', function (done) {
+    var target = src(['template.html'], {read: false});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css',
+      'image.png',
+    ]);
 
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.html'], done);
+  });
+
+  it('should throw an error if lazy read failed', function(done) {
+    var target = src(['template.404.html'], {read: false});
+    var sources = src(['lib.js']);
+
+    target.pipe(inject(sources)).on('error', function(err) {
+      should(err.plugin).be.equal('gulp-inject');
+      done();
+    });
+  });
+
+  it('should inject sources into multiple targets', function (done) {
     var target = src(['template.html', 'template2.html'], {read: true});
     var sources = src([
       'lib.js',
