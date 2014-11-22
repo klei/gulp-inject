@@ -68,22 +68,39 @@ function bool (options, prop, defaultVal) {
 /**
  * Handle injection when files to
  * inject comes from a Vinyl File Stream
+ * Will read a file from disk if file.targets is null
+ * (if target was provided with read:false option of gulp.src)
  *
  * @param {Stream} sources
  * @param {Object} opt
  * @returns {Stream}
  */
-function handleVinylStream (sources, opt) {
+function handleVinylStream(sources, opt) {
   var collected = collectFilesToInject(sources, opt);
 
-  return es.map(function (target, cb) {
+  return es.map(function(target, cb) {
+
     if (target.isStream()) {
       return cb(error('Streams not supported for target templates!'));
     }
-    collected(function (collection) {
-      target.contents = getNewContent(target, collection, opt);
-      cb(null, target);
+    collected(function(collection) {
+      var changeContent = function() {
+        target.contents = getNewContent(target, collection, opt);
+        cb(null, target);
+      };
+      if ((typeof target.contents !== 'undefined' && target.contents !== null)) {
+        changeContent();
+      } else {
+        fs.readFile(target.path, function(err, data) {
+          if (err) {
+            return cb(error(err));
+          }
+          target.contents = data;
+          changeContent();
+        });
+      }
     });
+
   });
 }
 
