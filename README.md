@@ -131,7 +131,7 @@ var inject = require('gulp-inject');
 
 gulp.src('./src/**/*.html')
   .pipe(inject(gulp.src('./src/**/*.js', {read: false}), {relative: true}))
-  .pipe('./src');
+  .pipe(gulp.dest('./src'));
 ```
 
 **Resulting `src/app/index.html`:**
