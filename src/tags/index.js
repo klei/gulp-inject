@@ -9,13 +9,15 @@ var DEFAULTS = {
     'html': '<!-- {{name}}:{{ext}} -->',
     'jsx': '{/* {{name}}:{{ext}} */}',
     'jade': '//- {{name}}:{{ext}}',
-    'slm': '/ {{name}}:{{ext}}'
+    'slm': '/ {{name}}:{{ext}}',
+    'haml': '-# {{name}}:{{ext}}'
   },
   ENDS: {
     'html': '<!-- endinject -->',
     'jsx': '{/* endinject */}',
     'jade': '//- endinject',
-    'slm': '/ endinject'
+    'slm': '/ endinject',
+    'haml': '-# endinject'
   }
 };
 

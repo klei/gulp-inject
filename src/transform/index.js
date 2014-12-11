@@ -4,7 +4,7 @@ var path = require('path');
 /**
  * Constants
  */
-var TARGET_TYPES = ['html', 'jade', 'slm', 'jsx'];
+var TARGET_TYPES = ['html', 'jade', 'slm', 'jsx', 'haml'];
 var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
 var DEFAULT_TARGET = TARGET_TYPES[0];
 
@@ -104,6 +104,26 @@ transform.slm.coffee = function (filepath) {
 
 transform.slm.image = function (filepath) {
   return 'img src="' + filepath + '"';
+};
+
+transform.haml.css = function (filepath) {
+  return '%link{rel:"stylesheet", href:"' + filepath + '"}';
+};
+
+transform.haml.js = function (filepath) {
+  return '%script{src:"' + filepath + '"}';
+};
+
+transform.haml.html = function (filepath) {
+  return '%link{rel:"import", href:"' + filepath + '"}';
+};
+
+transform.haml.coffee = function (filepath) {
+  return '%script{type:"text/coffeescript", src:"' + filepath + '"}';
+};
+
+transform.haml.image = function (filepath) {
+  return '%img{src:"' + filepath + '"}';
 };
 
 /**

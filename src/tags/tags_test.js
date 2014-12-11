@@ -57,6 +57,13 @@ describe('tags', function () {
         tags.start('slm', 'UNKNOWN').should.equal('/ inject:UNKNOWN');
       });
 
+      it('should return haml comment tag for haml files', function () {
+        tags.start('haml', 'css').should.equal('-# inject:css');
+        tags.start('haml', 'html').should.equal('-# inject:html');
+        tags.start('haml', 'js').should.equal('-# inject:js');
+        tags.start('haml', 'UNKNOWN').should.equal('-# inject:UNKNOWN');
+      });
+
       it('should return html comment tag for other target files', function () {
         tags.start('txt', 'css').should.equal('<!-- inject:css -->');
         tags.start('txt', 'html').should.equal('<!-- inject:html -->');
@@ -123,6 +130,10 @@ describe('tags', function () {
 
       it('should return slm comments for slm target files', function () {
         tags.end('slm', 'UNKNOWN').should.equal('/ endinject');
+      });
+
+      it('should return haml comments for haml target files', function () {
+        tags.end('haml', 'UNKNOWN').should.equal('-# endinject');
       });
 
       it('should return html comment tag for other target files', function () {
