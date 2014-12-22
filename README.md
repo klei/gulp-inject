@@ -198,6 +198,25 @@ gulp.src('./src/index.html')
   .pipe(gulp.dest('./dist'));
 ```
 
+#### Multiple sources when order is important
+
+Use [`stream-series`](https://github.com/rschmukler/stream-series).
+
+**Code:**
+
+```javascript
+var series = require('stream-series'),
+    inject = require('gulp-inject');
+
+var vendorStream = gulp.src(['./src/vendors/*.js'], {read: false});
+
+var appStream = gulp.src(['./src/app/*.js'], {read: false});
+
+gulp.src('./src/index.html')
+  .pipe(inject(series(vendorStream, appStream))) // This will always inject vendor files before app files
+  .pipe(gulp.dest('./dist'));
+```
+
 ### Injecting some files into `<head>` and some into `<body>`
 
 #### Method 1: Use `gulp-inject`'s `starttag` option.
