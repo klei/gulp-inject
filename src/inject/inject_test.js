@@ -272,6 +272,19 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['issue39.html'], done);
   });
 
+
+  it('should be able to inject hashed files (Issue #71)', function (done) {
+    var target = src(['issue71.html'], {read: true});
+    var sources = src([
+      'lib.js?abcdef0123456789',
+      'styles.css?0123456789abcdef'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['issue71.html'], done);
+  });
+
 });
 
 function src (files, opt) {

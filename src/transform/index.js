@@ -1,5 +1,5 @@
 'use strict';
-var path = require('path');
+var extname = require('../extname');
 
 /**
  * Constants
@@ -14,7 +14,7 @@ var DEFAULT_TARGET = TARGET_TYPES[0];
 var transform = module.exports = exports = function (filepath, i, length, sourceFile, targetFile) {
   var type;
   if (targetFile && targetFile.path) {
-    var ext = path.extname(targetFile.path).slice(1);
+    var ext = extname(targetFile.path);
     type = typeFromExt(ext);
   }
   if (!isTargetType(type)) {
@@ -37,7 +37,7 @@ transform.selfClosingTag = false;
  */
 TARGET_TYPES.forEach(function (targetType) {
   transform[targetType] = function (filepath) {
-    var ext = path.extname(filepath).slice(1);
+    var ext = extname(filepath);
     var type = typeFromExt(ext);
     var func = transform[targetType][type];
     if (func) {

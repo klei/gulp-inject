@@ -4,6 +4,7 @@ var fs = require('fs');
 var es = require('event-stream');
 var path = require('path');
 var gutil = require('gulp-util');
+var extname = require('../extname');
 var transform = require('../transform');
 var tags = require('../tags');
 var PluginError = gutil.PluginError;
@@ -218,10 +219,6 @@ function getFilepath (sourceFile, targetFile, opt) {
 
 function getTag (tag, ext) {
   return tag.replace('{{ext}}', ext);
-}
-
-function extname (file) {
-  return path.extname(file).slice(1);
 }
 
 function getInjectorTagsRegExp (starttag, endtag) {
