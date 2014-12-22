@@ -285,6 +285,17 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['issue71.html'], done);
   });
 
+  it('should be able to inject when tags are missing whitespace (Issue #56)', function (done) {
+    var target = src(['issue56.html'], {read: true});
+    var sources = src([
+      'lib.js'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['issue56.html'], done);
+  });
+
 });
 
 function src (files, opt) {

@@ -222,7 +222,11 @@ function getTag (tag, ext) {
 }
 
 function getInjectorTagsRegExp (starttag, endtag) {
-  return new RegExp('(' + escapeForRegExp(starttag) + ')(\\s*)(\\n|\\r|.)*?(' + escapeForRegExp(endtag) + ')', 'gi');
+  return new RegExp('(' + makeWhiteSpaceOptional(escapeForRegExp(starttag)) + ')(\\s*)(\\n|\\r|.)*?(' + makeWhiteSpaceOptional(escapeForRegExp(endtag)) + ')', 'gi');
+}
+
+function makeWhiteSpaceOptional (str) {
+  return str.replace(/\s+/g, '\\s*');
 }
 
 function escapeForRegExp (str) {
