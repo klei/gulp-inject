@@ -322,6 +322,17 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['issue56.html'], done);
   });
 
+  it('should not crash when transform function returns undefined (Issue #74)', function (done) {
+    var target = src(['issue74.html'], {read: true});
+    var sources = src([
+      'lib.js'
+    ]);
+
+    var stream = target.pipe(inject(sources, {transform: function () {}}));
+
+    streamShouldContain(stream, ['issue74.html'], done);
+  });
+
 });
 
 function src (files, opt) {

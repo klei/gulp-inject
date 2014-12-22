@@ -187,6 +187,9 @@ function getNewContent (target, collection, opt) {
           .concat(files.reduce(function transformFile (lines, file, i) {
             var filepath = getFilepath(file, target, opt);
             var transformedContents = opt.transform(filepath, file, i, files.length, target);
+            if (typeof transformedContents !== 'string') {
+              return lines;
+            }
             return lines.concat(transformedContents.split(/\r?\n/g));
           }, []))
           .concat([endtag])
