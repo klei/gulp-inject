@@ -254,6 +254,32 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['defaults.jade'], done);
   });
 
+  it('should use special default tags when injecting into slm files', function (done) {
+    var target = src(['template.slm'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.slm'], done);
+  });
+
+  it('should use special default tags when injecting into haml files', function (done) {
+    var target = src(['template.haml'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.haml'], done);
+  });
+
   it('should be able to chain inject calls with different names without overrides (Issue #39)', function (done) {
     var target = src(['issue39.html'], {read: true});
     var sources1 = src([

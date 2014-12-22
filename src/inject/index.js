@@ -184,10 +184,11 @@ function getNewContent (target, collection, opt) {
       getInjectorTagsRegExp(startTag, endTag),
       function injector (match, starttag, indent, content, endtag) {
         return [starttag]
-          .concat(files.map(function transformFile (file, i) {
+          .concat(files.reduce(function transformFile (lines, file, i) {
             var filepath = getFilepath(file, target, opt);
-            return opt.transform(filepath, file, i, files.length, target);
-          }))
+            var transformedContents = opt.transform(filepath, file, i, files.length, target);
+            return lines.concat(transformedContents.split(/\r?\n/g));
+          }, []))
           .concat([endtag])
           .join(indent);
       }

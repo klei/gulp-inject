@@ -1,0 +1,12 @@
+doctype html
+html
+  head
+    title gulp-inject
+    / inject:html
+    / endinject
+    / inject:css
+    / endinject
+  body
+
+    / inject:js
+    / endinject
