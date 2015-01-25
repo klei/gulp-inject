@@ -40,7 +40,7 @@ Each pair of comments are the injection placeholders (aka. tags, see [`options.s
 
 ```javascript
 var gulp = require('gulp');
-var inject = require("gulp-inject");
+var inject = require('gulp-inject');
 
 gulp.task('index', function () {
   var target = gulp.src('./src/index.html');
