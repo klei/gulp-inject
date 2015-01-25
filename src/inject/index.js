@@ -110,7 +110,7 @@ function collectFilesToInject (sources, opt) {
   }));
 
   function resolve (cb) {
-    process.nextTick(function () {
+    setImmediate(function () {
       cb(collection);
     });
   }
