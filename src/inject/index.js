@@ -183,7 +183,9 @@ function getNewContent (target, collection, opt) {
     return contents.replace(
       getInjectorTagsRegExp(startTag, endTag),
       function injector (match, starttag, indent, content, endtag) {
-        return [starttag]
+        var starttagArray = opt.removeTags ? [] : [starttag];
+        var endtagArray = opt.removeTags ? [] : [endtag];
+        return starttagArray
           .concat(files.reduce(function transformFile (lines, file, i) {
             var filepath = getFilepath(file, target, opt);
             var transformedContents = opt.transform(filepath, file, i, files.length, target);
@@ -192,7 +194,7 @@ function getNewContent (target, collection, opt) {
             }
             return lines.concat(transformedContents.split(/\r?\n/g));
           }, []))
-          .concat([endtag])
+          .concat(endtagArray)
           .join(indent);
       }
     );
