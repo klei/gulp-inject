@@ -333,6 +333,20 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['issue74.html'], done);
   });
 
+  it('should be able to remove tags if option present', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css',
+      'image.png',
+    ]);
+
+    var stream = target.pipe(inject(sources,{removeTags:true}));
+
+    streamShouldContain(stream, ['removeTags.html'], done);
+  });
+
 });
 
 function src (files, opt) {
