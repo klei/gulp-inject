@@ -239,7 +239,7 @@ gulp.src('./src/index.html')
 <html>
 <head>
   <title>My index</title>
-  <!-- head:js -->
+  <!-- inject:head:js -->
   <!-- only importantFile.js will be injected here -->
   <!-- endinject -->
 </head>
