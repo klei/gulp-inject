@@ -42,6 +42,7 @@ module.exports = exports = function(sources, opt){
   }
 
   // Defaults:
+  opt.quiet = bool(opt, 'quiet', false);
   opt.ignorePath = toArray(opt.ignorePath).map(unixify);
   opt.relative = bool(opt, 'relative', false);
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
@@ -154,7 +155,9 @@ function collector (collection, opt) {
 function getNewContent (target, collection, opt) {
   var oldContent = target.contents;
   if (!collection.length) {
-    log('Nothing to inject into ' + magenta(target.relative) + '.');
+    if (!opt.quiet) {
+      log('Nothing to inject into ' + magenta(target.relative) + '.');
+    }
     return oldContent;
   }
   var tags = {};
@@ -173,7 +176,9 @@ function getNewContent (target, collection, opt) {
 
   var startAndEndTags = Object.keys(filesPerTags);
 
-  log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
+  if (!opt.quiet) {
+    log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
+  }
 
   return new Buffer(startAndEndTags.reduce(function eachInCollection (contents, tag) {
     var files = filesPerTags[tag];
