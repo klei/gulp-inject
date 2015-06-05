@@ -1,4 +1,4 @@
-/*global describe, it*/
+/*global describe, it, beforeEach, afterEach*/
 'use strict';
 
 var fs = require('fs'),
@@ -10,6 +10,16 @@ var gutil = require('gulp-util'),
   inject = require('./');
 
 describe('gulp-inject', function () {
+  var log;
+
+  beforeEach(function () {
+    log = gutil.log;
+  });
+
+  afterEach(function () {
+    gutil.log = log;
+  });
+
   it('should throw an error when the old api with target as string is used', function () {
     should(function () {
       var stream = inject('fixtures/template.html');
@@ -347,6 +357,49 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['removeTags.html'], done);
   });
 
+  it('should not produce log output if quiet option is set', function (done) {
+    var logOutput = [];
+    gutil.log = function () {
+      logOutput.push(arguments);
+    };
+
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css',
+      'image.png'
+    ]);
+
+    var stream = target.pipe(inject(sources, {quiet: true}));
+
+    stream.on('end', function () {
+      logOutput.should.have.length(0);
+      done();
+    });
+  });
+
+  it('should produce log output if quiet option is not set', function (done) {
+    var logOutput = [];
+    gutil.log = function () {
+      logOutput.push(arguments);
+    };
+
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css',
+      'image.png'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    stream.on('end', function () {
+      logOutput.should.have.length(1);
+      done();
+    });
+  });
 });
 
 function src (files, opt) {
