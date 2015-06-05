@@ -592,7 +592,7 @@ Used in the default [start](#optionsstarttag) and [end](#optionsendtag) tags bel
 **Purpose:**
 
 Used to dynamically set starting placeholder tag depending on file extensions.
-In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`option.name`](#optionname).
+In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`options.name`](#optionsname).
 
 ##### Default:
 
@@ -615,7 +615,7 @@ A function dependent on target file type and source file type that returns:
 **Purpose:**
 
 Used to dynamically set ending placeholder tag depending on file extensions.
-In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`option.name`](#optionname).
+In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`options.name`](#optionsname).
 
 ##### Default:
 
