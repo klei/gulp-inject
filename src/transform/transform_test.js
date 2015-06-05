@@ -165,6 +165,11 @@ describe('transform', function () {
       transform.jade.css('test-file.css').should.equal('link(rel="stylesheet", href="test-file.css")');
     });
 
+    it('should transform jade to a jade include tag', function () {
+      transform.jade.html.should.be.type('function');
+      transform.jade.jade('test-file.jade').should.equal('include test-file.jade');
+    });
+
     it('should transform html to a self closing link tag', function () {
       transform.jade.html.should.be.type('function');
       transform.jade.html('test-file.html').should.equal('link(rel="import", href="test-file.html")');
@@ -187,6 +192,10 @@ describe('transform', function () {
 
     it('should use the css transformer for css files automatically', function () {
       transform.jade('test-file.css').should.equal(transform.jade.css('test-file.css'));
+    });
+
+    it('should use the jade transformer for jade files automatically', function () {
+      transform.jade('test-file.jade').should.equal(transform.jade.jade('test-file.jade'));
     });
 
     it('should use the html transformer for html files automatically', function () {

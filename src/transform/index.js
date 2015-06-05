@@ -74,6 +74,10 @@ transform.jade.js = function (filepath) {
   return 'script(src="' + filepath + '")';
 };
 
+transform.jade.jade = function (filepath) {
+  return 'include ' + filepath;
+};
+
 transform.jade.html = function (filepath) {
   return 'link(rel="import", href="' + filepath + '")';
 };
