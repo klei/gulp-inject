@@ -172,8 +172,10 @@ function getNewContent (target, collection, opt) {
   });
 
   var startAndEndTags = Object.keys(filesPerTags);
-
-  log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
+  
+  if(!opt.quiet) {
+    log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
+  }
 
   return new Buffer(startAndEndTags.reduce(function eachInCollection (contents, tag) {
     var files = filesPerTags[tag];

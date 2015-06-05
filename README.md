@@ -580,6 +580,13 @@ Default: `"inject"`
 
 Used in the default [start](#optionsstarttag) and [end](#optionsendtag) tags below.
 
+#### options.quiet
+Type: `Boolean`
+
+Default: `false`
+
+Run in quiet mode, without printing the log of successful injections.
+
 
 #### options.starttag
 
