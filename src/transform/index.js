@@ -54,6 +54,10 @@ transform.html.js = function (filepath) {
   return '<script src="' + filepath + '"></script>';
 };
 
+transform.html.jsx = function (filepath) {
+  return '<script type="text/jsx" src="' + filepath + '"></script>';
+};
+
 transform.html.html = function (filepath) {
   return '<link rel="import" href="' + filepath + '"' + end();
 };

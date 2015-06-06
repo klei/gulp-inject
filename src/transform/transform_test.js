@@ -56,6 +56,11 @@ describe('transform', function () {
       transform.html.js('test-file.js').should.equal('<script src="test-file.js"></script>');
     });
 
+    it('should transform jsx to a script tag', function () {
+      transform.html.jsx.should.be.type('function');
+      transform.html.jsx('test-file.jsx').should.equal('<script type="text/jsx" src="test-file.jsx"></script>');
+    });
+
     it('should transform coffeescript to a script tag', function () {
       transform.html.coffee.should.be.type('function');
       transform.html.coffee('test-file.coffee').should.equal('<script type="text/coffeescript" src="test-file.coffee"></script>');
