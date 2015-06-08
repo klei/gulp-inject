@@ -524,6 +524,43 @@ And in your `./src/index.html`:
 </html>
 ```
 
+### Injecting files contents with dynamic name
+
+If you want to inject files with just name and ext pattern, add the option [`options.dynamicName`](#optionsdynamicname) with true.
+
+***Code:***
+
+```javascript
+gulp.src('./src/index.html')
+  .pipe(inject(gulp.src(['./src/img/*.svg']), {
+    starttag: '<!-- inject:{{name}}:{{ext}} -->',
+    transform: function (filePath, file) {
+      // return file contents as string
+      return file.contents.toString('utf8')
+    }
+  }))
+  .pipe(gulp.dest('./dest'));
+```
+
+And in your `./src/index.html`:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My index</title>
+  <!-- inject:about:svg -->
+  <!-- contents of svg files will be injected here -->
+  <!-- endinject -->
+  <!-- inject:apple:svg -->
+  <!-- contents of svg files will be injected here -->
+  <!-- endinject -->
+</head>
+<body>
+</body>
+</html>
+```
+
 ## API
 
 ### inject(sources, options)
@@ -579,6 +616,13 @@ Default: `"inject"`
 
 Used in the default [start](#optionsstarttag) and [end](#optionsendtag) tags below.
 
+#### options.dynamicName
+Type: `Boolean`
+
+Default: `false`
+
+
+If set to `true`, the `{{name}}` of your starttag will be dynamicly replaced with the name oy the file you want to inject.
 
 #### options.starttag
 

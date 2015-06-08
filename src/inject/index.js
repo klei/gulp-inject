@@ -164,7 +164,11 @@ function getNewContent (target, collection, opt) {
   var targetExt = extname(target.path);
 
   var filesPerTags = groupBy(collection, function (file) {
-    var ext = extname(file.path);
+    var ext = extname(file.path),
+        name = path.basename(file.path, path.extname(file.path));
+    if(typeof opt.dynamicName !== 'undefined' && opt.dynamicName) {
+      opt.tags.name = name;
+    }
     var startTag = opt.tags.start(targetExt, ext, opt.starttag);
     var endTag = opt.tags.end(targetExt, ext, opt.endtag);
     var tag = startTag + endTag;
