@@ -46,13 +46,14 @@ describe('gulp-inject', function () {
     }).throw();
   });
 
-  it('should inject stylesheets, scripts, images and html components into desired file', function (done) {
+  it('should inject stylesheets, scripts, images, jsx and html components into desired file', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([
       'lib.js',
       'component.html',
       'styles.css',
       'image.png',
+      'lib.jsx'
     ]);
 
     var stream = target.pipe(inject(sources));
@@ -67,7 +68,8 @@ describe('gulp-inject', function () {
       'lib.js',
       'component.html',
       'styles.css',
-      'image.png'
+      'image.png',
+      'lib.jsx'
     ]);
 
     var stream = target.pipe(inject(sources));
@@ -81,7 +83,8 @@ describe('gulp-inject', function () {
       'lib.js',
       'component.html',
       'lib2.js',
-      'styles.css'
+      'styles.css',
+      'lib.jsx'
     ]);
 
     var stream = target.pipe(inject(sources, {ignorePath: '/fixtures'}));
@@ -95,7 +98,8 @@ describe('gulp-inject', function () {
       '../../folder/lib.js',
       '../../another/component.html',
       '../a-folder/lib2.js',
-      '../../yet-another/styles.css'
+      '../../yet-another/styles.css',
+      '../components/lib.jsx',
     ]);
 
     var stream = target.pipe(inject(sources, {relative: true}));
@@ -109,7 +113,8 @@ describe('gulp-inject', function () {
       'lib.js',
       'component.html',
       'lib2.js',
-      'styles.css'
+      'styles.css',
+      'lib.jsx'
     ]);
 
     var stream = target.pipe(inject(sources, {addPrefix: 'my-test-dir'}));
@@ -134,7 +139,8 @@ describe('gulp-inject', function () {
     var sources = src([
       'lib.js',
       'component.html',
-      'styles.css'
+      'styles.css',
+      'lib.jsx'
     ]);
 
     var stream = target.pipe(inject(sources, {addRootSlash: false}));
@@ -147,7 +153,8 @@ describe('gulp-inject', function () {
     var sources = src([
       'a/folder/lib.js',
       'a/folder/component.html',
-      'a/folder/styles.css'
+      'a/folder/styles.css',
+      'a/folder/lib.jsx'
     ]);
 
     var stream = target.pipe(inject(sources, {addRootSlash: false, ignorePath: 'fixtures'}));
@@ -350,6 +357,7 @@ describe('gulp-inject', function () {
       'component.html',
       'styles.css',
       'image.png',
+      'lib.jsx'
     ]);
 
     var stream = target.pipe(inject(sources,{removeTags:true}));
