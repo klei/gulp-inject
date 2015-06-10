@@ -7,7 +7,7 @@ var fs = require('fs'),
   should = require('should');
 
 var gutil = require('gulp-util'),
-  inject = require('./');
+  inject = require('../../.');
 
 describe('gulp-inject', function () {
   var log;
@@ -407,6 +407,24 @@ describe('gulp-inject', function () {
       logOutput.should.have.length(1);
       done();
     });
+  });
+
+  it('should be able to modify only the filepath (Issue #107)', function (done) {
+    var version = 1;
+
+    var target = src(['issue107.html'], {read: true});
+    var sources = src([
+      'lib.js'
+    ]);
+
+    var stream = target.pipe(inject(sources, {
+      transform: function (filepath) {
+        arguments[0] = filepath + '?v=' + version;
+        return inject.transform.apply(inject.transform, arguments);
+      }
+    }));
+
+    streamShouldContain(stream, ['issue107.html'], done);
   });
 });
 
