@@ -1,6 +1,6 @@
 {
   "name": "gulp-inject",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "A javascript, stylesheet and webcomponent injection plugin for Gulp, i.e. inject file references into your index.html",
   "keywords": [
     "gulpplugin",
@@ -13,7 +13,7 @@
   "homepage": "https://github.com/klei/gulp-inject",
   "bugs": "https://github.com/klei/gulp-inject/issues",
   "author": {
-    "name": "Joakim Bengtson",
+    "name": "Joakim Carlstein",
     "email": "joakim@klei.se",
     "url": "http://joakim.beng.se"
   },
