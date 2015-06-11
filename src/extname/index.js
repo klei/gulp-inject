@@ -2,7 +2,6 @@
 var path = require('path');
 
 module.exports = exports = function extname (file) {
-  var extension = path.extname(file).slice(1);
-  var extensionAndHash = extension.split('?');
-  return extensionAndHash[0];
+  file = file.split('?')[0];
+  return path.extname(file).slice(1);
 };
