@@ -410,7 +410,7 @@ describe('gulp-inject', function () {
   });
 
   it('should be able to modify only the filepath (Issue #107)', function (done) {
-    var version = 1;
+    var version = '1.0.0';
 
     var target = src(['issue107.html'], {read: true});
     var sources = src([
