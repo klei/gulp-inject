@@ -197,7 +197,7 @@ function getNewContent (target, collection, opt) {
             if (typeof transformedContents !== 'string') {
               return lines;
             }
-            return lines.concat(transformedContents.split(/\r?\n/g));
+            return lines.concat(transformedContents);
           }, []))
           .concat(endtagArray)
           .join(indent);
