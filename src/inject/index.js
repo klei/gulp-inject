@@ -224,6 +224,10 @@ function getFilepath (sourceFile, targetFile, opt) {
   } else if(!opt.addPrefix) {
     filepath = removeRootSlash(filepath);
   }
+  
+  if (opt.addSuffix) {
+    filepath = addSuffix(filepath, opt.addSuffix);
+  }
 
   return filepath;
 }
@@ -255,6 +259,9 @@ function removeRootSlash (filepath) {
 }
 function addPrefix (filepath, prefix) {
   return  prefix + addRootSlash(filepath);
+}
+function addSuffix (filepath, suffix) {
+  return  filepath + suffix;
 }
 
 function removeBasePath (basedir, filepath) {
