@@ -563,6 +563,14 @@ Default: `NULL`
 
 A path that should be prefixed to each injected file path.
 
+#### options.addSuffix
+Type: `String`
+
+Default: `NULL`
+
+
+A path that should be suffixed to each injected file path.
+
 #### options.addRootSlash
 Type: `Boolean`
 
@@ -631,7 +639,7 @@ A function dependent on target file type and source file type that returns:
 **Type**: `Function(filepath, file, index, length, targetFile)`
 
 **Params:**
-  - `filepath` - The "unixified" path to the file with any `ignorePath`'s removed and `addPrefix` added
+  - `filepath` - The "unixified" path to the file with any `ignorePath`'s removed, `addPrefix` and `addSuffix` added
   - `file` - The [File object](https://github.com/wearefractal/vinyl) to inject given from `gulp.src`
   - `index` - 0-based file index
   - `length` - Total number of files to inject for the current file extension
