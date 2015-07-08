@@ -4,7 +4,7 @@ var extname = require('../extname');
 /**
  * Constants
  */
-var TARGET_TYPES = ['html', 'jade', 'slm', 'jsx', 'haml'];
+var TARGET_TYPES = ['html', 'jade', 'slm', 'jsx', 'haml', 'less'];
 var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
 var DEFAULT_TARGET = TARGET_TYPES[0];
 
@@ -133,6 +133,12 @@ transform.haml.coffee = function (filepath) {
 transform.haml.image = function (filepath) {
   return '%img{src:"' + filepath + '"}';
 };
+
+transform.less.less = function(filepath){
+  return '@import "' + filepath +'";';
+}
+
+transform.less.css = transform.less.less;
 
 /**
  * Transformations for jsx is like html

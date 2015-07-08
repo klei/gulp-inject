@@ -33,6 +33,7 @@ describe('tags', function () {
         tags.start('html', 'css').should.equal('<!-- inject:css -->');
         tags.start('html', 'html').should.equal('<!-- inject:html -->');
         tags.start('html', 'js').should.equal('<!-- inject:js -->');
+        tags.start('html', 'less').should.equal('<!-- inject:less -->');
         tags.start('html', 'UNKNOWN').should.equal('<!-- inject:UNKNOWN -->');
       });
 
@@ -40,6 +41,7 @@ describe('tags', function () {
         tags.start('jsx', 'css').should.equal('{/* inject:css */}');
         tags.start('jsx', 'html').should.equal('{/* inject:html */}');
         tags.start('jsx', 'js').should.equal('{/* inject:js */}');
+        tags.start('jsx', 'less').should.equal('{/* inject:less */}');
         tags.start('jsx', 'UNKNOWN').should.equal('{/* inject:UNKNOWN */}');
       });
 
@@ -47,6 +49,7 @@ describe('tags', function () {
         tags.start('jade', 'css').should.equal('//- inject:css');
         tags.start('jade', 'html').should.equal('//- inject:html');
         tags.start('jade', 'js').should.equal('//- inject:js');
+        tags.start('jade', 'less').should.equal('//- inject:less');
         tags.start('jade', 'UNKNOWN').should.equal('//- inject:UNKNOWN');
       });
 
@@ -54,6 +57,7 @@ describe('tags', function () {
         tags.start('slm', 'css').should.equal('/ inject:css');
         tags.start('slm', 'html').should.equal('/ inject:html');
         tags.start('slm', 'js').should.equal('/ inject:js');
+        tags.start('slm', 'less').should.equal('/ inject:less');
         tags.start('slm', 'UNKNOWN').should.equal('/ inject:UNKNOWN');
       });
 
@@ -61,13 +65,23 @@ describe('tags', function () {
         tags.start('haml', 'css').should.equal('-# inject:css');
         tags.start('haml', 'html').should.equal('-# inject:html');
         tags.start('haml', 'js').should.equal('-# inject:js');
+        tags.start('haml', 'less').should.equal('-# inject:less');
         tags.start('haml', 'UNKNOWN').should.equal('-# inject:UNKNOWN');
+      });
+
+      it('should return less comment tag for less files', function () {
+        tags.start('less', 'css').should.equal('/* inject:css */');
+        tags.start('less', 'html').should.equal('/* inject:html */');
+        tags.start('less', 'js').should.equal('/* inject:js */');
+        tags.start('less', 'less').should.equal('/* inject:less */');
+        tags.start('less', 'UNKNOWN').should.equal('/* inject:UNKNOWN */');
       });
 
       it('should return html comment tag for other target files', function () {
         tags.start('txt', 'css').should.equal('<!-- inject:css -->');
         tags.start('txt', 'html').should.equal('<!-- inject:html -->');
         tags.start('txt', 'js').should.equal('<!-- inject:js -->');
+        tags.start('txt', 'less').should.equal('<!-- inject:less -->');
         tags.start('txt', 'UNKNOWN').should.equal('<!-- inject:UNKNOWN -->');
       });
     });
@@ -134,6 +148,10 @@ describe('tags', function () {
 
       it('should return haml comments for haml target files', function () {
         tags.end('haml', 'UNKNOWN').should.equal('-# endinject');
+      });
+
+      it('should return haml comments for haml target files', function () {
+        tags.end('less', 'UNKNOWN').should.equal('/* endinject */');
       });
 
       it('should return html comment tag for other target files', function () {
