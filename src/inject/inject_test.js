@@ -297,6 +297,19 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['defaults.haml'], done);
   });
 
+  it('should use special default tags when injecting into less files', function (done) {
+    var target = src(['template.less'], {read: true});
+    var sources = src([
+      'lib.css',
+      'component.less',
+      'styles.less'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.less'], done);
+  });
+
   it('should be able to chain inject calls with different names without overrides (Issue #39)', function (done) {
     var target = src(['issue39.html'], {read: true});
     var sources1 = src([

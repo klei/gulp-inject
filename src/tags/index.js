@@ -10,14 +10,16 @@ var DEFAULTS = {
     'jsx': '{/* {{name}}:{{ext}} */}',
     'jade': '//- {{name}}:{{ext}}',
     'slm': '/ {{name}}:{{ext}}',
-    'haml': '-# {{name}}:{{ext}}'
+    'haml': '-# {{name}}:{{ext}}',
+    'less': '/* {{name}}:{{ext}} */'
   },
   ENDS: {
     'html': '<!-- endinject -->',
     'jsx': '{/* endinject */}',
     'jade': '//- endinject',
     'slm': '/ endinject',
-    'haml': '-# endinject'
+    'haml': '-# endinject',
+    'less': '/* endinject */'
   }
 };
 

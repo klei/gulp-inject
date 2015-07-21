@@ -38,6 +38,10 @@ describe('transform', function () {
     it('should have a transform function for haml target files', function () {
       transform.haml.should.be.type('function');
     });
+
+    it('should have a transform function for less target files', function () {
+      transform.less.should.be.type('function');
+    });
   });
 
   describe('html as target', function () {
@@ -323,6 +327,27 @@ describe('transform', function () {
     });
   });
 
+  describe('less as target', function () {
+    it('should transform less to a import tag', function () {
+      transform.less.css.should.be.type('function');
+      transform.less.css('test-file.css').should.equal('@import "test-file.css";');
+    });
+
+    it('should transform css to a import tag', function () {
+      transform.less.less.should.be.type('function');
+      transform.less.less('test-file.less').should.equal('@import "test-file.less";');
+    });
+
+    it('should use the less transformer for less files automatically', function () {
+      transform.less('test-file.less').should.equal(transform.less.less('test-file.less'));
+    });
+
+    it('should use the css transformer for css files automatically', function () {
+      transform.less('test-file.css').should.equal(transform.less.css('test-file.css'));
+    });
+
+  });
+
   it('should pick the correct target transformer for html targets', function () {
     var targetFile = fixture('index.html');
     var sourceFile = fixture('style.css');
@@ -356,6 +381,13 @@ describe('transform', function () {
     var sourceFile = fixture('image.gif');
     transform(sourceFile.path, null, null, sourceFile, targetFile)
       .should.equal(transform.haml.image(sourceFile.path));
+  });
+
+  it('should pick the correct target transformer for less targets', function () {
+    var targetFile = fixture('index.less');
+    var sourceFile = fixture('test-file.less');
+    transform(sourceFile.path, null, null, sourceFile, targetFile)
+      .should.equal(transform.less.less(sourceFile.path));
   });
 
   it('should default to the html target transformer for other files', function () {
