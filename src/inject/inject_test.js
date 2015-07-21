@@ -121,6 +121,21 @@ describe('gulp-inject', function () {
 
     streamShouldContain(stream, ['addPrefix.html'], done);
   });
+  
+  it('should inject stylesheets, scripts and html components with `addSuffix` added to file path', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'lib2.js',
+      'styles.css',
+      'lib.jsx'
+    ]);
+
+    var stream = target.pipe(inject(sources, {addSuffix: '?my-test=suffix'}));
+
+    streamShouldContain(stream, ['addSuffix.html'], done);
+  });
 
   it('should inject stylesheets and html components with self closing tags if `selfClosingTag` is truthy', function (done) {
     var target = src(['template.html'], {read: true});
