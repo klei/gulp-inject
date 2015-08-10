@@ -574,7 +574,7 @@ A path that should be suffixed to each injected file path.
 #### options.addRootSlash
 Type: `Boolean`
 
-Default: `![options.relative](#optionsrelative)`
+Default: [`!options.relative`](#optionsrelative)
 
 
 The root slash is automatically added at the beginning of the path ('/'), or removed if set to `false`.
