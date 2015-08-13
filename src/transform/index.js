@@ -4,7 +4,7 @@ var extname = require('../extname');
 /**
  * Constants
  */
-var TARGET_TYPES = ['html', 'jade', 'slm', 'jsx', 'haml', 'less'];
+var TARGET_TYPES = ['html', 'jade', 'slm', 'jsx', 'haml', 'less', 'twig'];
 var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
 var DEFAULT_TARGET = TARGET_TYPES[0];
 
@@ -139,6 +139,14 @@ transform.less.less = function(filepath){
 }
 
 transform.less.css = transform.less.less;
+
+transform.twig.css = function (filepath) {
+  return '<link rel="stylesheet" href="{{ asset("' + filepath + '") }}"' + end();
+};
+
+transform.twig.js = function (filepath) {
+  return '<script src="{{ asset("' + filepath + '") }}"></script>';
+};
 
 /**
  * Transformations for jsx is like html

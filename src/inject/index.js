@@ -185,8 +185,14 @@ function getNewContent (target, collection, opt) {
     var startTag = tags[tag].start;
     var endTag = tags[tag].end;
 
+    var injectorTagsRegExp =  getInjectorTagsRegExp(startTag, endTag);
+
+    if (!injectorTagsRegExp.test(contents)) {
+      throw error('Missing inject tags!');
+    }
+
     return contents.replace(
-      getInjectorTagsRegExp(startTag, endTag),
+      injectorTagsRegExp,
       function injector (match, starttag, indent, content, endtag) {
         var starttagArray = opt.removeTags ? [] : [starttag];
         var endtagArray = opt.removeTags ? [] : [endtag];
