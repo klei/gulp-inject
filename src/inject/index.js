@@ -258,7 +258,7 @@ function removeRootSlash (filepath) {
   return filepath.replace(/^\/+/, '');
 }
 function addPrefix (filepath, prefix) {
-  return  prefix + addRootSlash(filepath);
+  return  prefix + filepath;
 }
 function addSuffix (filepath, suffix) {
   return  filepath + suffix;
