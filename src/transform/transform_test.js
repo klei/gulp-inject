@@ -42,6 +42,14 @@ describe('transform', function () {
     it('should have a transform function for less target files', function () {
       transform.less.should.be.type('function');
     });
+
+    it('should have a transform function for sass target files', function () {
+      transform.sass.should.be.type('function');
+    });
+
+    it('should have a transform function for scss target files', function () {
+      transform.scss.should.be.type('function');
+    });
   });
 
   describe('html as target', function () {
@@ -348,6 +356,66 @@ describe('transform', function () {
 
   });
 
+  describe('sass as target', function () {
+    it('should transform sass to a import tag', function () {
+      transform.sass.sass.should.be.type('function');
+      transform.sass.sass('test-file.sass').should.equal('@import "test-file.sass"');
+    });
+
+    it('should transform scss to a import tag', function () {
+      transform.sass.scss.should.be.type('function');
+      transform.sass.scss('test-file.scss').should.equal('@import "test-file.scss"');
+    });
+
+    it('should transform css to a import tag', function () {
+      transform.sass.css.should.be.type('function');
+      transform.sass.css('test-file.css').should.equal('@import "test-file.css"');
+    });
+
+    it('should use the sass transformer for sass files automatically', function () {
+      transform.sass('test-file.sass').should.equal(transform.sass.sass('test-file.sass'));
+    });
+
+    it('should use the sass transformer for scss files automatically', function () {
+      transform.sass('test-file.scss').should.equal(transform.sass.scss('test-file.scss'));
+    });
+
+    it('should use the sass transformer for css files automatically', function () {
+      transform.sass('test-file.css').should.equal(transform.sass.css('test-file.css'));
+    });
+
+  });
+
+  describe('scss as target', function () {
+    it('should transform sass to a import tag', function () {
+      transform.scss.sass.should.be.type('function');
+      transform.scss.sass('test-file.sass').should.equal('@import "test-file.sass";');
+    });
+
+    it('should transform scss to a import tag', function () {
+      transform.scss.scss.should.be.type('function');
+      transform.scss.scss('test-file.scss').should.equal('@import "test-file.scss";');
+    });
+
+    it('should transform css to a import tag', function () {
+      transform.scss.css.should.be.type('function');
+      transform.scss.css('test-file.css').should.equal('@import "test-file.css";');
+    });
+
+    it('should use the scss transformer for sass files automatically', function () {
+      transform.scss('test-file.sass').should.equal(transform.scss.sass('test-file.sass'));
+    });
+
+    it('should use the scss transformer for scss files automatically', function () {
+      transform.scss('test-file.scss').should.equal(transform.scss.scss('test-file.scss'));
+    });
+
+    it('should use the scss transformer for css files automatically', function () {
+      transform.scss('test-file.css').should.equal(transform.scss.css('test-file.css'));
+    });
+
+  });
+
   it('should pick the correct target transformer for html targets', function () {
     var targetFile = fixture('index.html');
     var sourceFile = fixture('style.css');
@@ -388,6 +456,20 @@ describe('transform', function () {
     var sourceFile = fixture('test-file.less');
     transform(sourceFile.path, null, null, sourceFile, targetFile)
       .should.equal(transform.less.less(sourceFile.path));
+  });
+
+  it('should pick the correct target transformer for sass targets', function () {
+    var targetFile = fixture('index.sass');
+    var sourceFile = fixture('test-file.sass');
+    transform(sourceFile.path, null, null, sourceFile, targetFile)
+      .should.equal(transform.sass.sass(sourceFile.path));
+  });
+
+  it('should pick the correct target transformer for scss targets', function () {
+    var targetFile = fixture('index.scss');
+    var sourceFile = fixture('test-file.scss');
+    transform(sourceFile.path, null, null, sourceFile, targetFile)
+      .should.equal(transform.scss.scss(sourceFile.path));
   });
 
   it('should default to the html target transformer for other files', function () {

@@ -121,7 +121,7 @@ describe('gulp-inject', function () {
 
     streamShouldContain(stream, ['addPrefix.html'], done);
   });
-  
+
   it('should inject stylesheets, scripts and html components with `addSuffix` added to file path', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([
@@ -323,6 +323,36 @@ describe('gulp-inject', function () {
     var stream = target.pipe(inject(sources));
 
     streamShouldContain(stream, ['defaults.less'], done);
+  });
+
+  it('should use special default tags when injecting into sass files', function (done) {
+    var target = src(['template.sass'], {read: true});
+    var sources = src([
+      'lib.css',
+      'component.sass',
+      'styles.sass',
+      'component.scss',
+      'styles.scss'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.sass'], done);
+  });
+
+  it('should use special default tags when injecting into scss files', function (done) {
+    var target = src(['template.scss'], {read: true});
+    var sources = src([
+      'lib.css',
+      'component.sass',
+      'styles.sass',
+      'component.scss',
+      'styles.scss'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.scss'], done);
   });
 
   it('should be able to chain inject calls with different names without overrides (Issue #39)', function (done) {
