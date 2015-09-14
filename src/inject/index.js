@@ -154,12 +154,14 @@ function collector (collection, opt) {
  */
 function getNewContent (target, collection, opt) {
   var oldContent = target.contents;
-  if (!collection.length) {
-    if (!opt.quiet) {
+  if (!opt.quiet) {
+    if (!collection.length) {
       log('Nothing to inject into ' + magenta(target.relative) + '.');
+    } else {
+      log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
     }
-    return oldContent;
   }
+
   var tags = {};
   var targetExt = extname(target.path);
 
@@ -176,11 +178,9 @@ function getNewContent (target, collection, opt) {
 
   var startAndEndTags = Object.keys(filesPerTags);
 
-  if (!opt.quiet) {
-    log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
-  }
+  var matches = [];
 
-  return new Buffer(startAndEndTags.reduce(function eachInCollection (contents, tag) {
+  var contents = startAndEndTags.reduce(function eachInCollection (contents, tag) {
     var files = filesPerTags[tag];
     var startTag = tags[tag].start;
     var endTag = tags[tag].end;
@@ -188,6 +188,7 @@ function getNewContent (target, collection, opt) {
     return contents.replace(
       getInjectorTagsRegExp(startTag, endTag),
       function injector (match, starttag, indent, content, endtag) {
+        matches.push(starttag);
         var starttagArray = opt.removeTags ? [] : [starttag];
         var endtagArray = opt.removeTags ? [] : [endtag];
         return starttagArray
@@ -203,7 +204,25 @@ function getNewContent (target, collection, opt) {
           .join(indent);
       }
     );
-  }, String(oldContent)));
+  }, String(oldContent));
+
+  contents = contents.replace(
+    getInjectorTagsRegExp(
+      opt.tags.start(targetExt, '{{ANY}}', opt.starttag),
+      opt.tags.end(targetExt, '{{ANY}}', opt.starttag)
+    ),
+    function injector2 (match, starttag, unused, indent, content, endtag) {
+      if (matches.indexOf(starttag) > - 1) {
+        return match;
+      }
+      if (opt.removeTags) {
+        return '';
+      }
+      return [starttag].concat(endtag).join(indent);
+    }
+  );
+
+  return new Buffer(contents);
 }
 
 function getFilepath (sourceFile, targetFile, opt) {
@@ -232,12 +251,13 @@ function getFilepath (sourceFile, targetFile, opt) {
   return filepath;
 }
 
-function getTag (tag, ext) {
-  return tag.replace('{{ext}}', ext);
+function getInjectorTagsRegExp (starttag, endtag) {
+  return new RegExp('(' + tag(starttag) + ')(\\s*)(\\n|\\r|.)*?(' + tag(endtag) + ')', 'gi');
 }
 
-function getInjectorTagsRegExp (starttag, endtag) {
-  return new RegExp('(' + makeWhiteSpaceOptional(escapeForRegExp(starttag)) + ')(\\s*)(\\n|\\r|.)*?(' + makeWhiteSpaceOptional(escapeForRegExp(endtag)) + ')', 'gi');
+function tag (str) {
+  var parts = str.split(/\{\{ANY\}\}/g);
+  return parts.map(escapeForRegExp).map(makeWhiteSpaceOptional).join('(.+)');
 }
 
 function makeWhiteSpaceOptional (str) {
@@ -258,7 +278,7 @@ function removeRootSlash (filepath) {
   return filepath.replace(/^\/+/, '');
 }
 function addPrefix (filepath, prefix) {
-  return  prefix + addRootSlash(filepath);
+  return prefix + addRootSlash(filepath);
 }
 function addSuffix (filepath, suffix) {
   return  filepath + suffix;

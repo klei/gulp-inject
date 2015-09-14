@@ -343,7 +343,6 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['issue39.html'], done);
   });
 
-
   it('should be able to inject hashed files (Issue #71)', function (done) {
     var target = src(['issue71.html'], {read: true});
     var sources = src([
@@ -378,7 +377,7 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['issue74.html'], done);
   });
 
-  it('should be able to remove tags if option present', function (done) {
+  it('should be able to remove tags if removeTags option is set', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([
       'lib.js',
@@ -453,6 +452,37 @@ describe('gulp-inject', function () {
     }));
 
     streamShouldContain(stream, ['issue107.html'], done);
+  });
+
+  it('should be able to empty tags when there are no files for that tag', function (done) {
+    var target = src(['templateWithExistingData2.html'], {read: true});
+    var sources = src([
+      'lib.js'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['emptyTags.html'], done);
+  });
+
+  it('should be able to empty all tags when there are no files at all', function (done) {
+    var target = src(['templateWithExistingData2.html'], {read: true});
+    var sources = src([]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['emptyTags2.html'], done);
+  });
+
+  it('should be able to remove and empty tags when there are no files for that tag and removeTags option is set', function (done) {
+    var target = src(['templateWithExistingData2.html'], {read: true});
+    var sources = src([
+      'lib.js'
+    ]);
+
+    var stream = target.pipe(inject(sources, {removeTags: true}));
+
+    streamShouldContain(stream, ['removeAndEmptyTags.html'], done);
   });
 });
 
