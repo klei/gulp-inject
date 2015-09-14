@@ -4,7 +4,7 @@
 
 `gulp-inject` takes a stream of source files, transforms each file to a string and injects each transformed string into placeholders in the target stream files. See [Basic usage](#basic-usage) and [More examples](#more-examples) below.
 
-Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `jsx` , `slm` and `haml` files.
+Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `jsx` , `less`, `slm` and `haml` files.
 
 ## Installation
 
@@ -587,6 +587,14 @@ Default: `"inject"`
 
 Used in the default [start](#optionsstarttag) and [end](#optionsendtag) tags below.
 
+#### options.removeTags
+Type: `Boolean`
+
+Default: `false`
+
+
+When `true` the start and end tags will be removed when injecting files.
+
 
 #### options.starttag
 
@@ -610,6 +618,7 @@ A function dependent on target file type and source file type that returns:
 * jade as target: `//- {{name}}:{{ext}}`
 * jsx as target: `{/* {{name}}:{{ext}} */}`
 * slm as target: `/ {{name}}:{{ext}}`
+* less as target: `/* {{name}}:{{ext}} */`
 
 #### options.endtag
 
@@ -633,6 +642,7 @@ A function dependent on target file type and source file type that returns:
 * jade as target: `//- endinject`
 * jsx as target: `{/* endinject */}`
 * slm as target: `/ endinject`
+* less as target: `/* endinject */`
 
 #### options.transform
 
@@ -703,6 +713,11 @@ The same as for injecting into `html` above with [`options.selfClosingTag`](#opt
 * jpg files: `%img{src:"<filename>.jpg"}`
 * jpeg files: `%img{src:"<filename>.jpeg"}`
 
+**Injecting into `less`**
+
+* css files: `@import "<filename>.css";`
+* less files: `@import "<filename>.css";`
+
 #### options.selfClosingTag
 Type: `Boolean`
 
@@ -759,7 +774,7 @@ For more details see [the code with tests](https://github.com/klei/gulp-inject/t
 
 #### inject.transform.html
 
-The default transform function for files into `html`, or other file types not `jade`, `jsx`, `slm` or `haml`.
+The default transform function for files into `html`, or other file types not `jade`, `jsx`, `slm`, `less` or `haml`.
 
 #### inject.transform.jade
 
@@ -776,6 +791,10 @@ The default transform function for files into `slm`.
 #### inject.transform.haml
 
 The default transform function for files into `haml`.
+
+#### inject.transform.less
+
+The default transform function for files into `less`.
 
 
 ## License
