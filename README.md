@@ -4,7 +4,7 @@
 
 `gulp-inject` takes a stream of source files, transforms each file to a string and injects each transformed string into placeholders in the target stream files. See [Basic usage](#basic-usage) and [More examples](#more-examples) below.
 
-Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `jsx` , `less`, `slm` and `haml` files.
+Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `jsx` , `less`, `slm`, `haml` and `sass` / `scss` files.
 
 ## Installation
 
@@ -619,6 +619,7 @@ A function dependent on target file type and source file type that returns:
 * jsx as target: `{/* {{name}}:{{ext}} */}`
 * slm as target: `/ {{name}}:{{ext}}`
 * less as target: `/* {{name}}:{{ext}} */`
+* sass, scss as target: `/* {{name}}:{{ext}} */`
 
 #### options.endtag
 
@@ -643,6 +644,7 @@ A function dependent on target file type and source file type that returns:
 * jsx as target: `{/* endinject */}`
 * slm as target: `/ endinject`
 * less as target: `/* endinject */`
+* sass, scss as target: `/* endinject */`
 
 #### options.transform
 
@@ -716,7 +718,19 @@ The same as for injecting into `html` above with [`options.selfClosingTag`](#opt
 **Injecting into `less`**
 
 * css files: `@import "<filename>.css";`
-* less files: `@import "<filename>.css";`
+* less files: `@import "<filename>.less";`
+
+**Injecting into `scss`**
+
+* css files: `@import "<filename>.css";`
+* scss files: `@import "<filename>.scss";`
+* sass files: `@import "<filename>.sass";`
+
+**Injecting into `sass`**
+
+* css files: `@import "<filename>.css"`
+* sass files: `@import "<filename>.sass"`
+* scss files: `@import "<filename>.scss"`
 
 #### options.selfClosingTag
 Type: `Boolean`
@@ -774,7 +788,7 @@ For more details see [the code with tests](https://github.com/klei/gulp-inject/t
 
 #### inject.transform.html
 
-The default transform function for files into `html`, or other file types not `jade`, `jsx`, `slm`, `less` or `haml`.
+The default transform function for files into `html`, or other file types not `jade`, `jsx`, `slm`, `less`, `scss`, `sass` or `haml`.
 
 #### inject.transform.jade
 
@@ -795,6 +809,14 @@ The default transform function for files into `haml`.
 #### inject.transform.less
 
 The default transform function for files into `less`.
+
+#### inject.transform.sass
+
+The default transform function for files into `sass`.
+
+#### inject.transform.scss
+
+The default transform function for files into `scss`.
 
 
 ## License

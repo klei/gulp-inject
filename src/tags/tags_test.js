@@ -34,6 +34,8 @@ describe('tags', function () {
         tags.start('html', 'html').should.equal('<!-- inject:html -->');
         tags.start('html', 'js').should.equal('<!-- inject:js -->');
         tags.start('html', 'less').should.equal('<!-- inject:less -->');
+        tags.start('html', 'sass').should.equal('<!-- inject:sass -->');
+        tags.start('html', 'scss').should.equal('<!-- inject:scss -->');
         tags.start('html', 'UNKNOWN').should.equal('<!-- inject:UNKNOWN -->');
       });
 
@@ -42,6 +44,8 @@ describe('tags', function () {
         tags.start('jsx', 'html').should.equal('{/* inject:html */}');
         tags.start('jsx', 'js').should.equal('{/* inject:js */}');
         tags.start('jsx', 'less').should.equal('{/* inject:less */}');
+        tags.start('jsx', 'sass').should.equal('{/* inject:sass */}');
+        tags.start('jsx', 'scss').should.equal('{/* inject:scss */}');
         tags.start('jsx', 'UNKNOWN').should.equal('{/* inject:UNKNOWN */}');
       });
 
@@ -50,6 +54,8 @@ describe('tags', function () {
         tags.start('jade', 'html').should.equal('//- inject:html');
         tags.start('jade', 'js').should.equal('//- inject:js');
         tags.start('jade', 'less').should.equal('//- inject:less');
+        tags.start('jade', 'sass').should.equal('//- inject:sass');
+        tags.start('jade', 'scss').should.equal('//- inject:scss');
         tags.start('jade', 'UNKNOWN').should.equal('//- inject:UNKNOWN');
       });
 
@@ -58,6 +64,8 @@ describe('tags', function () {
         tags.start('slm', 'html').should.equal('/ inject:html');
         tags.start('slm', 'js').should.equal('/ inject:js');
         tags.start('slm', 'less').should.equal('/ inject:less');
+        tags.start('slm', 'sass').should.equal('/ inject:sass');
+        tags.start('slm', 'scss').should.equal('/ inject:scss');
         tags.start('slm', 'UNKNOWN').should.equal('/ inject:UNKNOWN');
       });
 
@@ -66,6 +74,8 @@ describe('tags', function () {
         tags.start('haml', 'html').should.equal('-# inject:html');
         tags.start('haml', 'js').should.equal('-# inject:js');
         tags.start('haml', 'less').should.equal('-# inject:less');
+        tags.start('haml', 'sass').should.equal('-# inject:sass');
+        tags.start('haml', 'scss').should.equal('-# inject:scss');
         tags.start('haml', 'UNKNOWN').should.equal('-# inject:UNKNOWN');
       });
 
@@ -74,7 +84,29 @@ describe('tags', function () {
         tags.start('less', 'html').should.equal('/* inject:html */');
         tags.start('less', 'js').should.equal('/* inject:js */');
         tags.start('less', 'less').should.equal('/* inject:less */');
+        tags.start('less', 'sass').should.equal('/* inject:sass */');
+        tags.start('less', 'scss').should.equal('/* inject:scss */');
         tags.start('less', 'UNKNOWN').should.equal('/* inject:UNKNOWN */');
+      });
+
+      it('should return sass comment tag for sass files', function () {
+        tags.start('sass', 'css').should.equal('/* inject:css */');
+        tags.start('sass', 'html').should.equal('/* inject:html */');
+        tags.start('sass', 'js').should.equal('/* inject:js */');
+        tags.start('sass', 'less').should.equal('/* inject:less */');
+        tags.start('sass', 'sass').should.equal('/* inject:sass */');
+        tags.start('sass', 'scss').should.equal('/* inject:scss */');
+        tags.start('sass', 'UNKNOWN').should.equal('/* inject:UNKNOWN */');
+      });
+
+      it('should return sass comment tag for sass files', function () {
+        tags.start('scss', 'css').should.equal('/* inject:css */');
+        tags.start('scss', 'html').should.equal('/* inject:html */');
+        tags.start('scss', 'js').should.equal('/* inject:js */');
+        tags.start('scss', 'less').should.equal('/* inject:less */');
+        tags.start('scss', 'sass').should.equal('/* inject:sass */');
+        tags.start('scss', 'scss').should.equal('/* inject:scss */');
+        tags.start('scss', 'UNKNOWN').should.equal('/* inject:UNKNOWN */');
       });
 
       it('should return html comment tag for other target files', function () {
@@ -82,6 +114,8 @@ describe('tags', function () {
         tags.start('txt', 'html').should.equal('<!-- inject:html -->');
         tags.start('txt', 'js').should.equal('<!-- inject:js -->');
         tags.start('txt', 'less').should.equal('<!-- inject:less -->');
+        tags.start('txt', 'sass').should.equal('<!-- inject:sass -->');
+        tags.start('txt', 'scss').should.equal('<!-- inject:scss -->');
         tags.start('txt', 'UNKNOWN').should.equal('<!-- inject:UNKNOWN -->');
       });
     });
@@ -152,6 +186,14 @@ describe('tags', function () {
 
       it('should return haml comments for haml target files', function () {
         tags.end('less', 'UNKNOWN').should.equal('/* endinject */');
+      });
+
+      it('should return sass comments for sass target files', function () {
+        tags.end('sass', 'UNKNOWN').should.equal('/* endinject */');
+      });
+
+      it('should return scss comments for scss target files', function () {
+        tags.end('scss', 'UNKNOWN').should.equal('/* endinject */');
       });
 
       it('should return html comment tag for other target files', function () {
