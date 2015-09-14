@@ -299,6 +299,19 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['defaults.slm'], done);
   });
 
+  it('should use special default tags when injecting into slim files', function (done) {
+    var target = src(['template.slim'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.slim'], done);
+  });
+
   it('should use special default tags when injecting into haml files', function (done) {
     var target = src(['template.haml'], {read: true});
     var sources = src([

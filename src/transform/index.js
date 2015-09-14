@@ -4,7 +4,7 @@ var extname = require('../extname');
 /**
  * Constants
  */
-var TARGET_TYPES = ['html', 'jade', 'slm', 'jsx', 'haml', 'less', 'sass', 'scss'];
+var TARGET_TYPES = ['html', 'jade', 'slm', 'slim', 'jsx', 'haml', 'less', 'sass', 'scss'];
 var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
 var DEFAULT_TARGET = TARGET_TYPES[0];
 
@@ -114,6 +114,16 @@ transform.slm.image = function (filepath) {
   return 'img src="' + filepath + '"';
 };
 
+transform.slim.css = transform.slm.css;
+
+transform.slim.js = transform.slm.js;
+
+transform.slim.html = transform.slm.html;
+
+transform.slim.coffee = transform.slm.coffee;
+
+transform.slim.image = transform.slm.image;
+
 transform.haml.css = function (filepath) {
   return '%link{rel:"stylesheet", href:"' + filepath + '"}';
 };
@@ -134,8 +144,8 @@ transform.haml.image = function (filepath) {
   return '%img{src:"' + filepath + '"}';
 };
 
-transform.less.less = function(filepath){
-  return '@import "' + filepath +'";';
+transform.less.less = function (filepath) {
+  return '@import "' + filepath + '";';
 };
 
 transform.less.css = transform.less.less;
@@ -164,7 +174,6 @@ Object.keys(transform.html).forEach(function (type) {
     return result;
   };
 });
-
 
 function end () {
   return transform.selfClosingTag ? ' />' : '>';
