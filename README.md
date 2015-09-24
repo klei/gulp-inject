@@ -595,6 +595,16 @@ Default: `false`
 
 When `true` the start and end tags will be removed when injecting files.
 
+#### options.empty
+Type: `Boolean`
+
+Default: `false`
+
+
+When `true` all tags without corresponding files will be emptied.
+
+[**Warning** this has the potential issue of emptying more than expected.](https://github.com/klei/gulp-inject/issues/135)
+
 
 #### options.starttag
 

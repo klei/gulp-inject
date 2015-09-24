@@ -497,33 +497,53 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['issue107.html'], done);
   });
 
-  it('should be able to empty tags when there are no files for that tag', function (done) {
+  it('should be able to empty tags when there are no files for that tag and empty option is set', function (done) {
     var target = src(['templateWithExistingData2.html'], {read: true});
     var sources = src([
       'lib.js'
     ]);
 
-    var stream = target.pipe(inject(sources));
+    var stream = target.pipe(inject(sources, {empty: true}));
 
     streamShouldContain(stream, ['emptyTags.html'], done);
   });
 
-  it('should be able to empty all tags when there are no files at all', function (done) {
+  it('should be able both leave and replace tag contents when there are no files for some tags and empty option is not set', function (done) {
+    var target = src(['templateWithExistingData2.html'], {read: true});
+    var sources = src([
+      'picture.png'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['existingDataAndReplaced.html'], done);
+  });
+
+  it('should be able to empty all tags when there are no files at all and empty option is set', function (done) {
+    var target = src(['templateWithExistingData2.html'], {read: true});
+    var sources = src([]);
+
+    var stream = target.pipe(inject(sources, {empty: true}));
+
+    streamShouldContain(stream, ['emptyTags2.html'], done);
+  });
+
+  it('should leave all tags when there are no files at all and empty option is not set', function (done) {
     var target = src(['templateWithExistingData2.html'], {read: true});
     var sources = src([]);
 
     var stream = target.pipe(inject(sources));
 
-    streamShouldContain(stream, ['emptyTags2.html'], done);
+    streamShouldContain(stream, ['templateWithExistingData2.html'], done);
   });
 
-  it('should be able to remove and empty tags when there are no files for that tag and removeTags option is set', function (done) {
+  it('should be able to remove and empty tags when there are no files for that tag and empty and removeTags option is set', function (done) {
     var target = src(['templateWithExistingData2.html'], {read: true});
     var sources = src([
       'lib.js'
     ]);
 
-    var stream = target.pipe(inject(sources, {removeTags: true}));
+    var stream = target.pipe(inject(sources, {empty: true, removeTags: true}));
 
     streamShouldContain(stream, ['removeAndEmptyTags.html'], done);
   });

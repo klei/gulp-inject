@@ -206,21 +206,23 @@ function getNewContent (target, collection, opt) {
     );
   }, String(oldContent));
 
-  contents = contents.replace(
-    getInjectorTagsRegExp(
-      opt.tags.start(targetExt, '{{ANY}}', opt.starttag),
-      opt.tags.end(targetExt, '{{ANY}}', opt.starttag)
-    ),
-    function injector2 (match, starttag, unused, indent, content, endtag) {
-      if (matches.indexOf(starttag) > - 1) {
-        return match;
+  if (opt.empty) {
+    contents = contents.replace(
+      getInjectorTagsRegExp(
+        opt.tags.start(targetExt, '{{ANY}}', opt.starttag),
+        opt.tags.end(targetExt, '{{ANY}}', opt.starttag)
+      ),
+      function injector2 (match, starttag, unused, indent, content, endtag) {
+        if (matches.indexOf(starttag) > - 1) {
+          return match;
+        }
+        if (opt.removeTags) {
+          return '';
+        }
+        return [starttag].concat(endtag).join(indent);
       }
-      if (opt.removeTags) {
-        return '';
-      }
-      return [starttag].concat(endtag).join(indent);
-    }
-  );
+    );
+  }
 
   return new Buffer(contents);
 }
