@@ -523,6 +523,75 @@ And in your `./src/index.html`:
 </body>
 </html>
 ```
+### Injecting with dynamic custom `transform` function
+
+The [default `transform`](#injecttransform) function is available to use e.g. as a default fallback.
+
+Used here to inject Word documents as `<a>` tags below:
+
+**`index.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My documents</title>
+</head>
+<body>
+  <h1>Documents</h1>
+  <!-- module:main:js -->
+  <!-- endinject -->
+  <!-- module:messaging:js -->
+  <!-- endinject -->
+  <!-- module:somethingelse:js -->
+  <!-- endinject -->
+</body>
+</html>
+```
+
+**`gulpfile.js`:**
+
+```javascript
+var inject = require('gulp-inject');
+
+gulp.src('./index.html')
+  .pipe(inject(
+    // note the :: that mark a dynamic tag name
+    gulp.src(['./app/**/*.js'], {name:'module::',read: false}), {
+      transform: function (filepath, file, i, length, target, tagname) {
+          // tagname is the full tag name, for instance: module:main:js
+          var filter = /:(.+):/.exec(tagname)[1];
+          if (filepath.split('/').indexOf(filter) === 1){
+            return $.inject.transform.apply($.inject.transform, arguments);
+          }
+      }
+    }
+  ))
+  .pipe(gulp.dest('./'));
+```
+
+**Resulting `index.html`:**
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My documents</title>
+</head>
+<body>
+  <h1>Documents</h1>
+  <!-- module:main:js -->
+  <!-- only the files found in app/main/*.js -->
+  <!-- endinject -->
+  <!-- module:messaging:js -->
+  <!-- only the files found in app/messaging/*.js -->
+  <!-- endinject -->
+  <!-- module:somethingelse:js -->
+  <!-- only the files found in app/somethingelse/*.js -->
+  <!-- endinject -->
+</body>
+</html>
+```
 
 ## API
 

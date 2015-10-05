@@ -11,7 +11,7 @@ var DEFAULT_TARGET = TARGET_TYPES[0];
 /**
  * Transform module
  */
-var transform = module.exports = exports = function (filepath, i, length, sourceFile, targetFile) {
+var transform = module.exports = exports = function (filepath, i, length, sourceFile, targetFile, tagName) {
   var type;
   if (targetFile && targetFile.path) {
     var ext = extname(targetFile.path);
