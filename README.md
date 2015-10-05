@@ -525,9 +525,9 @@ And in your `./src/index.html`:
 ```
 ### Injecting with dynamic custom `transform` function
 
-The [default `transform`](#injecttransform) function is available to use e.g. as a default fallback.
+You can make use of dynamic fillers `::` to inject content dynamically using `transform` function.
 
-Used here to inject Word documents as `<a>` tags below:
+Here is an example for a big application that requires selective modules injections :
 
 **`index.html`:**
 
