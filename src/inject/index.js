@@ -189,7 +189,7 @@ function getNewContent (target, collection, opt) {
       getInjectorTagsRegExp(startTag, endTag),
       function injector (match, starttag, indent, content, endtag) {
         matches.push(starttag);
-        var starttagArray = opt.removeTags ? [] : [starttag];
+        var starttagArray = opt.removeTags ? [indent.replace(/\n/, '')] : [indent + starttag];
         var endtagArray = opt.removeTags ? [] : [endtag];
         return starttagArray
           .concat(files.reduce(function transformFile (lines, file, i) {
@@ -245,7 +245,7 @@ function getFilepath (sourceFile, targetFile, opt) {
   } else if(!opt.addPrefix) {
     filepath = removeRootSlash(filepath);
   }
-  
+
   if (opt.addSuffix) {
     filepath = addSuffix(filepath, opt.addSuffix);
   }
