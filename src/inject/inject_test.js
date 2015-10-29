@@ -547,6 +547,35 @@ describe('gulp-inject', function () {
 
     streamShouldContain(stream, ['removeAndEmptyTags.html'], done);
   });
+
+  it('should use starttag and endtag with dynamic names specified name if specified', function (done) {
+    var target = src(['templateCustomFillInName.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'lib2.js'
+    ]);
+
+    var stream = target.pipe(inject(sources, {name: 'file::'}));
+
+    streamShouldContain(stream, ['customFillInName.html'], done);
+  });
+
+  it('should use starttag and endtag if specified', function (done) {
+    var target = src(['templateCustomFillInTags.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'lib2.js',
+      'style.css'
+    ]);
+
+    var stream = target.pipe(inject(sources, {
+      ignorePath: 'fixtures',
+      starttag: '<!-- custom:: -->',
+      endtag: '<!-- endcustom -->'
+    }));
+
+    streamShouldContain(stream, ['customFillInTags.html'], done);
+  });
 });
 
 function src (files, opt) {
