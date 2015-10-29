@@ -557,7 +557,8 @@ var inject = require('gulp-inject');
 gulp.src('./index.html')
   .pipe(inject(
     // note the :: that mark a dynamic tag name
-    gulp.src(['./app/**/*.js'], {name:'module::',read: false}), {
+    gulp.src(['./app/**/*.js'], {read: false}), {
+      name:'module::',
       transform: function (filepath, file, i, length, target, tagname) {
           // tagname is the full tag name, for instance: module:main:js
           var filter = /:(.+):/.exec(tagname)[1];
