@@ -7,7 +7,6 @@ var fs = require('fs'),
   should = require('should');
 
 var gutil = require('gulp-util'),
-  gulp = require('gulp'),
   inject = require('../../.');
 
 describe('gulp-inject', function () {
