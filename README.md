@@ -571,6 +571,21 @@ Default: `NULL`
 
 A path that should be suffixed to each injected file path.
 
+#### options.versioning
+Type: `Object|Boolean`
+
+Default: `NULL`
+
+Used to dynamically set version URL parameter that should be suffixed to each injected file path. Use this feature if you have problems with cached files in your browser. Disabled by default.
+Parameter value is calculating dynamically from file hash for each file. Or you can provide parameter value manually. Also you can specify hash algorithm and parameter name.
+Don't forget to omit `{read: false}` in `gulp.src(...)` if you'd like to use hashes.
+
+Options:
+
+* `paramName` - parameter name. By default: `ver`.
+* `paramValue` - if set, it will be used as parameter value for every file. If not, file hash will be used.
+* `hash` - hashing algorithm. Algorithm is dependent on the available algorithms supported by the version of OpenSSL on the platform. Examples are `sha1`, `md5`, `sha256`, `sha512`, etc. By default: `md5`.
+
 #### options.addRootSlash
 Type: `Boolean`
 

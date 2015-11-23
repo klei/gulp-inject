@@ -7,6 +7,7 @@ var fs = require('fs'),
   should = require('should');
 
 var gutil = require('gulp-util'),
+  gulp = require('gulp'),
   inject = require('../../.');
 
 describe('gulp-inject', function () {
@@ -121,7 +122,7 @@ describe('gulp-inject', function () {
 
     streamShouldContain(stream, ['addPrefix.html'], done);
   });
-  
+
   it('should inject stylesheets, scripts and html components with `addSuffix` added to file path', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([
@@ -135,6 +136,32 @@ describe('gulp-inject', function () {
     var stream = target.pipe(inject(sources, {addSuffix: '?my-test=suffix'}));
 
     streamShouldContain(stream, ['addSuffix.html'], done);
+  });
+
+  it('should inject stylesheets, scripts and html components with `versioning` is `true`', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      '../index.js',
+      'template.html',
+      'template.jsx'
+    ], {read: true});
+
+    var stream = target.pipe(inject(sources, {versioning: true}));
+
+    streamShouldContain(stream, ['versioningDefault.html'], done);
+  });
+
+  it('should inject stylesheets, scripts and html components with custom `versioning` opts', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      '../index.js',
+      'template.html',
+      'template.jsx'
+    ], {read: true});
+
+    var stream = target.pipe(inject(sources, {versioning: {hash: 'sha1', paramName: 'version'}}));
+
+    streamShouldContain(stream, ['versioningCustom.html'], done);
   });
 
   it('should inject stylesheets and html components with self closing tags if `selfClosingTag` is truthy', function (done) {
