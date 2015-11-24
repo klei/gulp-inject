@@ -140,9 +140,7 @@ describe('gulp-inject', function () {
   it('should inject stylesheets, scripts and html components with `versioning` is `true`', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([
-      '../index.js',
-      'template.html',
-      'template.jsx'
+      'versioning.js' // note that git can replace /r/n to /n and /n to /r/n. That will change the hash
     ], {read: true});
 
     var stream = target.pipe(inject(sources, {versioning: true}));
@@ -153,9 +151,7 @@ describe('gulp-inject', function () {
   it('should inject stylesheets, scripts and html components with custom `versioning` opts', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([
-      '../index.js',
-      'template.html',
-      'template.jsx'
+      'versioning.js'
     ], {read: true});
 
     var stream = target.pipe(inject(sources, {versioning: {hash: 'sha1', paramName: 'version'}}));
