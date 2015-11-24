@@ -137,6 +137,28 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['addSuffix.html'], done);
   });
 
+  it('should inject stylesheets, scripts and html components with `versioning` is `true`', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'versioning.js' // note that git can replace /r/n to /n and /n to /r/n. That will change the hash
+    ], {read: true});
+
+    var stream = target.pipe(inject(sources, {versioning: true}));
+
+    streamShouldContain(stream, ['versioningDefault.html'], done);
+  });
+
+  it('should inject stylesheets, scripts and html components with custom `versioning` opts', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'versioning.js'
+    ], {read: true});
+
+    var stream = target.pipe(inject(sources, {versioning: {hash: 'sha1', paramName: 'version'}}));
+
+    streamShouldContain(stream, ['versioningCustom.html'], done);
+  });
+
   it('should inject stylesheets and html components with self closing tags if `selfClosingTag` is truthy', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([

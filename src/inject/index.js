@@ -1,6 +1,7 @@
 'use strict';
 
 var fs = require('fs');
+var crypto = require('crypto');
 var es = require('event-stream');
 var path = require('path');
 var gutil = require('gulp-util');
@@ -245,9 +246,13 @@ function getFilepath (sourceFile, targetFile, opt) {
   } else if(!opt.addPrefix) {
     filepath = removeRootSlash(filepath);
   }
-  
+
   if (opt.addSuffix) {
     filepath = addSuffix(filepath, opt.addSuffix);
+  }
+
+  if (opt.versioning) {
+    filepath = addVersioning(filepath, sourceFile, opt.versioning);
   }
 
   return filepath;
@@ -284,6 +289,26 @@ function addPrefix (filepath, prefix) {
 }
 function addSuffix (filepath, suffix) {
   return  filepath + suffix;
+}
+var versioningWarnOnce;
+function addVersioning (filepath, sourceFile, opts) {
+  var paramName = opts.paramName || "ver";
+  var paramValue = opts.paramValue;
+  if (!paramValue) {
+    if (!sourceFile._contents) {
+      if (!versioningWarnOnce) {
+        versioningWarnOnce = true;
+        warn('You have to omit ' + magenta('`{read:false}`') + ' option provided for ' + magenta('`gulp.src`') +
+          ' to use `versioning by hash` feature');
+      }
+      return  filepath;
+    } else {
+      var hashAlgName = (!opts.hash || opts.hash === true) ? 'md5' : opts.hash;
+      var hashAlg = crypto.createHash(hashAlgName);
+      paramValue = hashAlg.update(sourceFile._contents).digest("hex");
+    }
+  }
+  return  filepath + "?" + paramName + "=" + paramValue;
 }
 
 function removeBasePath (basedir, filepath) {
