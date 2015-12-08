@@ -194,7 +194,7 @@ function getNewContent (target, collection, opt) {
         return starttagArray
           .concat(files.reduce(function transformFile (lines, file, i) {
             var filepath = getFilepath(file, target, opt);
-            var transformedContents = opt.transform(filepath, file, i, files.length, target);
+            var transformedContents = opt.transform(filepath, extname(file.path), file, i, files.length, target);
             if (typeof transformedContents !== 'string') {
               return lines;
             }
