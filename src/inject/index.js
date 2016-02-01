@@ -43,6 +43,7 @@ module.exports = exports = function(sources, opt){
 
   // Defaults:
   opt.quiet = bool(opt, 'quiet', false);
+  opt.detail = bool(opt, 'detail', false);
   opt.ignorePath = toArray(opt.ignorePath).map(unixify);
   opt.relative = bool(opt, 'relative', false);
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
@@ -156,9 +157,9 @@ function getNewContent (target, collection, opt) {
   var oldContent = target.contents;
   if (!opt.quiet) {
     if (!collection.length) {
-      log('Nothing to inject into ' + magenta(target.relative) + '.');
+      log('Nothing to inject into ' + magenta(opt.detail ? path.relative(target.relative, target.path) : target.relative) + '.');
     } else {
-      log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
+      log(cyan(collection.length) + ' files into ' + magenta(opt.detail ? path.relative(target.relative, target.path) : target.relative) + '.');
     }
   }
 
