@@ -749,6 +749,19 @@ Default: `false`
 
 Affects the default `options.transform` function, see above.
 
+#### options.detail
+Type: `Boolean`
+
+Default: `false`
+
+Set to `true` to log path and filename:
+
+`gulp-inject 1 files into  {path}{filename.htm}`
+
+Instead of:
+
+`gulp-inject 1 files into {filename.htm}`
+
 
 #### ~~options.templateString~~
 
