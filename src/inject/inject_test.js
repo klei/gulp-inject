@@ -497,6 +497,38 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['issue107.html'], done);
   });
 
+  it('should be accommodate prefixed php inserts (Issue #156)', function (done) {
+    var version = '1.0.0';
+    var prefix = '<?php echo get_bloginfo(\'template_directory\'); ?>';
+
+    var target = src(['issue156.php'], {read: true});
+    var sources = src([
+      'lib.js'
+    ]);
+
+    var stream = target.pipe(inject(sources, {
+
+      name: 'without-query-string',
+      addPrefix: prefix,
+      addRootSlash: false
+
+    })).pipe(inject(sources, {
+
+      // making sure the fix is not mutually exclusive with the one for #107
+      name: 'with-query-string',
+      addPrefix: '<?php echo get_bloginfo(\'template_directory\'); ?>',
+      addRootSlash: false,
+
+      transform: function (filepath) {
+        arguments[0] = filepath + '?v=' + version;
+        return inject.transform.apply(inject.transform, arguments);
+      }
+
+    }));
+
+    streamShouldContain(stream, ['issue156.php'], done);
+  });
+
   it('should be able to empty tags when there are no files for that tag and empty option is set', function (done) {
     var target = src(['templateWithExistingData2.html'], {read: true});
     var sources = src([
