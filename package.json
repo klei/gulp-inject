@@ -26,20 +26,28 @@
     "test": "mocha -R spec src/**/*_test.js"
   },
   "dependencies": {
+    "event-stream": "^3.1.0",
     "gulp-util": "^3.0.0",
-    "event-stream": "^3.1.0"
+    "stream-to-array": "^2.3.0",
+    "through2": "^2.0.1"
   },
   "devDependencies": {
     "mocha": "~2.0.1",
-    "should": "^4.0.4"
+    "should": "^4.0.4",
+    "xo": "^0.13.0"
   },
   "engines": {
     "node": ">=0.10.0",
     "npm": ">=1.2.10"
   },
-  "licenses": [
-    {
-      "type": "MIT"
-    }
-  ]
+  "license": "MIT",
+  "xo": {
+    "space": true,
+    "envs": [
+      "node"
+    ],
+    "ignores": [
+      "src/**/*_test.js"
+    ]
+  }
 }

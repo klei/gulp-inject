@@ -1,14 +1,13 @@
 'use strict';
-
-var fs = require('fs');
-var es = require('event-stream');
 var path = require('path');
+var through2 = require('through2');
 var gutil = require('gulp-util');
+var streamToArray = require('stream-to-array');
 var extname = require('../extname');
 var transform = require('../transform');
 var tags = require('../tags');
+
 var PluginError = gutil.PluginError;
-var File = gutil.File;
 var magenta = gutil.colors.magenta;
 var cyan = gutil.colors.cyan;
 var red = gutil.colors.red;
@@ -18,7 +17,7 @@ var red = gutil.colors.red;
  */
 var PLUGIN_NAME = 'gulp-inject';
 
-module.exports = exports = function(sources, opt){
+module.exports = exports = function (sources, opt) {
   if (!sources) {
     throw error('Missing sources stream!');
   }
@@ -59,12 +58,12 @@ module.exports = exports = function(sources, opt){
   throw error('passing target file as a string is deprecated! Pass a vinyl file stream (i.e. use `gulp.src`)!');
 };
 
-function defaults (options, prop, defaultValue) {
+function defaults(options, prop, defaultValue) {
   return options[prop] || defaultValue;
 }
 
-function bool (options, prop, defaultVal) {
-  return typeof options[prop] !== 'undefined' ? !!options[prop] : defaultVal;
+function bool(options, prop, defaultVal) {
+  return typeof options[prop] === 'undefined' ? defaultVal : Boolean(options[prop]);
 }
 
 /**
@@ -75,72 +74,22 @@ function bool (options, prop, defaultVal) {
  * @param {Object} opt
  * @returns {Stream}
  */
-function handleVinylStream (sources, opt) {
-  var collected = collectFilesToInject(sources, opt);
+function handleVinylStream(sources, opt) {
+  var collected = streamToArray(sources);
 
-  return es.map(function (target, cb) {
+  return through2.obj(function (target, enc, cb) {
     if (target.isStream()) {
       return cb(error('Streams not supported for target templates!'));
     }
-    collected(function (collection) {
+    collected.then(function (collection) {
       target.contents = getNewContent(target, collection, opt);
-      cb(null, target);
+      this.push(target);
+      cb();
+    }.bind(this))
+    .catch(function (err) {
+      cb(err);
     });
   });
-}
-
-/**
- * Collecting files to inject from Vinyl File Stream
- *
- * Returns an almost promise like function which can be
- * called multiple times with a callback, that will be
- * resolved with the result of the file collection.
- *
- * @param {Stream} sources
- * @param {Object} opt
- * @returns {Function}
- */
-function collectFilesToInject (sources, opt) {
-  var collection = [], done = false, queue = [];
-
-  sources.pipe(es.through(collector(collection, opt), function () {
-    done = true;
-    while (queue.length) {
-      resolve(queue.shift());
-    }
-  }));
-
-  function resolve (cb) {
-    setImmediate(function () {
-      cb(collection);
-    });
-  }
-
-  return function (cb) {
-    if (done) {
-      resolve(cb);
-    } else {
-      queue.push(cb);
-    }
-  };
-}
-
-/**
- * Create a file collecting function
- * to be used in es.through
- *
- * @param {Array} collection  Collection to fill with files
- * @param {Object} opt
- * @returns {Function}
- */
-function collector (collection, opt) {
-  return function (file) {
-    if (!file.path) {
-      return;
-    }
-
-    collection.push(file);
-  };
 }
 
 /**
@@ -152,13 +101,13 @@ function collector (collection, opt) {
  * @param {Object} opt
  * @returns {Buffer}
  */
-function getNewContent (target, collection, opt) {
+function getNewContent(target, collection, opt) {
   var oldContent = target.contents;
   if (!opt.quiet) {
-    if (!collection.length) {
-      log('Nothing to inject into ' + magenta(target.relative) + '.');
-    } else {
+    if (collection.length) {
       log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
+    } else {
+      log('Nothing to inject into ' + magenta(target.relative) + '.');
     }
   }
 
@@ -180,19 +129,19 @@ function getNewContent (target, collection, opt) {
 
   var matches = [];
 
-  var contents = startAndEndTags.reduce(function eachInCollection (contents, tag) {
+  var contents = startAndEndTags.reduce(function eachInCollection(contents, tag) {
     var files = filesPerTags[tag];
     var startTag = tags[tag].start;
     var endTag = tags[tag].end;
 
     return contents.replace(
       getInjectorTagsRegExp(startTag, endTag),
-      function injector (match, starttag, indent, content, endtag) {
+      function injector(match, starttag, indent, content, endtag) {
         matches.push(starttag);
         var starttagArray = opt.removeTags ? [] : [starttag];
         var endtagArray = opt.removeTags ? [] : [endtag];
         return starttagArray
-          .concat(files.reduce(function transformFile (lines, file, i) {
+          .concat(files.reduce(function transformFile(lines, file, i) {
             var filepath = getFilepath(file, target, opt);
             var transformedContents = opt.transform(filepath, file, i, files.length, target);
             if (typeof transformedContents !== 'string') {
@@ -212,8 +161,8 @@ function getNewContent (target, collection, opt) {
         opt.tags.start(targetExt, '{{ANY}}', opt.starttag),
         opt.tags.end(targetExt, '{{ANY}}', opt.starttag)
       ),
-      function injector2 (match, starttag, unused, indent, content, endtag) {
-        if (matches.indexOf(starttag) > - 1) {
+      function injector2(match, starttag, unused, indent, content, endtag) {
+        if (matches.indexOf(starttag) > -1) {
           return match;
         }
         if (opt.removeTags) {
@@ -227,7 +176,7 @@ function getNewContent (target, collection, opt) {
   return new Buffer(contents);
 }
 
-function getFilepath (sourceFile, targetFile, opt) {
+function getFilepath(sourceFile, targetFile, opt) {
   var base = opt.relative ? path.dirname(targetFile.path) : sourceFile.cwd;
 
   var filepath = unixify(path.relative(base, sourceFile.path));
@@ -242,10 +191,10 @@ function getFilepath (sourceFile, targetFile, opt) {
 
   if (opt.addRootSlash) {
     filepath = addRootSlash(filepath);
-  } else if(!opt.addPrefix) {
+  } else if (!opt.addPrefix) {
     filepath = removeRootSlash(filepath);
   }
-  
+
   if (opt.addSuffix) {
     filepath = addSuffix(filepath, opt.addSuffix);
   }
@@ -253,40 +202,40 @@ function getFilepath (sourceFile, targetFile, opt) {
   return filepath;
 }
 
-function getInjectorTagsRegExp (starttag, endtag) {
+function getInjectorTagsRegExp(starttag, endtag) {
   return new RegExp('(' + tag(starttag) + ')(\\s*)(\\n|\\r|.)*?(' + tag(endtag) + ')', 'gi');
 }
 
-function tag (str) {
+function tag(str) {
   var parts = str.split(/\{\{ANY\}\}/g);
   return parts.map(escapeForRegExp).map(makeWhiteSpaceOptional).join('(.+)');
 }
 
-function makeWhiteSpaceOptional (str) {
+function makeWhiteSpaceOptional(str) {
   return str.replace(/\s+/g, '\\s*');
 }
 
-function escapeForRegExp (str) {
+function escapeForRegExp(str) {
   return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }
 
-function unixify (filepath) {
+function unixify(filepath) {
   return filepath.replace(/\\/g, '/');
 }
-function addRootSlash (filepath) {
+function addRootSlash(filepath) {
   return filepath.replace(/^\/*([^\/])/, '/$1');
 }
-function removeRootSlash (filepath) {
+function removeRootSlash(filepath) {
   return filepath.replace(/^\/+/, '');
 }
-function addPrefix (filepath, prefix) {
+function addPrefix(filepath, prefix) {
   return prefix + addRootSlash(filepath);
 }
-function addSuffix (filepath, suffix) {
-  return  filepath + suffix;
+function addSuffix(filepath, suffix) {
+  return filepath + suffix;
 }
 
-function removeBasePath (basedir, filepath) {
+function removeBasePath(basedir, filepath) {
   return toArray(basedir).reduce(function (path, remove) {
     if (path[0] === '/' && remove[0] !== '/') {
       remove = '/' + remove;
@@ -301,14 +250,14 @@ function removeBasePath (basedir, filepath) {
   }, filepath);
 }
 
-function toArray (arr) {
+function toArray(arr) {
   if (!Array.isArray(arr)) {
     return arr ? [arr] : [];
   }
   return arr;
 }
 
-function groupBy (arr, cb) {
+function groupBy(arr, cb) {
   var result = {};
   for (var i = 0; i < arr.length; i++) {
     var key = cb(arr[i]);
@@ -320,14 +269,14 @@ function groupBy (arr, cb) {
   return result;
 }
 
-function log (message) {
+function log(message) {
   gutil.log(magenta(PLUGIN_NAME), message);
 }
 
-function warn (message) {
+function warn(message) {
   log(red('WARNING') + ' ' + message);
 }
 
-function error (message) {
+function error(message) {
   return new PluginError(PLUGIN_NAME, message);
 }
