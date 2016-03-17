@@ -126,10 +126,10 @@ function getNewContent(target, collection, opt) {
 
   var matches = [];
 
-  var contents = startAndEndTags.reduce(function eachInCollection(contents, tag) {
-    var files = filesPerTags[tag];
-    var startTag = tags[tag].start;
-    var endTag = tags[tag].end;
+  var contents = startAndEndTags.reduce(function eachInCollection(contents, tagKey) {
+    var files = filesPerTags[tagKey];
+    var startTag = tags[tagKey].start;
+    var endTag = tags[tagKey].end;
 
     return contents.replace(
       getInjectorTagsRegExp(startTag, endTag),
@@ -138,14 +138,7 @@ function getNewContent(target, collection, opt) {
         var starttagArray = opt.removeTags ? [] : [starttag];
         var endtagArray = opt.removeTags ? [] : [endtag];
         return starttagArray
-          .concat(files.reduce(function transformFile(lines, file, i) {
-            var filepath = getFilepath(file, target, opt);
-            var transformedContents = opt.transform(filepath, file, i, files.length, target);
-            if (typeof transformedContents !== 'string') {
-              return lines;
-            }
-            return lines.concat(transformedContents);
-          }, []))
+          .concat(getTagsToInject(files, target, opt))
           .concat(endtagArray)
           .join(indent);
       }
@@ -188,6 +181,17 @@ function makeWhiteSpaceOptional(str) {
 
 function escapeForRegExp(str) {
   return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+}
+
+function getTagsToInject(files, target, opt) {
+  return files.reduce(function transformFile(lines, file, i) {
+    var filepath = getFilepath(file, target, opt);
+    var transformedContents = opt.transform(filepath, file, i, files.length, target);
+    if (typeof transformedContents !== 'string') {
+      return lines;
+    }
+    return lines.concat(transformedContents);
+  }, []);
 }
 
 function groupBy(arr, cb) {
