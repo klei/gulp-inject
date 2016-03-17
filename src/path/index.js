@@ -1,13 +1,16 @@
 'use strict';
 var path = require('path');
+var arrify = require('arrify');
 
 module.exports = exports = function getFilepath(sourceFile, targetFile, opt) {
-  var base = opt.relative ? path.dirname(targetFile.path) : sourceFile.cwd;
+  opt = opt || {};
+  var ignorePath = arrify(opt.ignorePath);
+  var base = opt.relative ? path.dirname(addRootSlash(unixify(targetFile.path))) : addRootSlash(unixify(sourceFile.cwd));
 
-  var filepath = unixify(path.relative(base, sourceFile.path));
+  var filepath = unixify(path.relative(base, addRootSlash(unixify(sourceFile.path))));
 
-  if (opt.ignorePath.length) {
-    filepath = removeBasePath(opt.ignorePath, filepath);
+  if (ignorePath.length) {
+    filepath = removeBasePath(ignorePath, filepath);
   }
 
   if (opt.addPrefix) {

@@ -2,7 +2,6 @@
 var through2 = require('through2');
 var gutil = require('gulp-util');
 var streamToArray = require('stream-to-array');
-var arrify = require('arrify');
 var extname = require('../extname');
 var transform = require('../transform');
 var tags = require('../tags');
@@ -41,7 +40,6 @@ module.exports = exports = function (sources, opt) {
 
   // Defaults:
   opt.quiet = bool(opt, 'quiet', false);
-  opt.ignorePath = arrify(opt.ignorePath);
   opt.relative = bool(opt, 'relative', false);
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
   opt.transform = defaults(opt, 'transform', transform);
