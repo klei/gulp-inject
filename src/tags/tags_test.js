@@ -1,12 +1,11 @@
+/* eslint-env mocha */
+/* eslint max-nested-callbacks:[1, 5] */
 'use strict';
-
 var should = require('should');
-var path = require('path');
-var fs = require('fs');
-var gutil = require('gulp-util');
 
 describe('tags', function () {
-  var tags, tagsModule;
+  var tags;
+  var tagsModule;
 
   it('should not crash when required', function () {
     should(function () {
@@ -242,16 +241,4 @@ describe('tags', function () {
       });
     });
   });
-
-
 });
-
-function fixture (file, read) {
-  var filepath = path.resolve(__dirname, 'fixtures', file);
-  return new gutil.File({
-    path: filepath,
-    cwd: __dirname,
-    base: path.resolve(__dirname, 'fixtures', path.dirname(file)),
-    contents: read ? fs.readFileSync(filepath) : null
-  });
-}

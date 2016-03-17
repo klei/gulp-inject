@@ -23,6 +23,8 @@
     "url": "git://github.com/klei/gulp-inject.git"
   },
   "scripts": {
+    "lint": "xo",
+    "pretest": "npm run -s lint",
     "test": "mocha -R spec src/**/*_test.js"
   },
   "dependencies": {
@@ -45,9 +47,6 @@
     "space": true,
     "envs": [
       "node"
-    ],
-    "ignores": [
-      "src/**/*_test.js"
     ]
   }
 }

@@ -1,13 +1,12 @@
-/*global describe, it, beforeEach, afterEach*/
+/* eslint-env mocha */
 'use strict';
 
-var fs = require('fs'),
-  path = require('path'),
-  es = require('event-stream'),
-  should = require('should');
-
-var gutil = require('gulp-util'),
-  inject = require('../../.');
+var fs = require('fs');
+var path = require('path');
+var es = require('event-stream');
+var should = require('should');
+var gutil = require('gulp-util');
+var inject = require('../../.');
 
 describe('gulp-inject', function () {
   var log;
@@ -22,13 +21,13 @@ describe('gulp-inject', function () {
 
   it('should throw an error when the old api with target as string is used', function () {
     should(function () {
-      var stream = inject('fixtures/template.html');
+      inject('fixtures/template.html');
     }).throw();
   });
 
   it('should throw an error if sources stream is undefined', function () {
     should(function () {
-      var stream = inject();
+      inject();
     }).throw();
   });
 
@@ -62,7 +61,6 @@ describe('gulp-inject', function () {
   });
 
   it('should inject sources into multiple targets', function (done) {
-
     var target = src(['template.html', 'template2.html'], {read: true});
     var sources = src([
       'lib.js',
@@ -99,7 +97,7 @@ describe('gulp-inject', function () {
       '../../another/component.html',
       '../a-folder/lib2.js',
       '../../yet-another/styles.css',
-      '../components/lib.jsx',
+      '../components/lib.jsx'
     ]);
 
     var stream = target.pipe(inject(sources, {relative: true}));
@@ -233,7 +231,7 @@ describe('gulp-inject', function () {
     ]);
 
     var stream = target.pipe(inject(sources, {
-      ignorePath: 'fixtures',
+      ignorePath: 'fixtures'
     }));
 
     streamShouldContain(stream, ['existingData.html'], done);

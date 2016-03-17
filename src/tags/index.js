@@ -6,30 +6,30 @@ var DEFAULT_NAME = 'inject';
 var DEFAULT_TARGET = 'html';
 var DEFAULTS = {
   STARTS: {
-    'html': '<!-- {{name}}:{{ext}} -->',
-    'jsx': '{/* {{name}}:{{ext}} */}',
-    'jade': '//- {{name}}:{{ext}}',
-    'slm': '/ {{name}}:{{ext}}',
-    'slim': '/ {{name}}:{{ext}}',
-    'haml': '-# {{name}}:{{ext}}',
-    'less': '/* {{name}}:{{ext}} */',
-    'sass': '/* {{name}}:{{ext}} */',
-    'scss': '/* {{name}}:{{ext}} */'
+    html: '<!-- {{name}}:{{ext}} -->',
+    jsx: '{/* {{name}}:{{ext}} */}',
+    jade: '//- {{name}}:{{ext}}',
+    slm: '/ {{name}}:{{ext}}',
+    slim: '/ {{name}}:{{ext}}',
+    haml: '-# {{name}}:{{ext}}',
+    less: '/* {{name}}:{{ext}} */',
+    sass: '/* {{name}}:{{ext}} */',
+    scss: '/* {{name}}:{{ext}} */'
   },
   ENDS: {
-    'html': '<!-- endinject -->',
-    'jsx': '{/* endinject */}',
-    'jade': '//- endinject',
-    'slm': '/ endinject',
-    'slim': '/ endinject',
-    'haml': '-# endinject',
-    'less': '/* endinject */',
-    'sass': '/* endinject */',
-    'scss': '/* endinject */'
+    html: '<!-- endinject -->',
+    jsx: '{/* endinject */}',
+    jade: '//- endinject',
+    slm: '/ endinject',
+    slim: '/ endinject',
+    haml: '-# endinject',
+    less: '/* endinject */',
+    sass: '/* endinject */',
+    scss: '/* endinject */'
   }
 };
 
-module.exports = function tags () {
+module.exports = function tags() {
   var tags = {
     name: DEFAULT_NAME
   };
@@ -40,7 +40,7 @@ module.exports = function tags () {
   return tags;
 };
 
-function getTag (defaults, targetExt, sourceExt, defaultValue) {
+function getTag(defaults, targetExt, sourceExt, defaultValue) {
   var tag = defaultValue;
   if (!tag) {
     tag = defaults[targetExt] || defaults[DEFAULT_TARGET];
@@ -48,12 +48,12 @@ function getTag (defaults, targetExt, sourceExt, defaultValue) {
     tag = tag(targetExt, sourceExt);
   }
   if (!tag) {
-    return;
+    return undefined;
   }
   tag = tag.replace(new RegExp(escapeForRegExp('{{ext}}'), 'g'), sourceExt);
   return tag.replace(new RegExp(escapeForRegExp('{{name}}'), 'g'), this.name);
 }
 
-function escapeForRegExp (str) {
+function escapeForRegExp(str) {
   return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
 }

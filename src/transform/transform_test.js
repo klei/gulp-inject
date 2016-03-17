@@ -1,8 +1,8 @@
+/* eslint-env mocha */
 'use strict';
-
-var should = require('should');
 var path = require('path');
 var fs = require('fs');
+var should = require('should');
 var gutil = require('gulp-util');
 
 describe('transform', function () {
@@ -123,7 +123,6 @@ describe('transform', function () {
       transform.html('test-file.jpg').should.equal(transform.html.image('test-file.jpg'));
       transform.html('test-file.jpeg').should.equal(transform.html.image('test-file.jpeg'));
     });
-
   });
 
   describe('jsx as target', function () {
@@ -353,7 +352,6 @@ describe('transform', function () {
     it('should use the css transformer for css files automatically', function () {
       transform.less('test-file.css').should.equal(transform.less.css('test-file.css'));
     });
-
   });
 
   describe('sass as target', function () {
@@ -383,7 +381,6 @@ describe('transform', function () {
     it('should use the sass transformer for css files automatically', function () {
       transform.sass('test-file.css').should.equal(transform.sass.css('test-file.css'));
     });
-
   });
 
   describe('scss as target', function () {
@@ -413,7 +410,6 @@ describe('transform', function () {
     it('should use the scss transformer for css files automatically', function () {
       transform.scss('test-file.css').should.equal(transform.scss.css('test-file.css'));
     });
-
   });
 
   it('should pick the correct target transformer for html targets', function () {
@@ -484,10 +480,9 @@ describe('transform', function () {
     transform(sourceFile.path, null, null, sourceFile)
       .should.equal(transform.html.image(sourceFile.path));
   });
-
 });
 
-function fixture (file, read) {
+function fixture(file, read) {
   var filepath = path.resolve(__dirname, 'fixtures', file);
   return new gutil.File({
     path: filepath,

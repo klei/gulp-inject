@@ -175,11 +175,11 @@ Object.keys(transform.html).forEach(function (type) {
   };
 });
 
-function end () {
+function end() {
   return transform.selfClosingTag ? ' />' : '>';
 }
 
-function typeFromExt (ext) {
+function typeFromExt(ext) {
   ext = ext.toLowerCase();
   if (isImage(ext)) {
     return 'image';
@@ -187,11 +187,11 @@ function typeFromExt (ext) {
   return ext;
 }
 
-function isImage (ext) {
+function isImage(ext) {
   return IMAGES.indexOf(ext) > -1;
 }
 
-function isTargetType (type) {
+function isTargetType(type) {
   if (!type) {
     return false;
   }
