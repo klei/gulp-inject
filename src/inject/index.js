@@ -10,7 +10,6 @@ var tags = require('../tags');
 var PluginError = gutil.PluginError;
 var magenta = gutil.colors.magenta;
 var cyan = gutil.colors.cyan;
-var red = gutil.colors.red;
 
 /**
  * Constants
@@ -34,10 +33,9 @@ module.exports = exports = function (sources, opt) {
   if (opt.transform && typeof opt.transform !== 'function') {
     throw error('transform option must be a function');
   }
-
   // Notify people of common mistakes...
-  if (opt.read) {
-    warn('There is no ' + magenta('`read`') + ' option. Did you mean to provide it for ' + magenta('`gulp.src`') + ' perhaps?');
+  if (typeof opt.read !== 'undefined') {
+    throw error('There is no `read` option. Did you mean to provide it for `gulp.src` perhaps?');
   }
 
   // Defaults:
@@ -271,10 +269,6 @@ function groupBy(arr, cb) {
 
 function log(message) {
   gutil.log(magenta(PLUGIN_NAME), message);
-}
-
-function warn(message) {
-  log(red('WARNING') + ' ' + message);
 }
 
 function error(message) {
