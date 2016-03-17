@@ -3,6 +3,7 @@ var path = require('path');
 var through2 = require('through2');
 var gutil = require('gulp-util');
 var streamToArray = require('stream-to-array');
+var arrify = require('arrify');
 var extname = require('../extname');
 var transform = require('../transform');
 var tags = require('../tags');
@@ -40,7 +41,7 @@ module.exports = exports = function (sources, opt) {
 
   // Defaults:
   opt.quiet = bool(opt, 'quiet', false);
-  opt.ignorePath = toArray(opt.ignorePath).map(unixify);
+  opt.ignorePath = arrify(opt.ignorePath);
   opt.relative = bool(opt, 'relative', false);
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
   opt.transform = defaults(opt, 'transform', transform);
@@ -233,8 +234,8 @@ function addSuffix(filepath, suffix) {
   return filepath + suffix;
 }
 
-function removeBasePath(basedir, filepath) {
-  return toArray(basedir).reduce(function (path, remove) {
+function removeBasePath(basedirs, filepath) {
+  return basedirs.map(unixify).reduce(function (path, remove) {
     if (path[0] === '/' && remove[0] !== '/') {
       remove = '/' + remove;
     }
@@ -246,13 +247,6 @@ function removeBasePath(basedir, filepath) {
     }
     return path;
   }, filepath);
-}
-
-function toArray(arr) {
-  if (!Array.isArray(arr)) {
-    return arr ? [arr] : [];
-  }
-  return arr;
 }
 
 function groupBy(arr, cb) {
