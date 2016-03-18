@@ -47,13 +47,5 @@ function getTag(defaults, targetExt, sourceExt, defaultValue) {
   } else if (typeof tag === 'function') {
     tag = tag(targetExt, sourceExt);
   }
-  if (!tag) {
-    return undefined;
-  }
-  tag = tag.replace(new RegExp(escapeForRegExp('{{ext}}'), 'g'), sourceExt);
-  return tag.replace(new RegExp(escapeForRegExp('{{name}}'), 'g'), this.name);
-}
-
-function escapeForRegExp(str) {
-  return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+  return tag;
 }

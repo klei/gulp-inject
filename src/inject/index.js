@@ -2,6 +2,8 @@
 var through2 = require('through2');
 var gutil = require('gulp-util');
 var streamToArray = require('stream-to-array');
+var escapeStringRegexp = require('escape-string-regexp');
+var groupArray = require('group-array');
 var extname = require('../extname');
 var transform = require('../transform');
 var tags = require('../tags');
@@ -15,6 +17,7 @@ var cyan = gutil.colors.cyan;
  * Constants
  */
 var PLUGIN_NAME = 'gulp-inject';
+var LEADING_WHITESPACE_REGEXP = /^\s*/;
 
 module.exports = exports = function (sources, opt) {
   if (!sources) {
@@ -44,7 +47,7 @@ module.exports = exports = function (sources, opt) {
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
   opt.transform = defaults(opt, 'transform', transform);
   opt.tags = tags();
-  opt.tags.name = defaults(opt, 'name', 'inject');
+  opt.name = defaults(opt, 'name', 'inject');
   transform.selfClosingTag = bool(opt, 'selfClosingTag', false);
 
   // Is the first parameter a Vinyl File Stream:
@@ -99,7 +102,6 @@ function handleVinylStream(sources, opt) {
  * @returns {Buffer}
  */
 function getNewContent(target, collection, opt) {
-  var oldContent = target.contents;
   if (!opt.quiet) {
     if (collection.length) {
       log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
@@ -107,103 +109,159 @@ function getNewContent(target, collection, opt) {
       log('Nothing to inject into ' + magenta(target.relative) + '.');
     }
   }
-
-  var tags = {};
+  var content = String(target.contents);
   var targetExt = extname(target.path);
-
-  var filesPerTags = groupBy(collection, function (file) {
-    var ext = extname(file.path);
-    var startTag = opt.tags.start(targetExt, ext, opt.starttag);
-    var endTag = opt.tags.end(targetExt, ext, opt.endtag);
-    var tag = startTag + endTag;
-    if (!tags[tag]) {
-      tags[tag] = {start: startTag, end: endTag};
-    }
-    return tag;
-  });
-
+  var files = prepareFiles(collection, targetExt, opt);
+  var filesPerTags = groupArray(files, 'tagKey');
   var startAndEndTags = Object.keys(filesPerTags);
-
   var matches = [];
 
-  var contents = startAndEndTags.reduce(function eachInCollection(contents, tagKey) {
+  startAndEndTags.forEach(function (tagKey) {
     var files = filesPerTags[tagKey];
-    var startTag = tags[tagKey].start;
-    var endTag = tags[tagKey].end;
+    var startTag = files[0].startTag;
+    var endTag = files[0].endTag;
+    var tagsToInject = getTagsToInject(files, target, opt);
 
-    return contents.replace(
-      getInjectorTagsRegExp(startTag, endTag),
-      function injector(match, starttag, indent, content, endtag) {
-        matches.push(starttag);
-        var starttagArray = opt.removeTags ? [] : [starttag];
-        var endtagArray = opt.removeTags ? [] : [endtag];
-        return starttagArray
-          .concat(getTagsToInject(files, target, opt))
-          .concat(endtagArray)
-          .join(indent);
+    content = inject(content, {
+      startTag,
+      endTag,
+      tagsToInject,
+      removeTags: opt.removeTags,
+      onMatch(match) {
+        matches.push(match[0]);
       }
-    );
-  }, String(oldContent));
+    });
+  });
 
   if (opt.empty) {
-    contents = contents.replace(
-      getInjectorTagsRegExp(
-        opt.tags.start(targetExt, '{{ANY}}', opt.starttag),
-        opt.tags.end(targetExt, '{{ANY}}', opt.starttag)
-      ),
-      function injector2(match, starttag, unused, indent, content, endtag) {
-        if (matches.indexOf(starttag) > -1) {
-          return match;
-        }
-        if (opt.removeTags) {
-          return '';
-        }
-        return [starttag].concat(endtag).join(indent);
+    var ext = '{{ANY}}';
+    var startTag = getTagRegExp(opt.tags.start(targetExt, ext, opt.starttag), ext, opt);
+    var endTag = getTagRegExp(opt.tags.end(targetExt, ext, opt.starttag), ext, opt);
+
+    content = inject(content, {
+      startTag,
+      endTag,
+      tagsToInject: [],
+      removeTags: opt.removeTags,
+      shouldAbort(match) {
+        return matches.indexOf(match[0]) !== -1;
       }
-    );
+    });
   }
 
-  return new Buffer(contents);
+  return new Buffer(content);
 }
 
-function getInjectorTagsRegExp(starttag, endtag) {
-  return new RegExp('(' + tag(starttag) + ')(\\s*)(\\n|\\r|.)*?(' + tag(endtag) + ')', 'gi');
+/**
+ * Inject tags into content for given
+ * start and end tags
+ *
+ * @param {String} content
+ * @param {Object} opt
+ * @returns {String}
+ */
+function inject(content, opt) {
+  var startTag = opt.startTag;
+  var endTag = opt.endTag;
+  var startMatch;
+  var endMatch;
+
+  /**
+   * The content consists of:
+   *
+   * <everything before startMatch>
+   * <startMatch>
+   * <previousInnerContent>
+   * <endMatch>
+   * <everything after endMatch>
+   */
+
+  while ((startMatch = startTag.exec(content)) !== null) {
+    if (typeof opt.onMatch === 'function') {
+      opt.onMatch(startMatch);
+    }
+    if (typeof opt.shouldAbort === 'function' && opt.shouldAbort(startMatch)) {
+      continue;
+    }
+    // Take care of content length change:
+    endTag.lastIndex = startTag.lastIndex;
+    endMatch = endTag.exec(content);
+    if (!endMatch) {
+      throw error('Missing end tag for start tag: ' + startMatch[0]);
+    }
+    var toInject = opt.tagsToInject.slice();
+    // <everything before startMatch>:
+    var newContents = content.slice(0, startMatch.index);
+
+    if (opt.removeTags) {
+      // Take care of content length change:
+      startTag.lastIndex -= startMatch[0].length;
+    } else {
+      // <startMatch> + <endMatch>
+      toInject.unshift(startMatch[0]);
+      toInject.push(endMatch[0]);
+    }
+    var previousInnerContent = content.substring(startTag.lastIndex, endMatch.index);
+    var indent = getLeadingWhitespace(previousInnerContent);
+    // <new inner content>:
+    newContents += toInject.join(indent);
+    // <everything after endMatch>:
+    newContents += content.slice(endTag.lastIndex);
+    // replace old content with new:
+    content = newContents;
+  }
+
+  return content;
 }
 
-function tag(str) {
-  var parts = str.split(/\{\{ANY\}\}/g);
-  return parts.map(escapeForRegExp).map(makeWhiteSpaceOptional).join('(.+)');
+function getLeadingWhitespace(str) {
+  return str.match(LEADING_WHITESPACE_REGEXP)[0];
+}
+
+function prepareFiles(files, targetExt, opt) {
+  return files.map(function (file) {
+    var ext = extname(file.path);
+    var startTag = getTagRegExp(opt.tags.start(targetExt, ext, opt.starttag), ext, opt);
+    var endTag = getTagRegExp(opt.tags.end(targetExt, ext, opt.endtag), ext, opt);
+    var tagKey = String(startTag) + String(endTag);
+    return {
+      file,
+      ext,
+      startTag,
+      endTag,
+      tagKey
+    };
+  });
+}
+
+function getTagRegExp(tag, sourceExt, opt) {
+  tag = makeWhiteSpaceOptional(escapeStringRegexp(tag));
+  tag = replaceVariables(tag, {
+    name: opt.name,
+    ext: sourceExt === '{{ANY}}' ? '.+' : sourceExt
+  });
+  return new RegExp(tag, 'ig');
+}
+
+function replaceVariables(str, variables) {
+  return Object.keys(variables).reduce(function (str, variable) {
+    return str.replace(new RegExp(escapeStringRegexp(escapeStringRegexp('{{' + variable + '}}')), 'ig'), variables[variable] + '\\b');
+  }, str);
 }
 
 function makeWhiteSpaceOptional(str) {
   return str.replace(/\s+/g, '\\s*');
 }
 
-function escapeForRegExp(str) {
-  return str.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
-}
-
 function getTagsToInject(files, target, opt) {
-  return files.reduce(function transformFile(lines, file, i) {
-    var filepath = getFilepath(file, target, opt);
-    var transformedContents = opt.transform(filepath, file, i, files.length, target);
+  return files.reduce(function transformFile(lines, file, i, files) {
+    var filepath = getFilepath(file.file, target, opt);
+    var transformedContents = opt.transform(filepath, file.file, i, files.length, target);
     if (typeof transformedContents !== 'string') {
       return lines;
     }
     return lines.concat(transformedContents);
   }, []);
-}
-
-function groupBy(arr, cb) {
-  var result = {};
-  for (var i = 0; i < arr.length; i++) {
-    var key = cb(arr[i]);
-    if (!result[key]) {
-      result[key] = [];
-    }
-    result[key].push(arr[i]);
-  }
-  return result;
 }
 
 function log(message) {

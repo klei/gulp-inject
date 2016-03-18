@@ -29,7 +29,9 @@
   },
   "dependencies": {
     "arrify": "^1.0.1",
+    "escape-string-regexp": "^1.0.5",
     "event-stream": "^3.1.0",
+    "group-array": "^0.3.0",
     "gulp-util": "^3.0.0",
     "stream-to-array": "^2.3.0",
     "through2": "^2.0.1"
@@ -40,8 +42,7 @@
     "xo": "^0.13.0"
   },
   "engines": {
-    "node": ">=0.10.0",
-    "npm": ">=1.2.10"
+    "node": ">=4"
   },
   "license": "MIT",
   "xo": {
