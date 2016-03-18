@@ -17,6 +17,7 @@ var cyan = gutil.colors.cyan;
  * Constants
  */
 var PLUGIN_NAME = 'gulp-inject';
+var DEFAULT_NAME_FOR_TAGS = 'inject';
 var LEADING_WHITESPACE_REGEXP = /^\s*/;
 
 module.exports = exports = function (sources, opt) {
@@ -47,7 +48,7 @@ module.exports = exports = function (sources, opt) {
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
   opt.transform = defaults(opt, 'transform', transform);
   opt.tags = tags();
-  opt.name = defaults(opt, 'name', 'inject');
+  opt.name = defaults(opt, 'name', DEFAULT_NAME_FOR_TAGS);
   transform.selfClosingTag = bool(opt, 'selfClosingTag', false);
 
   // Is the first parameter a Vinyl File Stream:

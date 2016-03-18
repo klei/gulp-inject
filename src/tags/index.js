@@ -2,7 +2,6 @@
 /**
  * Constants
  */
-var DEFAULT_NAME = 'inject';
 var DEFAULT_TARGET = 'html';
 var DEFAULTS = {
   STARTS: {
@@ -30,14 +29,10 @@ var DEFAULTS = {
 };
 
 module.exports = function tags() {
-  var tags = {
-    name: DEFAULT_NAME
+  return {
+    start: getTag.bind(null, DEFAULTS.STARTS),
+    end: getTag.bind(null, DEFAULTS.ENDS)
   };
-
-  tags.start = getTag.bind(tags, DEFAULTS.STARTS);
-  tags.end = getTag.bind(tags, DEFAULTS.ENDS);
-
-  return tags;
 };
 
 function getTag(defaults, targetExt, sourceExt, defaultValue) {

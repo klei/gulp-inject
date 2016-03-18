@@ -20,12 +20,6 @@ describe('tags', function () {
     tags = tagsModule();
   });
 
-  describe('name', function () {
-    it('should be "inject" by default', function () {
-      tags.name.should.equal('inject');
-    });
-  });
-
   describe('start()', function () {
     describe('with no default', function () {
       it('should return html comment tag for html target files', function () {
