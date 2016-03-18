@@ -78,6 +78,10 @@ transform.jade.js = function (filepath) {
   return 'script(src="' + filepath + '")';
 };
 
+transform.jade.jsx = function (filepath) {
+  return 'script(type="text/jsx", src="' + filepath + '")';
+};
+
 transform.jade.jade = function (filepath) {
   return 'include ' + filepath;
 };

@@ -284,6 +284,18 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['defaults.jade'], done);
   });
 
+  it('should be able to inject jsx into jade files (Issue #144)', function (done) {
+    var target = src(['issue144.jade'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.jsx'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['issue144.jade'], done);
+  });
+
   it('should use special default tags when injecting into slm files', function (done) {
     var target = src(['template.slm'], {read: true});
     var sources = src([
@@ -428,7 +440,7 @@ describe('gulp-inject', function () {
       'lib.jsx'
     ]);
 
-    var stream = target.pipe(inject(sources,{removeTags:true}));
+    var stream = target.pipe(inject(sources, {removeTags: true}));
 
     streamShouldContain(stream, ['removeTags.html'], done);
   });
@@ -555,7 +567,7 @@ describe('gulp-inject', function () {
   });
 });
 
-function src (files, opt) {
+function src(files, opt) {
   opt = opt || {};
   var stream = es.readArray(files.map(function (file) {
     return fixture(file, opt.read);
@@ -563,10 +575,10 @@ function src (files, opt) {
   return stream;
 }
 
-function streamShouldContain (stream, files, done) {
+function streamShouldContain(stream, files, done) {
   var received = 0;
 
-  stream.on('error', function(err) {
+  stream.on('error', function (err) {
     should.exist(err);
     done(err);
   });
@@ -591,7 +603,7 @@ function streamShouldContain (stream, files, done) {
   });
 }
 
-function expectedFile (file) {
+function expectedFile(file) {
   var filepath = path.resolve(__dirname, 'expected', file);
   return new gutil.File({
     path: filepath,
@@ -601,7 +613,7 @@ function expectedFile (file) {
   });
 }
 
-function fixture (file, read) {
+function fixture(file, read) {
   var filepath = path.resolve(__dirname, 'fixtures', file);
   return new gutil.File({
     path: filepath,
