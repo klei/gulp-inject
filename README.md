@@ -1,10 +1,14 @@
-# gulp-inject [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][depstat-image]][depstat-url]
+# gulp-inject
+
+[![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![XO code style][codestyle-image]][codestyle-url] [![Dependency Status][depstat-image]][depstat-url]
 
 > A stylesheet, javascript and webcomponent reference injection plugin for [gulp](https://github.com/wearefractal/gulp). No more manual editing of your index.html!
 
 `gulp-inject` takes a stream of source files, transforms each file to a string and injects each transformed string into placeholders in the target stream files. See [Basic usage](#basic-usage) and [More examples](#more-examples) below.
 
 Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `jsx` , `less`, `slm`, `haml` and `sass` / `scss` files.
+
+**Note:** As of `gulp-inject` v4.0.0, NodeJS v4 or above is required. To use `gulp-inject` for older versions of Node install a specific version: `npm install gulp-inject@3`.
 
 ## Installation
 
@@ -831,7 +835,7 @@ The default transform function for files into `scss`.
 
 ## License
 
-[MIT License](http://en.wikipedia.org/wiki/MIT_License)
+[MIT](http://en.wikipedia.org/wiki/MIT_License) © [Joakim Carlstein](http://joakim.beng.se)
 
 [npm-url]: https://npmjs.org/package/gulp-inject
 [npm-image]: https://badge.fury.io/js/gulp-inject.svg
@@ -841,3 +845,6 @@ The default transform function for files into `scss`.
 
 [depstat-url]: https://david-dm.org/klei/gulp-inject
 [depstat-image]: https://david-dm.org/klei/gulp-inject.svg
+
+[codestyle-url]: https://github.com/sindresorhus/xo
+[codestyle-image]: https://img.shields.io/badge/code%20style-XO-5ed9c7.svg?style=flat
