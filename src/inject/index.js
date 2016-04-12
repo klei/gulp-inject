@@ -112,7 +112,7 @@ function getNewContent(target, collection, opt) {
   }
   var content = String(target.contents);
   var targetExt = extname(target.path);
-  var files = prepareFiles(collection, targetExt, opt);
+  var files = prepareFiles(collection, targetExt, opt, target);
   var filesPerTags = groupArray(files, 'tagKey');
   var startAndEndTags = Object.keys(filesPerTags);
   var matches = [];
@@ -219,11 +219,12 @@ function getLeadingWhitespace(str) {
   return str.match(LEADING_WHITESPACE_REGEXP)[0];
 }
 
-function prepareFiles(files, targetExt, opt) {
+function prepareFiles(files, targetExt, opt, target) {
   return files.map(function (file) {
     var ext = extname(file.path);
-    var startTag = getTagRegExp(opt.tags.start(targetExt, ext, opt.starttag), ext, opt);
-    var endTag = getTagRegExp(opt.tags.end(targetExt, ext, opt.endtag), ext, opt);
+    var filePath = getFilepath(file, target, opt);
+    var startTag = getTagRegExp(opt.tags.start(targetExt, ext, opt.starttag), ext, opt, filePath);
+    var endTag = getTagRegExp(opt.tags.end(targetExt, ext, opt.endtag), ext, opt, filePath);
     var tagKey = String(startTag) + String(endTag);
     return {
       file,
@@ -235,10 +236,11 @@ function prepareFiles(files, targetExt, opt) {
   });
 }
 
-function getTagRegExp(tag, sourceExt, opt) {
+function getTagRegExp(tag, sourceExt, opt, sourcePath) {
   tag = makeWhiteSpaceOptional(escapeStringRegexp(tag));
   tag = replaceVariables(tag, {
     name: opt.name,
+    path: sourcePath,
     ext: sourceExt === '{{ANY}}' ? '.+' : sourceExt
   });
   return new RegExp(tag, 'ig');
