@@ -621,13 +621,14 @@ When `true` all tags without corresponding files will be emptied.
 **Purpose:**
 
 Used to dynamically set starting placeholder tag depending on file extensions.
-In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`options.name`](#optionsname).
+In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`options.name`](#optionsname). `{{path}}` will be replaced by path to source file (when used together with `relative: true` it's relative path to file.
 
 ##### Default:
 
 A function dependent on target file type and source file type that returns:
 
 * html as target: `<!-- {{name}}:{{ext}} -->`
+* html as path: `<!-- {{path}} -->`
 * haml as target: `-# {{name}}:{{ext}}`
 * jade as target: `//- {{name}}:{{ext}}`
 * jsx as target: `{/* {{name}}:{{ext}} */}`
@@ -646,7 +647,7 @@ A function dependent on target file type and source file type that returns:
 **Purpose:**
 
 Used to dynamically set ending placeholder tag depending on file extensions.
-In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`options.name`](#optionsname).
+In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`options.name`](#optionsname). `{{path}}` will be replaced by path to source file.
 
 ##### Default:
 
