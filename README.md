@@ -528,6 +528,41 @@ And in your `./src/index.html`:
 </html>
 ```
 
+### Injecting files contents based on file path
+
+In order to inject files based on file path you have to provide custom `starttag` which includes `{{path}}`. Additionally, in order to inject file contents include `transform` function, that will return file contents as string. You also have to omit `{read: false}` option of `gulp.src` in this case. Path can be either absolute, or relative in which case you should use `relative:true`. Example below shows how to inject contents of html partials into `index.html`:
+
+***Code:***
+
+```javascript
+gulp.src('./src/index.html')
+  .pipe(inject(gulp.src(['./src/partials/head/*.html']), {
+    starttag: '<!-- inject:{{path}} -->',
+    relative: true,
+    transform: function (filePath, file) {
+      // return file contents as string
+      return file.contents.toString('utf8')
+    }
+  }))
+  .pipe(gulp.dest('./dest'));
+```
+
+And in your `./src/index.html`:
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My index</title>
+  <!-- inject:path/to/your/file.ext -->
+  <!-- contents of html partials will be injected here -->
+  <!-- endinject -->
+</head>
+<body>
+</body>
+</html>
+```
+
 ## API
 
 ### inject(sources, options)
@@ -621,14 +656,13 @@ When `true` all tags without corresponding files will be emptied.
 **Purpose:**
 
 Used to dynamically set starting placeholder tag depending on file extensions.
-In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`options.name`](#optionsname). `{{path}}` will be replaced by path to source file (when used together with `relative: true` it's relative path to file.
+In the provided string, or the string returned from the given function, the string `{{ext}}` is replaced with the source file extension name, e.g. "css", "js" or "html". `{{name}}` will be replaced by [`options.name`](#optionsname). `{{path}}` will be replaced by path to source file (when used together with [`options.relative`] it will allow relative path to source file.
 
 ##### Default:
 
 A function dependent on target file type and source file type that returns:
 
 * html as target: `<!-- {{name}}:{{ext}} -->`
-* html as path: `<!-- {{path}} -->`
 * haml as target: `-# {{name}}:{{ext}}`
 * jade as target: `//- {{name}}:{{ext}}`
 * jsx as target: `{/* {{name}}:{{ext}} */}`
