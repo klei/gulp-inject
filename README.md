@@ -530,7 +530,7 @@ And in your `./src/index.html`:
 
 ### Injecting files contents based on file path
 
-In order to inject files based on file path you have to provide custom `starttag` which includes `{{path}}`. Additionally, in order to inject file contents include `transform` function, that will return file contents as string. You also have to omit `{read: false}` option of `gulp.src` in this case. Path can be either absolute, or relative in which case you should use `relative:true`. Example below shows how to inject contents of html partials into `index.html`:
+In order to inject files based on file path you have to provide custom `starttag` which includes `{{path}}`. Additionally, in order to inject file contents include `transform` function, that will return file contents as string. You also have to omit `{read: false}` option of `gulp.src` in this case. Path can be either absolute, or relative in which case you should set [`options.relative`] to true. Example below shows how to inject contents of html partials into `index.html`:
 
 ***Code:***
 
