@@ -284,6 +284,19 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['defaults.jade'], done);
   });
 
+  it('should use special default tags when injecting into pug files', function (done) {
+    var target = src(['template.pug'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['defaults.pug'], done);
+  });
+
   it('should be able to inject jsx into jade files (Issue #144)', function (done) {
     var target = src(['issue144.jade'], {read: true});
     var sources = src([
@@ -294,6 +307,18 @@ describe('gulp-inject', function () {
     var stream = target.pipe(inject(sources));
 
     streamShouldContain(stream, ['issue144.jade'], done);
+  });
+
+  it('should be able to inject jsx into pug files (Issue #144)', function (done) {
+    var target = src(['issue144.pug'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.jsx'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['issue144.pug'], done);
   });
 
   it('should use special default tags when injecting into slm files', function (done) {
