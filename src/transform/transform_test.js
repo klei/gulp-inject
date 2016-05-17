@@ -31,6 +31,10 @@ describe('transform', function () {
       transform.jade.should.be.type('function');
     });
 
+    it('should have a transform function for pug target files', function () {
+      transform.pug.should.be.type('function');
+    });
+
     it('should have a transform function for slm target files', function () {
       transform.slm.should.be.type('function');
     });
@@ -234,6 +238,65 @@ describe('transform', function () {
     });
   });
 
+  describe('pug as target', function () {
+    it('should transform css to a pug link tag', function () {
+      transform.pug.css.should.be.type('function');
+      transform.pug.css('test-file.css').should.equal('link(rel="stylesheet", href="test-file.css")');
+    });
+
+    it('should transform pug to a pug include tag', function () {
+      transform.pug.html.should.be.type('function');
+      transform.pug.pug('test-file.pug').should.equal('include test-file.pug');
+    });
+
+    it('should transform html to a self closing link tag', function () {
+      transform.pug.html.should.be.type('function');
+      transform.pug.html('test-file.html').should.equal('link(rel="import", href="test-file.html")');
+    });
+
+    it('should transform javascript to a script tag', function () {
+      transform.pug.js.should.be.type('function');
+      transform.pug.js('test-file.js').should.equal('script(src="test-file.js")');
+    });
+
+    it('should transform coffeescript to a script tag', function () {
+      transform.pug.coffee.should.be.type('function');
+      transform.pug.coffee('test-file.coffee').should.equal('script(type="text/coffeescript", src="test-file.coffee")');
+    });
+
+    it('should transform an image to a self closing img tag', function () {
+      transform.pug.image.should.be.type('function');
+      transform.pug.image('test-file.png').should.equal('img(src="test-file.png")');
+    });
+
+    it('should use the css transformer for css files automatically', function () {
+      transform.pug('test-file.css').should.equal(transform.pug.css('test-file.css'));
+    });
+
+    it('should use the pug transformer for pug files automatically', function () {
+      transform.pug('test-file.pug').should.equal(transform.pug.pug('test-file.pug'));
+    });
+
+    it('should use the html transformer for html files automatically', function () {
+      transform.pug('test-file.html').should.equal(transform.pug.html('test-file.html'));
+    });
+
+    it('should use the js transformer for js files automatically', function () {
+      transform.pug('test-file.js').should.equal(transform.pug.js('test-file.js'));
+    });
+
+    it('should use the coffee transformer for coffee files automatically', function () {
+      transform.pug('test-file.coffee').should.equal(transform.pug.coffee('test-file.coffee'));
+    });
+
+    it('should use the image transformer for png, gif, jpg and jpeg files automatically', function () {
+      transform.pug('test-file.png').should.equal(transform.pug.image('test-file.png'));
+      transform.pug('test-file.gif').should.equal(transform.pug.image('test-file.gif'));
+      transform.pug('test-file.jpg').should.equal(transform.pug.image('test-file.jpg'));
+      transform.pug('test-file.jpeg').should.equal(transform.pug.image('test-file.jpeg'));
+    });
+  });
+
   describe('slm as target', function () {
     it('should transform css to a slm link tag', function () {
       transform.slm.css.should.be.type('function');
@@ -431,6 +494,13 @@ describe('transform', function () {
     var sourceFile = fixture('image.gif');
     transform(sourceFile.path, null, null, sourceFile, targetFile)
       .should.equal(transform.jade.image(sourceFile.path));
+  });
+
+  it('should pick the correct target transformer for pug targets', function () {
+    var targetFile = fixture('index.pug');
+    var sourceFile = fixture('image.gif');
+    transform(sourceFile.path, null, null, sourceFile, targetFile)
+      .should.equal(transform.pug.image(sourceFile.path));
   });
 
   it('should pick the correct target transformer for slm targets', function () {
