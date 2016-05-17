@@ -6,7 +6,7 @@
 
 `gulp-inject` takes a stream of source files, transforms each file to a string and injects each transformed string into placeholders in the target stream files. See [Basic usage](#basic-usage) and [More examples](#more-examples) below.
 
-Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `jsx` , `less`, `slm`, `haml` and `sass` / `scss` files.
+Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `pug`, `jsx` , `less`, `slm`, `haml` and `sass` / `scss` files.
 
 **Note:** As of `gulp-inject` v4.0.0, NodeJS v4 or above is required. To use `gulp-inject` for older versions of Node install a specific version: `npm install gulp-inject@3`.
 
@@ -630,6 +630,7 @@ A function dependent on target file type and source file type that returns:
 * html as target: `<!-- {{name}}:{{ext}} -->`
 * haml as target: `-# {{name}}:{{ext}}`
 * jade as target: `//- {{name}}:{{ext}}`
+* pug as target: `//- {{name}}:{{ext}}`
 * jsx as target: `{/* {{name}}:{{ext}} */}`
 * slm as target: `/ {{name}}:{{ext}}`
 * less as target: `/* {{name}}:{{ext}} */`
@@ -655,6 +656,7 @@ A function dependent on target file type and source file type that returns:
 * html as target: `<!-- endinject -->`
 * haml as target: `-# endinject`
 * jade as target: `//- endinject`
+* pug as target: `//- endinject`
 * jsx as target: `{/* endinject */}`
 * slm as target: `/ endinject`
 * less as target: `/* endinject */`
@@ -697,6 +699,17 @@ If `options.selfClosingTag` is `true` the default transformer above will make th
 The same as for injecting into `html` above with [`options.selfClosingTag`](#optionsselfclosingtag) set to `true`.
 
 **Injecting into `jade`**
+
+* css files: `link(rel="stylesheet", href="<filename>.css")`
+* js files: `script(src="<filename>.js")`
+* coffee files: `script(type="text/coffeescript", src="<filename>.coffee")`
+* html files: `link(rel="import", href="<filename>.html")`
+* png files: `img(src="<filename>.png")`
+* gif files: `img(src="<filename>.gif")`
+* jpg files: `img(src="<filename>.jpg")`
+* jpeg files: `img(src="<filename>.jpeg")`
+
+**Injecting into `pug`**
 
 * css files: `link(rel="stylesheet", href="<filename>.css")`
 * js files: `script(src="<filename>.js")`
@@ -802,11 +815,15 @@ For more details see [the code with tests](https://github.com/klei/gulp-inject/t
 
 #### inject.transform.html
 
-The default transform function for files into `html`, or other file types not `jade`, `jsx`, `slm`, `less`, `scss`, `sass` or `haml`.
+The default transform function for files into `html`, or other file types not `jade`, `pug`, `jsx`, `slm`, `less`, `scss`, `sass` or `haml`.
 
 #### inject.transform.jade
 
 The default transform function for files into `jade`.
+
+#### inject.transform.pug
+
+The default transform function for files into `pug`.
 
 #### inject.transform.jsx
 
