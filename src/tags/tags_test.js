@@ -34,6 +34,10 @@ describe('tags', function () {
         tags.start('jade', 'css').should.equal('//- {{name}}:{{ext}}');
       });
 
+      it('should return pug comments for pug target files', function () {
+        tags.start('pug', 'css').should.equal('//- {{name}}:{{ext}}');
+      });
+
       it('should return slm comments for slm target files', function () {
         tags.start('slm').should.equal('/ {{name}}:{{ext}}');
       });
@@ -93,6 +97,10 @@ describe('tags', function () {
 
       it('should return jade comments for jade target files', function () {
         tags.end('jade').should.equal('//- endinject');
+      });
+
+      it('should return pug comments for pug target files', function () {
+        tags.end('pug').should.equal('//- endinject');
       });
 
       it('should return slm comments for slm target files', function () {
