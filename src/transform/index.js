@@ -4,7 +4,7 @@ var extname = require('../extname');
 /**
  * Constants
  */
-var TARGET_TYPES = ['html', 'jade', 'slm', 'slim', 'jsx', 'haml', 'less', 'sass', 'scss'];
+var TARGET_TYPES = ['html', 'jade', 'pug', 'slm', 'slim', 'jsx', 'haml', 'less', 'sass', 'scss'];
 var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
 var DEFAULT_TARGET = TARGET_TYPES[0];
 
@@ -95,6 +95,34 @@ transform.jade.coffee = function (filepath) {
 };
 
 transform.jade.image = function (filepath) {
+  return 'img(src="' + filepath + '")';
+};
+
+transform.pug.css = function (filepath) {
+  return 'link(rel="stylesheet", href="' + filepath + '")';
+};
+
+transform.pug.js = function (filepath) {
+  return 'script(src="' + filepath + '")';
+};
+
+transform.pug.jsx = function (filepath) {
+  return 'script(type="text/jsx", src="' + filepath + '")';
+};
+
+transform.pug.pug = function (filepath) {
+  return 'include ' + filepath;
+};
+
+transform.pug.html = function (filepath) {
+  return 'link(rel="import", href="' + filepath + '")';
+};
+
+transform.pug.coffee = function (filepath) {
+  return 'script(type="text/coffeescript", src="' + filepath + '")';
+};
+
+transform.pug.image = function (filepath) {
   return 'img(src="' + filepath + '")';
 };
 
