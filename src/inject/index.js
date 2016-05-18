@@ -12,6 +12,7 @@ var getFilepath = require('../path');
 var PluginError = gutil.PluginError;
 var magenta = gutil.colors.magenta;
 var cyan = gutil.colors.cyan;
+var noop = function noop() {};
 
 /**
  * Constants
@@ -103,19 +104,20 @@ function handleVinylStream(sources, opt) {
  * @returns {Buffer}
  */
 function getNewContent(target, collection, opt) {
-  if (!opt.quiet) {
-    if (collection.length) {
-      log(cyan(collection.length) + ' files into ' + magenta(target.relative) + '.');
+  var logger = opt.quiet ? noop : function (filesCount) {
+    if (filesCount) {
+      log(cyan(filesCount) + ' files into ' + magenta(target.relative) + '.');
     } else {
       log('Nothing to inject into ' + magenta(target.relative) + '.');
     }
-  }
+  };
   var content = String(target.contents);
   var targetExt = extname(target.path);
   var files = prepareFiles(collection, targetExt, opt);
   var filesPerTags = groupArray(files, 'tagKey');
   var startAndEndTags = Object.keys(filesPerTags);
   var matches = [];
+  var injectedFilesCount = 0;
 
   startAndEndTags.forEach(function (tagKey) {
     var files = filesPerTags[tagKey];
@@ -128,11 +130,16 @@ function getNewContent(target, collection, opt) {
       endTag: endTag,
       tagsToInject: tagsToInject,
       removeTags: opt.removeTags,
+      willInject: function (filesToInject) {
+        injectedFilesCount += filesToInject.length;
+      },
       onMatch: function (match) {
         matches.push(match[0]);
       }
     });
   });
+
+  logger(injectedFilesCount);
 
   if (opt.empty) {
     var ext = '{{ANY}}';
@@ -191,6 +198,11 @@ function inject(content, opt) {
       throw error('Missing end tag for start tag: ' + startMatch[0]);
     }
     var toInject = opt.tagsToInject.slice();
+
+    if (typeof opt.willInject === 'function') {
+      opt.willInject(toInject);
+    }
+
     // <everything before startMatch>:
     var newContents = content.slice(0, startMatch.index);
 

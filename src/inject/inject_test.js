@@ -6,6 +6,7 @@ var path = require('path');
 var es = require('event-stream');
 var should = require('should');
 var gutil = require('gulp-util');
+var stripColor = require('strip-color');
 var inject = require('../../.');
 
 describe('gulp-inject', function () {
@@ -518,6 +519,33 @@ describe('gulp-inject', function () {
 
     stream.on('end', function () {
       logOutput.should.have.length(1);
+      done();
+    });
+  });
+
+  it('should produce log output only for files actually injected (issue #184)', function (done) {
+    var logOutput = [];
+    gutil.log = function (a, b) {
+      logOutput.push(a + ' ' + b);
+    };
+
+    var target = src(['template2.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css',
+      'image.png'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    // Dummy data reader to make the `end` event be triggered
+    stream.on('data', function () {
+    });
+
+    stream.on('end', function () {
+      logOutput.should.have.length(1);
+      stripColor(logOutput[0]).should.equal('gulp-inject 1 files into template2.html.');
       done();
     });
   });

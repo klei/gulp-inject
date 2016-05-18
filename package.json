@@ -25,7 +25,8 @@
   "scripts": {
     "lint": "xo",
     "pretest": "npm run -s lint",
-    "test": "mocha -R spec src/**/*_test.js"
+    "test": "mocha -R spec src/**/*_test.js",
+    "release": "standard-version"
   },
   "dependencies": {
     "arrify": "^1.0.1",
@@ -39,6 +40,8 @@
   "devDependencies": {
     "mocha": "~2.0.1",
     "should": "^4.0.4",
+    "standard-version": "^2.2.1",
+    "strip-color": "^0.1.0",
     "xo": "^0.13.0"
   },
   "engines": {
@@ -51,7 +54,10 @@
       "node"
     ],
     "rules": {
-      "object-shorthand": [2, "never"]
+      "object-shorthand": [
+        2,
+        "never"
+      ]
     }
   }
 }
