@@ -49,6 +49,9 @@
     "space": true,
     "envs": [
       "node"
-    ]
+    ],
+    "rules": {
+      "object-shorthand": [2, "never"]
+    }
   }
 }

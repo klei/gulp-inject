@@ -124,11 +124,11 @@ function getNewContent(target, collection, opt) {
     var tagsToInject = getTagsToInject(files, target, opt);
 
     content = inject(content, {
-      startTag,
-      endTag,
-      tagsToInject,
+      startTag: startTag,
+      endTag: endTag,
+      tagsToInject: tagsToInject,
       removeTags: opt.removeTags,
-      onMatch(match) {
+      onMatch: function (match) {
         matches.push(match[0]);
       }
     });
@@ -140,11 +140,11 @@ function getNewContent(target, collection, opt) {
     var endTag = getTagRegExp(opt.tags.end(targetExt, ext, opt.starttag), ext, opt);
 
     content = inject(content, {
-      startTag,
-      endTag,
+      startTag: startTag,
+      endTag: endTag,
       tagsToInject: [],
       removeTags: opt.removeTags,
-      shouldAbort(match) {
+      shouldAbort: function (match) {
         return matches.indexOf(match[0]) !== -1;
       }
     });
@@ -226,11 +226,11 @@ function prepareFiles(files, targetExt, opt) {
     var endTag = getTagRegExp(opt.tags.end(targetExt, ext, opt.endtag), ext, opt);
     var tagKey = String(startTag) + String(endTag);
     return {
-      file,
-      ext,
-      startTag,
-      endTag,
-      tagKey
+      file: file,
+      ext: ext,
+      startTag: startTag,
+      endTag: endTag,
+      tagKey: tagKey
     };
   });
 }
