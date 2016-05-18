@@ -8,8 +8,6 @@
 
 Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `pug`, `jsx` , `less`, `slm`, `haml` and `sass` / `scss` files.
 
-**Note:** As of `gulp-inject` v4.0.0, NodeJS v4 or above is required. To use `gulp-inject` for older versions of Node install a specific version: `npm install gulp-inject@3`.
-
 ## Installation
 
 Install `gulp-inject` as a development dependency:
