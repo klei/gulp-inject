@@ -130,6 +130,7 @@ function getNewContent(target, collection, opt) {
       endTag: endTag,
       tagsToInject: tagsToInject,
       removeTags: opt.removeTags,
+      empty: opt.empty,
       willInject: function (filesToInject) {
         injectedFilesCount += filesToInject.length;
       },
@@ -151,6 +152,7 @@ function getNewContent(target, collection, opt) {
       endTag: endTag,
       tagsToInject: [],
       removeTags: opt.removeTags,
+      empty: opt.empty,
       shouldAbort: function (match) {
         return matches.indexOf(match[0]) !== -1;
       }
@@ -207,8 +209,10 @@ function inject(content, opt) {
     var newContents = content.slice(0, startMatch.index);
 
     if (opt.removeTags) {
-      // Take care of content length change:
-      startTag.lastIndex -= startMatch[0].length;
+      if (opt.empty) {
+        // Take care of content length change:
+        startTag.lastIndex -= startMatch[0].length;
+      }
     } else {
       // <startMatch> + <endMatch>
       toInject.unshift(startMatch[0]);

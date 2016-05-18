@@ -471,6 +471,23 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['removeTags.html'], done);
   });
 
+  it('should be able to remove tags without removing whitespace (issue #177)', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'component.html',
+      'styles.css',
+      'morestyles.css',
+      'andevenmore.css',
+      'image.png',
+      'lib.jsx'
+    ]);
+
+    var stream = target.pipe(inject(sources, {removeTags: true}));
+
+    streamShouldContain(stream, ['issue177.html'], done);
+  });
+
   it('should not produce log output if quiet option is set', function (done) {
     var logOutput = [];
     gutil.log = function () {
