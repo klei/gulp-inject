@@ -585,6 +585,18 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['issue107.html'], done);
   });
 
+  it('should be able to inject source maps (Issue #176)', function (done) {
+    var target = src(['issue176.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'lib.js.map'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    streamShouldContain(stream, ['issue176.html'], done);
+  });
+
   it('should be able to empty tags when there are no files for that tag and empty option is set', function (done) {
     var target = src(['templateWithExistingData2.html'], {read: true});
     var sources = src([

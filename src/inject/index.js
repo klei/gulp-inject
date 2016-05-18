@@ -124,7 +124,6 @@ function getNewContent(target, collection, opt) {
     var startTag = files[0].startTag;
     var endTag = files[0].endTag;
     var tagsToInject = getTagsToInject(files, target, opt);
-
     content = inject(content, {
       startTag: startTag,
       endTag: endTag,

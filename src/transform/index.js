@@ -53,6 +53,7 @@ transform.html.css = function (filepath) {
 transform.html.js = function (filepath) {
   return '<script src="' + filepath + '"></script>';
 };
+transform.html.map = transform.html.js;
 
 transform.html.jsx = function (filepath) {
   return '<script type="text/jsx" src="' + filepath + '"></script>';
