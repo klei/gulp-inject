@@ -765,6 +765,14 @@ Default: `false`
 Affects the default `options.transform` function, see above.
 
 
+#### options.quiet
+Type: `Boolean`
+
+Default: `false`
+
+Lower the verbosity by setting this to true, suppressing the logging of successful injections.
+
+
 #### ~~options.templateString~~
 
 ***DEPRECATED!***
