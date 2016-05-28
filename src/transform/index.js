@@ -1,5 +1,6 @@
 'use strict';
 var extname = require('../extname');
+var attrString = require('../attrString');
 
 /**
  * Constants
@@ -11,7 +12,7 @@ var DEFAULT_TARGET = TARGET_TYPES[0];
 /**
  * Transform module
  */
-var transform = module.exports = exports = function (filepath, i, length, sourceFile, targetFile) {
+var transform = module.exports = exports = function (filepath, attributes , i, length, sourceFile, targetFile) {
   var type;
   if (targetFile && targetFile.path) {
     var ext = extname(targetFile.path);
@@ -36,7 +37,7 @@ transform.selfClosingTag = false;
  * Transform functions
  */
 TARGET_TYPES.forEach(function (targetType) {
-  transform[targetType] = function (filepath) {
+  transform[targetType] = function (filepath, attributes) {
     var ext = extname(filepath);
     var type = typeFromExt(ext);
     var func = transform[targetType][type];
@@ -46,12 +47,12 @@ TARGET_TYPES.forEach(function (targetType) {
   };
 });
 
-transform.html.css = function (filepath) {
-  return '<link rel="stylesheet" href="' + filepath + '"' + end();
+transform.html.css = function (filepath, attributes) {
+  return '<link rel="stylesheet" href="' + filepath + '"' + attrString(attributes) + end();
 };
 
-transform.html.js = function (filepath) {
-  return '<script src="' + filepath + '"></script>';
+transform.html.js = function (filepath, attributes) {
+  return '<script src="' + filepath + '"' + attrString(attributes) + '></script>';
 };
 transform.html.map = transform.html.js;
 

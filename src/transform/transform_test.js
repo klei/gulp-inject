@@ -127,6 +127,13 @@ describe('transform', function () {
       transform.html('test-file.jpg').should.equal(transform.html.image('test-file.jpg'));
       transform.html('test-file.jpeg').should.equal(transform.html.image('test-file.jpeg'));
     });
+	  
+	it('should transform css to a link tag with attributes', function () {
+      transform.html.css('test-file.css', 'test').should.equal('<link rel="stylesheet" href="test-file.css" test>');
+    });
+    it('should transform javascript to a script tag with attributes', function () {
+      transform.html.js('test-file.js', 'test').should.equal('<script src="test-file.js" test></script>');
+    });
   });
 
   describe('jsx as target', function () {
