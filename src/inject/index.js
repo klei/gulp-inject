@@ -50,7 +50,7 @@ module.exports = exports = function (sources, opt) {
   opt.transform = defaults(opt, 'transform', transform);
   opt.tags = tags();
   opt.name = defaults(opt, 'name', DEFAULT_NAME_FOR_TAGS);
-  opt.attributes = defaults(opt, 'attributes', []);
+  opt.attributes = defaults(opt, 'attributes', null);
   
   transform.selfClosingTag = bool(opt, 'selfClosingTag', false);
 

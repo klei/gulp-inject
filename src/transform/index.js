@@ -56,8 +56,8 @@ transform.html.js = function (filepath, attributes) {
 };
 transform.html.map = transform.html.js;
 
-transform.html.jsx = function (filepath) {
-  return '<script type="text/jsx" src="' + filepath + '"></script>';
+transform.html.jsx = function (filepath, attributes) {
+  return '<script type="text/jsx" src="' + filepath + '"' + attrString(attributes) + '></script>';
 };
 
 transform.html.html = function (filepath) {
