@@ -60,13 +60,13 @@ describe('gulp-inject', function () {
 
     streamShouldContain(stream, ['defaults.html'], done);
   });
-	
+
   it('should inject stylesheets and scripts components into desired file with attributes', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([
       'lib.js',
       'styles.css'
-	]);
+    ]);
 
     var stream = target.pipe(inject(sources, {attributes: 'test'}));
 

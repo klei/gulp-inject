@@ -127,32 +127,31 @@ describe('transform', function () {
       transform.html('test-file.jpg').should.equal(transform.html.image('test-file.jpg'));
       transform.html('test-file.jpeg').should.equal(transform.html.image('test-file.jpeg'));
     });
-  
-	describe('with attributes', function(){
-		it('should transform javascript to a script tag', function () {
-      transform.html.js('test-file.js', 'test').should.equal('<script src="test-file.js" test></script>');
-    });
-	  it('should transform css to a link tag', function () {
-      transform.html.css('test-file.css', 'test').should.equal('<link rel="stylesheet" href="test-file.css" test>');
-    });
 
-    it('should transform html to a link tag', function () {
-      transform.html.html('test-file.html', 'test').should.equal('<link rel="import" href="test-file.html" test>');
-    });
+    describe('with attributes', function () {
+      it('should transform javascript to a script tag', function () {
+        transform.html.js('test-file.js', 'test').should.equal('<script src="test-file.js" test></script>');
+      });
+      it('should transform css to a link tag', function () {
+        transform.html.css('test-file.css', 'test').should.equal('<link rel="stylesheet" href="test-file.css" test>');
+      });
 
-    it('should transform jsx to a script tag', function () {
-      transform.html.jsx('test-file.jsx', 'test').should.equal('<script type="text/jsx" src="test-file.jsx" test></script>');
-    });
+      it('should transform html to a link tag', function () {
+        transform.html.html('test-file.html', 'test').should.equal('<link rel="import" href="test-file.html" test>');
+      });
 
-    it('should transform coffeescript to a script tag', function () {
-      transform.html.coffee('test-file.coffee', 'test').should.equal('<script type="text/coffeescript" src="test-file.coffee" test></script>');
-    });
+      it('should transform jsx to a script tag', function () {
+        transform.html.jsx('test-file.jsx', 'test').should.equal('<script type="text/jsx" src="test-file.jsx" test></script>');
+      });
 
-    it('should transform an image to an img tag', function () {
-      transform.html.image('test-file.png', 'test').should.equal('<img src="test-file.png" test>');
-    });
-	});  
+      it('should transform coffeescript to a script tag', function () {
+        transform.html.coffee('test-file.coffee', 'test').should.equal('<script type="text/coffeescript" src="test-file.coffee" test></script>');
+      });
 
+      it('should transform an image to an img tag', function () {
+        transform.html.image('test-file.png', 'test').should.equal('<img src="test-file.png" test>');
+      });
+    });
   });
 
   describe('jsx as target', function () {

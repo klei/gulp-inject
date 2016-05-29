@@ -12,7 +12,7 @@ var DEFAULT_TARGET = TARGET_TYPES[0];
 /**
  * Transform module
  */
-var transform = module.exports = exports = function (filepath, attributes , i, length, sourceFile, targetFile) {
+var transform = module.exports = exports = function (filepath, attributes, i, length, sourceFile, targetFile) {
   var type;
   if (targetFile && targetFile.path) {
     var ext = extname(targetFile.path);
@@ -37,7 +37,7 @@ transform.selfClosingTag = false;
  * Transform functions
  */
 TARGET_TYPES.forEach(function (targetType) {
-  transform[targetType] = function (filepath, attributes) {
+  transform[targetType] = function (filepath) {
     var ext = extname(filepath);
     var type = typeFromExt(ext);
     var func = transform[targetType][type];
