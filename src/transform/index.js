@@ -60,16 +60,16 @@ transform.html.jsx = function (filepath, attributes) {
   return '<script type="text/jsx" src="' + filepath + '"' + attrString(attributes) + '></script>';
 };
 
-transform.html.html = function (filepath) {
-  return '<link rel="import" href="' + filepath + '"' + end();
+transform.html.html = function (filepath, attributes) {
+  return '<link rel="import" href="' + filepath + '"' + attrString(attributes) + end();
 };
 
-transform.html.coffee = function (filepath) {
-  return '<script type="text/coffeescript" src="' + filepath + '"></script>';
+transform.html.coffee = function (filepath, attributes) {
+  return '<script type="text/coffeescript" src="' + filepath + '"' + attrString(attributes) + '></script>';
 };
 
-transform.html.image = function (filepath) {
-  return '<img src="' + filepath + '"' + end();
+transform.html.image = function (filepath, attributes) {
+  return '<img src="' + filepath + '"' + attrString(attributes) + end();
 };
 
 transform.jade.css = function (filepath) {
