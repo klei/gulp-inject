@@ -106,7 +106,8 @@ function handleVinylStream(sources, opt) {
 function getNewContent(target, collection, opt) {
   var logger = opt.quiet ? noop : function (filesCount) {
     if (filesCount) {
-      log(cyan(filesCount) + ' files into ' + magenta(target.relative) + '.');
+      var pluralState = filesCount > 1 ? 's' : '';
+      log(cyan(filesCount) + ' file' + pluralState + ' into ' + magenta(target.relative) + '.');
     } else {
       log('Nothing to inject into ' + magenta(target.relative) + '.');
     }
