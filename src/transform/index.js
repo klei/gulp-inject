@@ -4,7 +4,7 @@ var extname = require('../extname');
 /**
  * Constants
  */
-var TARGET_TYPES = ['html', 'jade', 'pug', 'slm', 'slim', 'jsx', 'haml', 'less', 'sass', 'scss'];
+var TARGET_TYPES = ['html', 'html.twig', 'jade', 'pug', 'slm', 'slim', 'jsx', 'haml', 'less', 'sass', 'scss'];
 var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
 var DEFAULT_TARGET = TARGET_TYPES[0];
 
