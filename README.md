@@ -182,7 +182,9 @@ Install [`event-stream`](https://www.npmjs.org/package/event-stream) with: `npm 
 
 ```javascript
 var es = require('event-stream'),
-    inject = require('gulp-inject');
+    inject = require('gulp-inject'),
+    concat = require('gulp-concat'),
+    uglify = require('gulp-uglify');
 
 // Concatenate vendor scripts
 var vendorStream = gulp.src(['./src/vendors/*.js'])
