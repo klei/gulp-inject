@@ -4,6 +4,34 @@
 
 > A stylesheet, javascript and webcomponent reference injection plugin for [gulp](https://github.com/wearefractal/gulp). No more manual editing of your index.html!
 
+# Contents
+
+<!-- MDTOC maxdepth:2 firsth1:0 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
+
+- [Introduction](#introduction)   
+- [Installation](#installation)   
+- [Basic usage](#basic-usage)   
+- [More examples](#more-examples)   
+   - [Injecting files relative to target files](#injecting-files-relative-to-target-files)   
+   - [Injecting files from multiple source streams](#injecting-files-from-multiple-source-streams)   
+   - [Injecting some files into `<head>` and some into `<body>`](#injecting-some-files-into-head-and-some-into-body)   
+   - [Injecting all files for development](#injecting-all-files-for-development)   
+   - [Injecting AngularJS scripts for development](#injecting-angularjs-scripts-for-development)   
+   - [Injecting into a json-file](#injecting-into-a-json-file)   
+   - [Injecting with custom `transform` function with default fallback](#injecting-with-custom-transform-function-with-default-fallback)   
+   - [Injecting dist files into bower.json's main section](#injecting-dist-files-into-bowerjsons-main-section)   
+   - [Injecting all javascript files into a karma config file](#injecting-all-javascript-files-into-a-karma-config-file)   
+   - [Injecting files contents](#injecting-files-contents)   
+   - [Injecting files contents based on file path](#injecting-files-contents-based-on-file-path)   
+- [API](#api)   
+   - [inject(sources, options)](#injectsources-options)   
+   - [inject.transform](#injecttransform)   
+- [License](#license)   
+
+<!-- /MDTOC -->
+
+## Introduction
+
 `gulp-inject` takes a stream of source files, transforms each file to a string and injects each transformed string into placeholders in the target stream files. See [Basic usage](#basic-usage) and [More examples](#more-examples) below.
 
 Default [transforms](#optionstransform) and [placeholders](#optionsstarttag) exists for injecting files into `html`, `jade`, `pug`, `jsx` , `less`, `slm`, `haml` and `sass` / `scss` files.
