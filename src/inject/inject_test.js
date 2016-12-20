@@ -222,6 +222,25 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['customTagsWithExt.html'], done);
   });
 
+  it('should replace {{path}} in starttag and endtag with current file path if specified', function (done) {
+    var target = src(['templateTagsWithPath.html'], {read: true});
+    var sources = src([
+      'template.html',
+      'partial.html',
+      'template2.html'
+    ], {read: true});
+
+    var stream = target.pipe(inject(sources, {
+      starttag: '<!-- {{path}}: -->',
+      endtag: '<!-- :{{path}} -->',
+      transform: function (filePath, file) {
+        return file.contents.toString('utf8');
+      }
+    }));
+
+    streamShouldContain(stream, ['customTagsWithPath.html'], done);
+  });
+
   it('should replace existing data within start and end tag', function (done) {
     var target = src(['templateWithExistingData.html'], {read: true});
     var sources = src([
