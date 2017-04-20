@@ -108,7 +108,7 @@ function getNewContent(target, collection, opt) {
     if (filesCount) {
       log(cyan(filesCount) + ' files into ' + magenta(target.relative) + '.');
     } else {
-      log('Nothing to inject into ' + magenta(target.relative) + '.');
+      error('Nothing to inject into ' + magenta(target.relative) + '.');
     }
   };
   var content = String(target.contents);
