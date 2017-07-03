@@ -144,7 +144,7 @@ function getNewContent(target, collection, opt) {
   if (opt.empty) {
     var ext = '{{ANY}}';
     var startTag = getTagRegExp(opt.tags.start(targetExt, ext, opt.starttag), ext, opt);
-    var endTag = getTagRegExp(opt.tags.end(targetExt, ext, opt.starttag), ext, opt);
+    var endTag = getTagRegExp(opt.tags.end(targetExt, ext, opt.endtag), ext, opt);
 
     content = inject(content, {
       startTag: startTag,
