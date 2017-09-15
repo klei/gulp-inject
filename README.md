@@ -1,5 +1,19 @@
 # gulp-inject
 
+---
+
+## HELP WANTED
+
+### Contributors are welcomed!
+
+**I don't have enough time to maintain this plugin as I would want to, so I'm looking for people who want to help out and be contributors/repository admins.**
+
+#### Interested?
+
+**Contact me! See `package.json` for contact information.**
+
+---
+
 [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![XO code style][codestyle-image]][codestyle-url] [![Dependency Status][depstat-image]][depstat-url]
 
 > A stylesheet, javascript and webcomponent reference injection plugin for [gulp](https://github.com/wearefractal/gulp). No more manual editing of your index.html!
