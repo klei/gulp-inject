@@ -1,6 +1,6 @@
 {
   "name": "gulp-inject",
-  "version": "4.2.1",
+  "version": "0.0.0-development",
   "description": "A javascript, stylesheet and webcomponent injection plugin for Gulp, i.e. inject file references into your index.html",
   "keywords": [
     "gulpplugin",
@@ -20,13 +20,13 @@
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/klei/gulp-inject.git"
+    "url": "https://github.com/klei/gulp-inject.git"
   },
   "scripts": {
     "lint": "xo",
     "pretest": "npm run -s lint",
     "test": "mocha -R spec src/**/*_test.js",
-    "release": "standard-version"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
   },
   "dependencies": {
     "arrify": "^1.0.1",
@@ -40,9 +40,9 @@
   "devDependencies": {
     "mocha": "~2.0.1",
     "should": "^4.0.4",
-    "standard-version": "^2.2.1",
     "strip-color": "^0.1.0",
-    "xo": "^0.13.0"
+    "xo": "^0.13.0",
+    "semantic-release": "^7.0.2"
   },
   "engines": {
     "node": ">=4"
