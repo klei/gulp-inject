@@ -26,7 +26,8 @@
     "lint": "xo",
     "pretest": "npm run -s lint",
     "test": "mocha -R spec src/**/*_test.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post"
+    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
+		"commitmsg": "commitlint -e"
   },
   "dependencies": {
     "arrify": "^1.0.1",
@@ -38,11 +39,14 @@
     "through2": "^2.0.1"
   },
   "devDependencies": {
+    "@commitlint/cli": "^3.2.0",
+    "@commitlint/config-angular": "^3.1.1",
+    "husky": "^0.14.3",
     "mocha": "~2.0.1",
+    "semantic-release": "^7.0.2",
     "should": "^4.0.4",
     "strip-color": "^0.1.0",
-    "xo": "^0.13.0",
-    "semantic-release": "^7.0.2"
+    "xo": "^0.13.0"
   },
   "engines": {
     "node": ">=4"
