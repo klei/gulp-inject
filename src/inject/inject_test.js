@@ -666,6 +666,15 @@ describe('gulp-inject', function () {
 
     streamShouldContain(stream, ['removeAndEmptyTags.html'], done);
   });
+
+  it('should be able to empty custom tags when there are no files at all and empty option is set', function (done) {
+    var target = src(['templateWithExistingData3.html'], {read: true});
+    var sources = src([]);
+
+    var stream = target.pipe(inject(sources, {empty: true, starttag: '<!-- custominject -->', endtag: '<!-- endcustominject -->'}));
+
+    streamShouldContain(stream, ['emptyTags3.html'], done);
+  });
 });
 
 function src(files, opt) {
