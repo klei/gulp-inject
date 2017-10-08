@@ -581,7 +581,32 @@ describe('gulp-inject', function () {
 
     stream.on('end', function () {
       logOutput.should.have.length(1);
-      stripColor(logOutput[0]).should.equal('gulp-inject 1 files into template2.html.');
+      stripColor(logOutput[0]).should.equal('gulp-inject 1 file into template2.html.');
+      done();
+    });
+  });
+
+  it('should produce log output for multiple files actually injected (issue #192)', function (done) {
+    var logOutput = [];
+    gutil.log = function (a, b) {
+      logOutput.push(a + ' ' + b);
+    };
+
+    var target = src(['template2.html'], {read: true});
+    var sources = src([
+      'styles.css',
+      'app.css'
+    ]);
+
+    var stream = target.pipe(inject(sources));
+
+    // Dummy data reader to make the `end` event be triggered
+    stream.on('data', function () {
+    });
+
+    stream.on('end', function () {
+      logOutput.should.have.length(1);
+      stripColor(logOutput[0]).should.equal('gulp-inject 2 files into template2.html.');
       done();
     });
   });
@@ -665,6 +690,15 @@ describe('gulp-inject', function () {
     var stream = target.pipe(inject(sources, {empty: true, removeTags: true}));
 
     streamShouldContain(stream, ['removeAndEmptyTags.html'], done);
+  });
+
+  it('should be able to empty custom tags when there are no files at all and empty option is set', function (done) {
+    var target = src(['templateWithExistingData3.html'], {read: true});
+    var sources = src([]);
+
+    var stream = target.pipe(inject(sources, {empty: true, starttag: '<!-- custominject -->', endtag: '<!-- endcustominject -->'}));
+
+    streamShouldContain(stream, ['emptyTags3.html'], done);
   });
 });
 
