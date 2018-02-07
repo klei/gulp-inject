@@ -5,7 +5,8 @@ var fs = require('fs');
 var path = require('path');
 var es = require('event-stream');
 var should = require('should');
-var gutil = require('gulp-util');
+var fancyLog = require('fancy-log');
+var Vinyl = require('vinyl');
 var stripColor = require('strip-color');
 var inject = require('../../.');
 
@@ -13,11 +14,11 @@ describe('gulp-inject', function () {
   var log;
 
   beforeEach(function () {
-    log = gutil.log;
+    log = fancyLog.info;
   });
 
   afterEach(function () {
-    gutil.log = log;
+    fancyLog.info = log;
   });
 
   it('should throw an error when the old api with target as string is used', function () {
@@ -509,7 +510,7 @@ describe('gulp-inject', function () {
 
   it('should not produce log output if quiet option is set', function (done) {
     var logOutput = [];
-    gutil.log = function () {
+    fancyLog.info = function () {
       logOutput.push(arguments);
     };
 
@@ -535,7 +536,7 @@ describe('gulp-inject', function () {
 
   it('should produce log output if quiet option is not set', function (done) {
     var logOutput = [];
-    gutil.log = function () {
+    fancyLog.info = function () {
       logOutput.push(arguments);
     };
 
@@ -561,7 +562,7 @@ describe('gulp-inject', function () {
 
   it('should produce log output only for files actually injected (issue #184)', function (done) {
     var logOutput = [];
-    gutil.log = function (a, b) {
+    fancyLog.info = function (a, b) {
       logOutput.push(a + ' ' + b);
     };
 
@@ -588,7 +589,7 @@ describe('gulp-inject', function () {
 
   it('should produce log output for multiple files actually injected (issue #192)', function (done) {
     var logOutput = [];
-    gutil.log = function (a, b) {
+    fancyLog.info = function (a, b) {
       logOutput.push(a + ' ' + b);
     };
 
@@ -740,7 +741,7 @@ function streamShouldContain(stream, files, done) {
 
 function expectedFile(file) {
   var filepath = path.resolve(__dirname, 'expected', file);
-  return new gutil.File({
+  return new Vinyl({
     path: filepath,
     cwd: __dirname,
     base: path.resolve(__dirname, 'expected', path.dirname(file)),
@@ -750,7 +751,7 @@ function expectedFile(file) {
 
 function fixture(file, read) {
   var filepath = path.resolve(__dirname, 'fixtures', file);
-  return new gutil.File({
+  return new Vinyl({
     path: filepath,
     cwd: __dirname,
     base: path.resolve(__dirname, 'fixtures', path.dirname(file)),

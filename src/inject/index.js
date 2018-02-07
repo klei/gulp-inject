@@ -1,6 +1,8 @@
 'use strict';
 var through2 = require('through2');
-var gutil = require('gulp-util');
+var fancyLog = require('fancy-log');
+var PluginError = require('plugin-error');
+var colors = require('ansi-colors');
 var streamToArray = require('stream-to-array');
 var escapeStringRegexp = require('escape-string-regexp');
 var groupArray = require('group-array');
@@ -9,9 +11,8 @@ var transform = require('../transform');
 var tags = require('../tags');
 var getFilepath = require('../path');
 
-var PluginError = gutil.PluginError;
-var magenta = gutil.colors.magenta;
-var cyan = gutil.colors.cyan;
+var magenta = colors.magenta;
+var cyan = colors.cyan;
 var noop = function noop() {};
 
 /**
@@ -284,7 +285,7 @@ function getTagsToInject(files, target, opt) {
 }
 
 function log(message) {
-  gutil.log(magenta(PLUGIN_NAME), message);
+  fancyLog.info(magenta(PLUGIN_NAME), message);
 }
 
 function error(message) {
