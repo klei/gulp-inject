@@ -26,15 +26,17 @@
     "lint": "xo",
     "pretest": "npm run -s lint",
     "test": "mocha -R spec src/**/*_test.js",
-    "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-		"commitmsg": "commitlint -e"
+    "semantic-release": "semantic-release",
+    "commitmsg": "commitlint -e"
   },
   "dependencies": {
+    "ansi-colors": "^1.0.1",
     "arrify": "^1.0.1",
     "escape-string-regexp": "^1.0.5",
     "event-stream": "^3.1.0",
+    "fancy-log": "^1.3.2",
     "group-array": "^0.3.0",
-    "gulp-util": "^3.0.0",
+    "plugin-error": "^0.1.2",
     "stream-to-array": "^2.3.0",
     "through2": "^2.0.1"
   },
@@ -43,9 +45,10 @@
     "@commitlint/config-angular": "^3.1.1",
     "husky": "^0.14.3",
     "mocha": "~2.0.1",
-    "semantic-release": "^7.0.2",
+    "semantic-release": "^12.4.1",
     "should": "^4.0.4",
     "strip-color": "^0.1.0",
+    "vinyl": "^2.1.0",
     "xo": "^0.13.0"
   },
   "engines": {

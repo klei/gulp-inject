@@ -3,7 +3,7 @@
 var path = require('path');
 var fs = require('fs');
 var should = require('should');
-var gutil = require('gulp-util');
+var Vinyl = require('vinyl');
 
 describe('transform', function () {
   var transform;
@@ -554,7 +554,7 @@ describe('transform', function () {
 
 function fixture(file, read) {
   var filepath = path.resolve(__dirname, 'fixtures', file);
-  return new gutil.File({
+  return new Vinyl({
     path: filepath,
     cwd: __dirname,
     base: path.resolve(__dirname, 'fixtures', path.dirname(file)),
