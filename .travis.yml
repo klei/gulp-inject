@@ -8,12 +8,20 @@ node_js:
   - '8'
   - '6'
   - '4'
-before_script:
-  - npm prune
-after_success:
-  - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false" || echo "Not master" && exit 0
-  - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
-  - npm run semantic-release
+env:
+  - BUILD_LEADER_ID=4
 branches:
   except:
     - /^v\d+\.\d+\.\d+$/
+before_script:
+  - npm prune
+jobs:
+  include:
+    - stage: release
+      node_js: 8
+      os: linux
+      after_success:
+        - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false"
+        - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
+        - npm run semantic-release
+
