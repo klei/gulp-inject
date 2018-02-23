@@ -1,14 +1,14 @@
 /* eslint-env mocha */
 'use strict';
 var path = require('path');
-var File = require('gulp-util').File;
+var Vinyl = require('vinyl');
 require('should');
 var getFilepath = require('./');
 
 describe('getFilepath', function () {
   describe('(relative=false)', function () {
     it('returns the path relative to the source file\'s cwd', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir', 'file.js'),
         base: path.join(__dirname, 'dir')
@@ -19,7 +19,7 @@ describe('getFilepath', function () {
     });
 
     it('returns the unixified path relative to the source file\'s cwd', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: 'C:\\a\\folder',
         path: 'C:\\a\\folder\\dir\\file.js',
         base: 'C:\\a\\folder\\dir'
@@ -32,12 +32,12 @@ describe('getFilepath', function () {
 
   describe('(relative=true)', function () {
     it('returns the path relative to the target file\'s directory', function () {
-      var target = new File({
+      var target = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir1', 'index.html'),
         base: path.join(__dirname, 'dir1')
       });
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir2', 'file.js'),
         base: path.join(__dirname, 'dir2')
@@ -48,12 +48,12 @@ describe('getFilepath', function () {
     });
 
     it('returns the unixified path relative to the source file\'s cwd', function () {
-      var target = new File({
+      var target = new Vinyl({
         cwd: 'C:\\a\\folder',
         path: 'C:\\a\\folder\\dir1\\index.html',
         base: 'C:\\a\\folder\\dir1'
       });
-      var source = new File({
+      var source = new Vinyl({
         cwd: 'C:\\a\\folder',
         path: 'C:\\a\\folder\\dir2\\file.js',
         base: 'C:\\a\\folder\\dir2'
@@ -66,7 +66,7 @@ describe('getFilepath', function () {
 
   describe('(ignorePath)', function () {
     it('removes the provided `ignorePath` from the beginning of the path', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir', 'file.js'),
         base: path.join(__dirname, 'dir')
@@ -77,7 +77,7 @@ describe('getFilepath', function () {
     });
 
     it('removes the provided `ignorePath` even if it both begins and ends in a `/` from the beginning of the path', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir', 'file.js'),
         base: path.join(__dirname, 'dir')
@@ -88,7 +88,7 @@ describe('getFilepath', function () {
     });
 
     it('removes the provided `ignorePath`s from the beginning of the path', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir', 'file.js'),
         base: path.join(__dirname, 'dir')
@@ -99,7 +99,7 @@ describe('getFilepath', function () {
     });
 
     it('removes the provided `ignorePath` unixified from the beginning of the path', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir', 'deep', 'file.js'),
         base: path.join(__dirname, 'dir', 'deep')
@@ -110,7 +110,7 @@ describe('getFilepath', function () {
     });
 
     it('removes the provided `ignorePath` unixified from the beginning of a unixified path', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: 'C:\\a\\folder',
         path: 'C:\\a\\folder\\dir\\deep\\file.js',
         base: 'C:\\a\\folder\\dir\\deep'
@@ -121,7 +121,7 @@ describe('getFilepath', function () {
     });
 
     it('removes the provided `ignorePath` from the beginning of a unixified path', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: 'C:\\a\\folder',
         path: 'C:\\a\\folder\\dir\\deep\\file.js',
         base: 'C:\\a\\folder\\dir\\deep'
@@ -134,7 +134,7 @@ describe('getFilepath', function () {
 
   describe('(addRootSlash=true)', function () {
     it('prepends the path with a `/`', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir', 'file.js'),
         base: path.join(__dirname, 'dir')
@@ -147,7 +147,7 @@ describe('getFilepath', function () {
 
   describe('(addPrefix)', function () {
     it('prepends the prefix and a `/` to the path', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir', 'file.js'),
         base: path.join(__dirname, 'dir')
@@ -158,7 +158,7 @@ describe('getFilepath', function () {
     });
 
     it('keeps any leading `/` from the prefix', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir', 'file.js'),
         base: path.join(__dirname, 'dir')
@@ -171,7 +171,7 @@ describe('getFilepath', function () {
 
   describe('(addSuffix)', function () {
     it('appends the suffix to the path', function () {
-      var source = new File({
+      var source = new Vinyl({
         cwd: __dirname,
         path: path.join(__dirname, 'dir', 'file.js'),
         base: path.join(__dirname, 'dir')
