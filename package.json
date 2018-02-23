@@ -27,7 +27,7 @@
     "pretest": "npm run -s lint",
     "test": "mocha -R spec src/**/*_test.js",
     "semantic-release": "semantic-release pre && npm publish && semantic-release post",
-		"commitmsg": "commitlint -e"
+    "commitmsg": "commitlint -e"
   },
   "dependencies": {
     "arrify": "^1.0.1",
