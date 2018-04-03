@@ -1,3 +1,4 @@
+/* eslint max-params:[1, 5] */
 'use strict';
 var extname = require('../extname');
 
