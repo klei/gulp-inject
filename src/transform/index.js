@@ -5,7 +5,7 @@ var extname = require('../extname');
 /**
  * Constants
  */
-var TARGET_TYPES = ['html', 'jade', 'pug', 'slm', 'slim', 'jsx', 'haml', 'less', 'sass', 'scss'];
+var TARGET_TYPES = ['html', 'jade', 'pug', 'slm', 'slim', 'jsx', 'haml', 'less', 'sass', 'scss', 'twig'];
 var IMAGES = ['jpeg', 'jpg', 'png', 'gif'];
 var DEFAULT_TARGET = TARGET_TYPES[0];
 
@@ -194,6 +194,14 @@ transform.sass.css = transform.sass.sass;
 transform.scss.sass = transform.less.less;
 transform.scss.scss = transform.scss.sass;
 transform.scss.css = transform.scss.sass;
+
+transform.twig.css = function (filepath) {
+  return '<link rel="stylesheet" href="{{ asset("' + filepath + '") }}"' + end();
+};
+
+transform.twig.js = function (filepath) {
+  return '<script src="{{ asset("' + filepath + '") }}"></script>';
+};
 
 /**
  * Transformations for jsx is like html
