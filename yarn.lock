@@ -1431,11 +1431,18 @@ git-up@^2.0.0:
     is-ssh "^1.3.0"
     parse-url "^1.3.0"
 
-git-url-parse@^8.0.0, git-url-parse@^8.1.0:
+git-url-parse@^8.0.0:
   version "8.2.0"
   resolved "https://registry.yarnpkg.com/git-url-parse/-/git-url-parse-8.2.0.tgz#74969b0105f805df58873ee5b96bc1a4dc0573b1"
   dependencies:
     git-up "^2.0.0"
+
+git-url-parse@^9.0.0:
+  version "9.0.0"
+  resolved "https://registry.yarnpkg.com/git-url-parse/-/git-url-parse-9.0.0.tgz#a82a36acc3544c77ed0984d6488b37fbcfbec24d"
+  dependencies:
+    git-up "^2.0.0"
+    parse-domain "^2.0.0"
 
 glob-parent@^3.1.0:
   version "3.1.0"
@@ -2300,7 +2307,7 @@ mimic-fn@^1.0.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-1.2.0.tgz#820c86a39334640e99516928bd03fca88057d022"
 
-minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3, minimatch@^3.0.4:
+minimatch@3.0.4, minimatch@^3.0.0, minimatch@^3.0.2, minimatch@^3.0.3, minimatch@^3.0.4:
   version "3.0.4"
   resolved "https://registry.yarnpkg.com/minimatch/-/minimatch-3.0.4.tgz#5166e286457f03306064be5497e8dbb0c3d32083"
   dependencies:
@@ -2338,9 +2345,9 @@ mkdirp@0.5.1, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mocha@~5.0.5:
-  version "5.0.5"
-  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.0.5.tgz#e228e3386b9387a4710007a641f127b00be44b52"
+mocha@^5.1.0:
+  version "5.1.0"
+  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.1.0.tgz#5ff11cc39c0bb65330ac6c41f9086634e3e3f686"
   dependencies:
     browser-stdout "1.3.1"
     commander "2.11.0"
@@ -2350,6 +2357,7 @@ mocha@~5.0.5:
     glob "7.1.2"
     growl "1.10.3"
     he "1.1.1"
+    minimatch "3.0.4"
     mkdirp "0.5.1"
     supports-color "4.4.0"
 
@@ -2582,6 +2590,10 @@ package-json@^4.0.0:
     registry-auth-token "^3.0.1"
     registry-url "^3.0.3"
     semver "^5.1.0"
+
+parse-domain@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/parse-domain/-/parse-domain-2.0.0.tgz#e9f42f697c30f7c2051dc5c55ff4d8a80da7943c"
 
 parse-github-url@^1.0.1:
   version "1.0.2"
@@ -3023,9 +3035,9 @@ safe-regex@^1.1.0:
   dependencies:
     ret "~0.1.10"
 
-semantic-release@^15.1.4:
-  version "15.1.4"
-  resolved "https://registry.yarnpkg.com/semantic-release/-/semantic-release-15.1.4.tgz#000ddbd8a8977dc1a68cacfbeef2fb551e4b9791"
+semantic-release@^15.1.7:
+  version "15.1.7"
+  resolved "https://registry.yarnpkg.com/semantic-release/-/semantic-release-15.1.7.tgz#b29eef1b9443f75addab7c2e353338b72b9b628d"
   dependencies:
     "@semantic-release/commit-analyzer" "^5.0.0"
     "@semantic-release/error" "^2.2.0"
@@ -3040,7 +3052,7 @@ semantic-release@^15.1.4:
     execa "^0.10.0"
     get-stream "^3.0.0"
     git-log-parser "^1.2.0"
-    git-url-parse "^8.1.0"
+    git-url-parse "^9.0.0"
     hook-std "^0.4.0"
     hosted-git-info "^2.6.0"
     lodash "^4.17.4"
