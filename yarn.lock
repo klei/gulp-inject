@@ -917,9 +917,9 @@ enhance-visitors@^1.0.0:
   dependencies:
     lodash "^4.13.1"
 
-env-ci@^1.0.0:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/env-ci/-/env-ci-1.4.2.tgz#e26c09d0f6a2142f900a8adac91281fcb748e1f1"
+env-ci@^2.0.0:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/env-ci/-/env-ci-2.0.1.tgz#163d9bf660e869ef4b08dda5cf94360fb1de03f7"
   dependencies:
     execa "^0.10.0"
     java-properties "^0.2.9"
@@ -2345,9 +2345,9 @@ mkdirp@0.5.1, mkdirp@^0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mocha@^5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.1.0.tgz#5ff11cc39c0bb65330ac6c41f9086634e3e3f686"
+mocha@^5.1.1:
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/mocha/-/mocha-5.1.1.tgz#b774c75609dac05eb48f4d9ba1d827b97fde8a7b"
   dependencies:
     browser-stdout "1.3.1"
     commander "2.11.0"
@@ -3035,9 +3035,9 @@ safe-regex@^1.1.0:
   dependencies:
     ret "~0.1.10"
 
-semantic-release@^15.1.7:
-  version "15.1.7"
-  resolved "https://registry.yarnpkg.com/semantic-release/-/semantic-release-15.1.7.tgz#b29eef1b9443f75addab7c2e353338b72b9b628d"
+semantic-release@^15.2.0:
+  version "15.2.0"
+  resolved "https://registry.yarnpkg.com/semantic-release/-/semantic-release-15.2.0.tgz#3f0177a5ac71fe78d88d3ed8afe41414b3d015b9"
   dependencies:
     "@semantic-release/commit-analyzer" "^5.0.0"
     "@semantic-release/error" "^2.2.0"
@@ -3048,7 +3048,7 @@ semantic-release@^15.1.7:
     chalk "^2.3.0"
     cosmiconfig "^4.0.0"
     debug "^3.1.0"
-    env-ci "^1.0.0"
+    env-ci "^2.0.0"
     execa "^0.10.0"
     get-stream "^3.0.0"
     git-log-parser "^1.2.0"
