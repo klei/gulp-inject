@@ -31,7 +31,7 @@
     "commitmsg": "commitlint -e"
   },
   "dependencies": {
-    "ansi-colors": "^1.1.0",
+    "ansi-colors": "^2.0.1",
     "arrify": "^1.0.1",
     "escape-string-regexp": "^1.0.5",
     "event-stream": "^3.3.4",
@@ -45,12 +45,12 @@
     "@commitlint/cli": "^3.2.0",
     "@commitlint/config-angular": "^3.1.1",
     "husky": "^0.14.3",
-    "mocha": "^5.1.1",
-    "semantic-release": "^15.2.0",
+    "mocha": "^5.2.0",
+    "semantic-release": "^12.4.1",
     "should": "^13.2.1",
     "strip-color": "^0.1.0",
     "vinyl": "^2.1.0",
-    "xo": "^0.20.3"
+    "xo": "^0.21.1"
   },
   "engines": {
     "node": ">=6"
