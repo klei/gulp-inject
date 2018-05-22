@@ -5,9 +5,9 @@ cache:
 notifications:
   email: false
 node_js:
-  - '8'
   - '6'
-  - '4'
+  - '8'
+  - '10'
 env:
   - BUILD_LEADER_ID=4
 branches:

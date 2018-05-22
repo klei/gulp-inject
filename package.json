@@ -53,7 +53,7 @@
     "xo": "^0.20.3"
   },
   "engines": {
-    "node": ">=4"
+    "node": ">=6"
   },
   "xo": {
     "space": true,
