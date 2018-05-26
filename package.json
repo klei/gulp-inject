@@ -46,7 +46,7 @@
     "@commitlint/config-angular": "^3.1.1",
     "husky": "^0.14.3",
     "mocha": "^5.2.0",
-    "semantic-release": "^12.4.1",
+    "semantic-release": "^15.5.0",
     "should": "^13.2.1",
     "strip-color": "^0.1.0",
     "vinyl": "^2.1.0",
@@ -63,10 +63,7 @@
     "rules": {
       "func-names": 0,
       "func-name-matching": 0,
-      "node/no-deprecated-api": 0,
-      "no-buffer-constructor": 0,
       "no-multi-assign": 0,
-      "no-unused-vars": 0,
       "no-useless-escape": 0,
       "no-var": 0,
       "object-shorthand": [
@@ -74,9 +71,13 @@
         "never"
       ],
       "prefer-arrow-callback": 0,
+      "prefer-destructuring": 0,
+      "prefer-rest-params": 0,
+      "prefer-spread": 0,
       "unicorn/explicit-length-check": 0,
       "unicorn/filename-case": 0,
-      "unicorn/import-index": 0
+      "unicorn/import-index": 0,
+      "valid-jsdoc": 0
     }
   }
 }

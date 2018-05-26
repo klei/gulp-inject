@@ -160,7 +160,7 @@ function getNewContent(target, collection, opt) {
     });
   }
 
-  return new Buffer(content);
+  return Buffer.from(content);
 }
 
 /**
