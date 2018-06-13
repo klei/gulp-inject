@@ -46,7 +46,7 @@
     "@commitlint/config-angular": "^3.1.1",
     "husky": "^0.14.3",
     "mocha": "^5.2.0",
-    "semantic-release": "^15.5.0",
+    "semantic-release": "^15.5.2",
     "should": "^13.2.1",
     "strip-color": "^0.1.0",
     "vinyl": "^2.1.0",
