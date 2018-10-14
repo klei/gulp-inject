@@ -1,13 +1,10 @@
 language: node_js
-cache:
-  directories:
-    - node_modules
 notifications:
   email: false
 node_js:
-  - '6'
-  - '8'
   - '10'
+  - '8'
+  - '6'
 env:
   - BUILD_LEADER_ID=4
 branches:
@@ -24,4 +21,3 @@ jobs:
         - test $TRAVIS_BRANCH = "master" && test $TRAVIS_PULL_REQUEST = "false"
         - echo "//registry.npmjs.org/:_authToken=${NPM_TOKEN}" > .npmrc
         - npm run semantic-release
-
