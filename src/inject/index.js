@@ -89,8 +89,8 @@ function handleVinylStream(sources, opt) {
       this.push(target);
       cb();
     }.bind(this))
-      .catch(function (err) {
-        cb(err);
+      .catch(function (error) {
+        cb(error);
       });
   });
 }
