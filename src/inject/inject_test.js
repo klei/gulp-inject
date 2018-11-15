@@ -714,9 +714,9 @@ function src(files, opt) {
 function streamShouldContain(stream, files, done) {
   var received = 0;
 
-  stream.on('error', function (err) {
-    should.exist(err);
-    done(err);
+  stream.on('error', function (error) {
+    should.exist(error);
+    done(error);
   });
 
   var contents = files.map(function (file) {

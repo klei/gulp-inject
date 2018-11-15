@@ -2,7 +2,6 @@
 'use strict';
 var path = require('path');
 var Vinyl = require('vinyl');
-require('should');
 var getFilepath = require('./');
 
 describe('getFilepath', function () {

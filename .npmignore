@@ -1,4 +1,5 @@
 .*
+.idea
 src/inject/expected/
 src/inject/fixtures/
 src/inject/*_test.js
