@@ -27,8 +27,7 @@
     "lint": "xo",
     "pretest": "npm run -s lint",
     "test": "mocha -R spec src/**/*_test.js",
-    "semantic-release": "semantic-release",
-    "commitmsg": "commitlint -e"
+    "semantic-release": "semantic-release"
   },
   "dependencies": {
     "ansi-colors": "^3.2.1",
@@ -78,6 +77,11 @@
       "unicorn/filename-case": 0,
       "unicorn/import-index": 0,
       "valid-jsdoc": 0
+    }
+  },
+  "husky": {
+    "hooks": {
+      "commit-msg": "commitlint -e"
     }
   }
 }

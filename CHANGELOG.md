@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="5.0.0"></a>
+## [5.0.0](https://github.com/klei/gulp-inject/compare/v4.3.2...v5.0.0) (2018-11-15)
+
+### Features
+
+* dropped node4 support
+
 <a name="4.2.1"></a>
 ## [4.2.1](https://github.com/klei/gulp-inject/compare/v4.2.0...v4.2.1) (2017-09-15)
 
