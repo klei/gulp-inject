@@ -89,9 +89,9 @@ function handleVinylStream(sources, opt) {
       this.push(target);
       cb();
     }.bind(this))
-    .catch(function (err) {
-      cb(err);
-    });
+      .catch(function (error) {
+        cb(error);
+      });
   });
 }
 
@@ -160,7 +160,7 @@ function getNewContent(target, collection, opt) {
     });
   }
 
-  return new Buffer(content);
+  return Buffer.from(content);
 }
 
 /**
@@ -225,7 +225,7 @@ function inject(content, opt) {
     newContents += toInject.join(indent);
     // <everything after endMatch>:
     newContents += content.slice(endTag.lastIndex);
-    // replace old content with new:
+    // Replace old content with new:
     content = newContents;
   }
 
