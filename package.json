@@ -43,9 +43,9 @@
   "devDependencies": {
     "@commitlint/cli": "^7.2.1",
     "@commitlint/config-angular": "^7.1.2",
-    "husky": "^1.1.4",
+    "husky": "^1.2.0",
     "mocha": "^5.2.0",
-    "semantic-release": "^15.12.0",
+    "semantic-release": "^15.12.2",
     "should": "^13.2.3",
     "strip-color": "^0.1.0",
     "vinyl": "^2.2.0",
