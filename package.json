@@ -33,7 +33,7 @@
     "ansi-colors": "^3.2.1",
     "arrify": "^1.0.1",
     "escape-string-regexp": "^1.0.5",
-    "event-stream": "^4.0.1",
+    "event-stream": "^3.3.4",
     "fancy-log": "^1.3.2",
     "group-array": "^0.3.3",
     "plugin-error": "^1.0.1",
