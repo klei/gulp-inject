@@ -12,6 +12,8 @@ branches:
     - /^v\d+\.\d+\.\d+$/
 before_script:
   - npm prune
+script
+  - commitlint-travis
 jobs:
   include:
     - stage: release
