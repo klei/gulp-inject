@@ -876,6 +876,14 @@ Default: `false`
 Lower the verbosity by setting this to true, suppressing the logging of successful injections.
 
 
+#### options.throwErrorIfNoInject
+Type: `Boolean`
+
+Default: `false`
+
+If there is nothing to inject throw an error.
+
+
 #### ~~options.templateString~~
 
 ***DEPRECATED!***

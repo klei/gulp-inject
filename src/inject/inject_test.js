@@ -701,6 +701,50 @@ describe('gulp-inject', function () {
 
     streamShouldContain(stream, ['emptyTags3.html'], done);
   });
+
+  it('should throw an error when there is nothing to inject', function (done) {
+    var logOutput = [];
+    fancyLog.info = function (a, b) {
+      logOutput.push(a + ' ' + b);
+    };
+
+    var target = src(['templateWithExistingData2.html'], {read: true});
+
+    var sources = src([]);
+
+    var stream = target.pipe(inject(sources, {throwErrorIfNoInject: true}));
+
+    // Dummy data reader to make the `end` event be triggered
+    stream.on('data', function () {
+    });
+
+    stream.on('error', function (error) {
+      error.should.not.be.undefined();
+      logOutput.should.have.length(0);
+      done();
+    });
+  });
+
+  it('should log when there is nothing to inject', function (done) {
+    var logOutput = [];
+    fancyLog.info = function (a, b) {
+      logOutput.push(a + ' ' + b);
+    };
+    var target = src(['templateWithExistingData2.html'], {read: true});
+
+    var sources = src([]);
+
+    var stream = target.pipe(inject(sources));
+
+    // Dummy data reader to make the `end` event be triggered
+    stream.on('data', function () {
+    });
+
+    stream.on('end', function () {
+      logOutput.should.have.length(1);
+      done();
+    });
+  });
 });
 
 function src(files, opt) {
