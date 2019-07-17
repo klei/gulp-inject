@@ -84,7 +84,7 @@ function handleVinylStream(sources, opt) {
     if (target.isStream()) {
       return cb(error('Streams not supported for target templates!'));
     }
-    collected.then(function (collection) {
+    collected.then(function (collection) { // eslint-disable-line promise/prefer-await-to-then
       target.contents = getNewContent(target, collection, opt);
       this.push(target);
       cb();
