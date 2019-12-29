@@ -40,16 +40,16 @@
     "through2": "^3.0.1"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.1.0",
-    "@commitlint/config-angular": "^8.1.0",
+    "@commitlint/cli": "^8.2.0",
+    "@commitlint/config-angular": "^8.2.0",
     "event-stream": "4.0.1",
-    "husky": "^3.0.1",
-    "mocha": "^6.2.0",
-    "semantic-release": "^15.13.18",
+    "husky": "^3.1.0",
+    "mocha": "^6.2.2",
+    "semantic-release": "^15.14.0",
     "should": "^13.2.3",
     "strip-color": "^0.1.0",
     "vinyl": "^2.2.0",
-    "xo": "^0.24.0"
+    "xo": "^0.25.3"
   },
   "engines": {
     "node": ">=8"

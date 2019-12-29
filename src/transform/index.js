@@ -230,12 +230,12 @@ function typeFromExt(ext) {
 }
 
 function isImage(ext) {
-  return IMAGES.indexOf(ext) > -1;
+  return IMAGES.includes(ext);
 }
 
 function isTargetType(type) {
   if (!type) {
     return false;
   }
-  return TARGET_TYPES.indexOf(type) > -1;
+  return TARGET_TYPES.includes(type);
 }

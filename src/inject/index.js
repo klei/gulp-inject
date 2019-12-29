@@ -89,8 +89,8 @@ function handleVinylStream(sources, opt) {
       this.push(target);
       cb();
     }.bind(this))
-      .catch(function (error) {
-        cb(error);
+      .catch(function (error_) {
+        cb(error_);
       });
   });
 }
@@ -155,7 +155,7 @@ function getNewContent(target, collection, opt) {
       removeTags: opt.removeTags,
       empty: opt.empty,
       shouldAbort: function (match) {
-        return matches.indexOf(match[0]) !== -1;
+        return matches.includes(match[0]);
       }
     });
   }
@@ -219,7 +219,7 @@ function inject(content, opt) {
       toInject.unshift(startMatch[0]);
       toInject.push(endMatch[0]);
     }
-    var previousInnerContent = content.substring(startTag.lastIndex, endMatch.index);
+    var previousInnerContent = content.slice(startTag.lastIndex, endMatch.index);
     var indent = getLeadingWhitespace(previousInnerContent);
     // <new inner content>:
     newContents += toInject.join(indent);
