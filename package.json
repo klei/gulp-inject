@@ -45,7 +45,7 @@
     "event-stream": "4.0.1",
     "husky": "^3.1.0",
     "mocha": "^6.2.2",
-    "semantic-release": "^15.14.0",
+    "semantic-release": "^17.2.3",
     "should": "^13.2.3",
     "strip-color": "^0.1.0",
     "vinyl": "^2.2.0",
