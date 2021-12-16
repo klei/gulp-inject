@@ -194,6 +194,22 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['customTags.html'], done);
   });
 
+  it('should require no endtag if `singleTag` is `true`', function (done) {
+    var target = src(['templateSingleTag.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'lib2.js',
+      'style.css'
+    ]);
+
+    var stream = target.pipe(inject(sources, {
+      ignorePath: 'fixtures',
+      singleTag: true
+    }));
+
+    streamShouldContain(stream, ['singleTag.html'], done);
+  });
+
   it('should use starttag and endtag with specified name if specified', function (done) {
     var target = src(['templateCustomName.html'], {read: true});
     var sources = src([
@@ -491,6 +507,23 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['removeTags.html'], done);
   });
 
+  it('should remove tags if `singleTag` is `true` and `removeTags` is `true`', function (done) {
+    var target = src(['templateSingleTag.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'lib2.js',
+      'style.css'
+    ]);
+
+    var stream = target.pipe(inject(sources, {
+      ignorePath: 'fixtures',
+      singleTag: true,
+      removeTags: true
+    }));
+
+    streamShouldContain(stream, ['singleTagRemoveTags.html'], done);
+  });
+
   it('should be able to remove tags without removing whitespace (issue #177)', function (done) {
     var target = src(['template.html'], {read: true});
     var sources = src([
@@ -506,6 +539,21 @@ describe('gulp-inject', function () {
     var stream = target.pipe(inject(sources, {removeTags: true}));
 
     streamShouldContain(stream, ['issue177.html'], done);
+  });
+
+  it('should inject in multiple places (with `singleTag` = `true` and `removeTags` = `true`)', function (done) {
+    var target = src(['templateSingleTagMultiple.html'], {read: true});
+    var sources = src([
+      'style.css'
+    ]);
+
+    var stream = target.pipe(inject(sources, {
+      ignorePath: 'fixtures',
+      singleTag: true,
+      removeTags: true
+    }));
+
+    streamShouldContain(stream, ['singleTagMultiple.html'], done);
   });
 
   it('should not produce log output if quiet option is set', function (done) {
