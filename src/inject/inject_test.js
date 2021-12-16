@@ -573,8 +573,7 @@ describe('gulp-inject', function () {
     var stream = target.pipe(inject(sources, {quiet: true}));
 
     // Dummy data reader to make the `end` event be triggered
-    stream.on('data', function () {
-    });
+    stream.on('data', function () {});
 
     stream.on('end', function () {
       logOutput.should.have.length(0);
@@ -599,8 +598,7 @@ describe('gulp-inject', function () {
     var stream = target.pipe(inject(sources));
 
     // Dummy data reader to make the `end` event be triggered
-    stream.on('data', function () {
-    });
+    stream.on('data', function () {});
 
     stream.on('end', function () {
       logOutput.should.have.length(1);
@@ -625,8 +623,7 @@ describe('gulp-inject', function () {
     var stream = target.pipe(inject(sources));
 
     // Dummy data reader to make the `end` event be triggered
-    stream.on('data', function () {
-    });
+    stream.on('data', function () {});
 
     stream.on('end', function () {
       logOutput.should.have.length(1);
@@ -650,8 +647,7 @@ describe('gulp-inject', function () {
     var stream = target.pipe(inject(sources));
 
     // Dummy data reader to make the `end` event be triggered
-    stream.on('data', function () {
-    });
+    stream.on('data', function () {});
 
     stream.on('end', function () {
       logOutput.should.have.length(1);

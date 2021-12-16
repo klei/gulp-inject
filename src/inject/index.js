@@ -1,3 +1,7 @@
+/* eslint unicorn/prevent-abbreviations:0 */
+/* eslint unicorn/no-array-for-each:0 */
+/* eslint unicorn/prefer-spread:0 */
+
 'use strict';
 var through2 = require('through2');
 var fancyLog = require('fancy-log');
@@ -64,8 +68,8 @@ function defaults(options, prop, defaultValue) {
   return options[prop] || defaultValue;
 }
 
-function bool(options, prop, defaultVal) {
-  return typeof options[prop] === 'undefined' ? defaultVal : Boolean(options[prop]);
+function bool(options, prop, defaultValue) {
+  return typeof options[prop] === 'undefined' ? defaultValue : Boolean(options[prop]);
 }
 
 /**
@@ -83,7 +87,7 @@ function handleVinylStream(sources, opt) {
     if (target.isStream()) {
       return cb(error('Streams not supported for target templates!'));
     }
-    collected.then(function (collection) { // eslint-disable-line promise/prefer-await-to-then
+    collected.then(function (collection) {
       target.contents = getNewContent(target, collection, opt);
       this.push(target);
       cb();

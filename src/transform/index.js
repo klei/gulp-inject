@@ -1,4 +1,6 @@
 /* eslint max-params:[1, 5] */
+/* eslint unicorn/prefer-set-has:0 */
+
 'use strict';
 var extname = require('../extname');
 
@@ -36,7 +38,7 @@ transform.selfClosingTag = false;
 /**
  * Transform functions
  */
-TARGET_TYPES.forEach(function (targetType) {
+for (const targetType of TARGET_TYPES) {
   transform[targetType] = function (filepath) {
     var ext = extname(filepath);
     var type = typeFromExt(ext);
@@ -45,7 +47,7 @@ TARGET_TYPES.forEach(function (targetType) {
       return func.apply(transform[targetType], arguments);
     }
   };
-});
+}
 
 transform.html.css = function (filepath) {
   return '<link rel="stylesheet" href="' + filepath + '"' + end();
@@ -207,7 +209,7 @@ transform.twig.js = function (filepath) {
  * Transformations for jsx is like html
  * but always with self closing tags, invalid jsx otherwise
  */
-Object.keys(transform.html).forEach(function (type) {
+for (const type of Object.keys(transform.html)) {
   transform.jsx[type] = function () {
     var originalOption = transform.selfClosingTag;
     transform.selfClosingTag = true;
@@ -215,7 +217,7 @@ Object.keys(transform.html).forEach(function (type) {
     transform.selfClosingTag = originalOption;
     return result;
   };
-});
+}
 
 function end() {
   return transform.selfClosingTag ? ' />' : '>';
