@@ -9,13 +9,14 @@
 **I don't have enough time to maintain this plugin as I would want to, so I'm looking for people who want to help out and be contributors/repository admins.**
 
 #### Interested?
+
 **Contact me! See `package.json` for contact information.**
 
 ---
 
 [![NPM version][npm-image]][npm-url] [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release) [![Build Status][travis-image]][travis-url] [![XO code style][codestyle-image]][codestyle-url] [![Dependency Status][depstat-image]][depstat-url]
 
-> A stylesheet, javascript and webcomponent reference or content injection plugin for [gulp](https://github.com/wearefractal/gulp). No more manual editing of your index.html!
+> A stylesheet, javascript and webcomponent reference or content injection plugin for [gulp](https://github.com/gulpjs/gulp). No more manual editing of your index.html!
 
 # Contents
 
@@ -764,10 +765,10 @@ A function dependent on target file type and source file type that returns:
 
 **Params:**
   - `filepath` - The "unixified" path to the file with any `ignorePath`'s removed, `addPrefix` and `addSuffix` added
-  - `file` - The [File object](https://github.com/wearefractal/vinyl) to inject given from `gulp.src`
+  - `file` - The [File object](https://github.com/gulpjs/vinyl) to inject given from `gulp.src`
   - `index` - 0-based file index
   - `length` - Total number of files to inject for the current file extension
-  - `targetFile` - The target [file](https://github.com/wearefractal/vinyl) to inject into
+  - `targetFile` - The target [file](https://github.com/gulpjs/vinyl) to inject into
 
 **Purpose:**
 
