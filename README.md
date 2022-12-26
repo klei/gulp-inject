@@ -1,64 +1,65 @@
 # gulp-inject
 
 ---
-## HELP WANTED
 
+## HELP WANTED
 
 ### Contributors are welcomed!
 
 **I don't have enough time to maintain this plugin as I would want to, so I'm looking for people who want to help out and be contributors/repository admins.**
 
-
 #### Interested?
+
 **Contact me! See `package.json` for contact information.**
 
 ---
 
 [![NPM version][npm-image]][npm-url] [![semantic-release](https://img.shields.io/badge/%20%20%F0%9F%93%A6%F0%9F%9A%80-semantic--release-e10079.svg)](https://github.com/semantic-release/semantic-release) [![Build Status][travis-image]][travis-url] [![XO code style][codestyle-image]][codestyle-url] [![Dependency Status][depstat-image]][depstat-url]
 
-> A stylesheet, javascript and webcomponent reference injection plugin for [gulp](https://github.com/wearefractal/gulp). No more manual editing of your index.html!
+> A stylesheet, javascript and webcomponent reference or content injection plugin for [gulp](https://github.com/gulpjs/gulp). No more manual editing of your index.html!
 
 # Contents
 
 <!-- MDTOC maxdepth:3 firsth1:0 numbering:0 flatten:0 bullets:1 updateOnSave:1 -->
 
-- [Introduction](#introduction)   
-- [Installation](#installation)   
-- [Basic usage](#basic-usage)   
-- [More examples](#more-examples)   
-   - [Injecting files relative to target files](#injecting-files-relative-to-target-files)   
-   - [Injecting files from multiple source streams](#injecting-files-from-multiple-source-streams)   
-      - [Multiple sources when order is important](#multiple-sources-when-order-is-important)   
-   - [Injecting some files into `<head>` and some into `<body>`](#injecting-some-files-into-head-and-some-into-body)   
-      - [Method 1: Use `gulp-inject`'s `starttag` option.](#method-1-use-gulp-injects-starttag-option)   
-      - [Method 2: Use `gulp-inject`'s `name` option.](#method-2-use-gulp-injects-name-option)   
-   - [Injecting all files for development](#injecting-all-files-for-development)   
-   - [Injecting AngularJS scripts for development](#injecting-angularjs-scripts-for-development)   
-   - [Injecting into a json-file](#injecting-into-a-json-file)   
-   - [Injecting with custom `transform` function with default fallback](#injecting-with-custom-transform-function-with-default-fallback)   
-   - [Injecting dist files into bower.json's main section](#injecting-dist-files-into-bowerjsons-main-section)   
-   - [Injecting all javascript files into a karma config file](#injecting-all-javascript-files-into-a-karma-config-file)   
-   - [Injecting files contents](#injecting-files-contents)   
-   - [Injecting files contents based on file path](#injecting-files-contents-based-on-file-path)   
-- [API](#api)   
-   - [inject(sources, options)](#injectsources-options)   
-   - [Options](#options)   
-      - [options.ignorePath](#optionsignorepath)   
-      - [options.relative](#optionsrelative)   
-      - [options.addPrefix](#optionsaddprefix)   
-      - [options.addSuffix](#optionsaddsuffix)   
-      - [options.addRootSlash](#optionsaddrootslash)   
-      - [options.name](#optionsname)   
-      - [options.removeTags](#optionsremovetags)   
-      - [options.empty](#optionsempty)   
-      - [options.starttag](#optionsstarttag)   
-      - [options.endtag](#optionsendtag)   
-      - [options.transform](#optionstransform)   
-      - [options.selfClosingTag](#optionsselfclosingtag)   
-      - [~~options.templateString~~](#optionstemplatestring)   
-      - [~~options.sort~~](#optionssort)   
-   - [inject.transform](#injecttransform)   
-- [License](#license)   
+- [Introduction](#introduction)
+- [Installation](#installation)
+- [Basic usage](#basic-usage)
+- [More examples](#more-examples)
+   - [Injecting files relative to target files](#injecting-files-relative-to-target-files)
+   - [Injecting files from multiple source streams](#injecting-files-from-multiple-source-streams)
+      - [Multiple sources when order is important](#multiple-sources-when-order-is-important)
+   - [Injecting some files into `<head>` and some into `<body>`](#injecting-some-files-into-head-and-some-into-body)
+      - [Method 1: Use `gulp-inject`'s `starttag` option.](#method-1-use-gulp-injects-starttag-option)
+      - [Method 2: Use `gulp-inject`'s `name` option.](#method-2-use-gulp-injects-name-option)
+   - [Injecting all files for development](#injecting-all-files-for-development)
+   - [Injecting AngularJS scripts for development](#injecting-angularjs-scripts-for-development)
+   - [Injecting into a json-file](#injecting-into-a-json-file)
+   - [Injecting with custom `transform` function with default fallback](#injecting-with-custom-transform-function-with-default-fallback)
+   - [Injecting dist files into bower.json's main section](#injecting-dist-files-into-bowerjsons-main-section)
+   - [Injecting all javascript files into a karma config file](#injecting-all-javascript-files-into-a-karma-config-file)
+   - [Injecting files contents](#injecting-files-contents)
+   - [Injecting files contents based on file path](#injecting-files-contents-based-on-file-path)
+- [API](#api)
+   - [inject(sources, options)](#injectsources-options)
+   - [Options](#options)
+      - [options.ignorePath](#optionsignorepath)
+      - [options.relative](#optionsrelative)
+      - [options.addPrefix](#optionsaddprefix)
+      - [options.addSuffix](#optionsaddsuffix)
+      - [options.addRootSlash](#optionsaddrootslash)
+      - [options.name](#optionsname)
+      - [options.removeTags](#optionsremovetags)
+      - [options.singleTag](#optionssingletag)
+      - [options.empty](#optionsempty)
+      - [options.starttag](#optionsstarttag)
+      - [options.endtag](#optionsendtag)
+      - [options.transform](#optionstransform)
+      - [options.selfClosingTag](#optionsselfclosingtag)
+      - [~~options.templateString~~](#optionstemplatestring)
+      - [~~options.sort~~](#optionssort)
+   - [inject.transform](#injecttransform)
+- [License](#license)
 
 <!-- /MDTOC -->
 
@@ -627,13 +628,12 @@ And in your `./src/index.html`:
 
 ### inject(sources, options)
 
-Parameter: `sources`  
+Parameter: `sources`
 Type: `Stream`
 
 Provide a Vinyl File Stream as input to `inject`, see examples above.
 
-
-Parameter: `options`  
+Parameter: `options`
 Type: `Object`
 
 For available options see [Options](#options)
@@ -645,26 +645,21 @@ Type: `String` or `Array`
 
 Default: `NULL`
 
-
 A path or paths that should be removed from each injected file path.
 
 This could also be solved by setting the `cwd` option for your `gulp.src` streams, each source file's `cwd` is automatically removed from its path before injection (if not [`options.relative`](#optionsrelative) is set to `true`, see below).
-
 
 #### options.relative
 Type: `Boolean`
 
 Default: `false`
 
-
 If set to `true` paths for the injected files will be relative to each target file, this also means that each source file's `cwd` is not necessary to remove from its path.
-
 
 #### options.addPrefix
 Type: `String`
 
 Default: `NULL`
-
 
 A path that should be prefixed to each injected file path.
 
@@ -673,14 +668,12 @@ Type: `String`
 
 Default: `NULL`
 
-
 A path that should be suffixed to each injected file path.
 
 #### options.addRootSlash
 Type: `Boolean`
 
 Default: [`!options.relative`](#optionsrelative)
-
 
 The root slash is automatically added at the beginning of the path ('/'), or removed if set to `false`.
 
@@ -689,7 +682,6 @@ Type: `String`
 
 Default: `"inject"`
 
-
 Used in the default [start](#optionsstarttag) and [end](#optionsendtag) tags below.
 
 #### options.removeTags
@@ -697,19 +689,23 @@ Type: `Boolean`
 
 Default: `false`
 
-
 When `true` the start and end tags will be removed when injecting files.
+
+#### options.singleTag
+Type: `Boolean`
+
+Default: `false`
+
+When `true` an end tag will be neither required nor expected.
 
 #### options.empty
 Type: `Boolean`
 
 Default: `false`
 
-
 When `true` all tags without corresponding files will be emptied.
 
 [**Warning** this has the potential issue of emptying more than expected.](https://github.com/klei/gulp-inject/issues/135)
-
 
 #### options.starttag
 
@@ -769,10 +765,10 @@ A function dependent on target file type and source file type that returns:
 
 **Params:**
   - `filepath` - The "unixified" path to the file with any `ignorePath`'s removed, `addPrefix` and `addSuffix` added
-  - `file` - The [File object](https://github.com/wearefractal/vinyl) to inject given from `gulp.src`
+  - `file` - The [File object](https://github.com/gulpjs/vinyl) to inject given from `gulp.src`
   - `index` - 0-based file index
   - `length` - Total number of files to inject for the current file extension
-  - `targetFile` - The target [file](https://github.com/wearefractal/vinyl) to inject into
+  - `targetFile` - The target [file](https://github.com/gulpjs/vinyl) to inject into
 
 **Purpose:**
 
@@ -957,7 +953,6 @@ The default transform function for files into `sass`.
 ##### inject.transform.scss
 
 The default transform function for files into `scss`.
-
 
 ## License
 

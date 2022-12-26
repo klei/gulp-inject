@@ -1,3 +1,7 @@
+/* eslint unicorn/prevent-abbreviations:0 */
+/* eslint unicorn/no-array-for-each:0 */
+/* eslint unicorn/prefer-spread:0 */
+
 'use strict';
 var through2 = require('through2');
 var fancyLog = require('fancy-log');
@@ -20,7 +24,6 @@ var noop = function noop() {};
  */
 var PLUGIN_NAME = 'gulp-inject';
 var DEFAULT_NAME_FOR_TAGS = 'inject';
-var LEADING_WHITESPACE_REGEXP = /^\s*/;
 
 module.exports = exports = function (sources, opt) {
   if (!sources) {
@@ -65,8 +68,8 @@ function defaults(options, prop, defaultValue) {
   return options[prop] || defaultValue;
 }
 
-function bool(options, prop, defaultVal) {
-  return typeof options[prop] === 'undefined' ? defaultVal : Boolean(options[prop]);
+function bool(options, prop, defaultValue) {
+  return typeof options[prop] === 'undefined' ? defaultValue : Boolean(options[prop]);
 }
 
 /**
@@ -84,7 +87,7 @@ function handleVinylStream(sources, opt) {
     if (target.isStream()) {
       return cb(error('Streams not supported for target templates!'));
     }
-    collected.then(function (collection) { // eslint-disable-line promise/prefer-await-to-then
+    collected.then(function (collection) {
       target.contents = getNewContent(target, collection, opt);
       this.push(target);
       cb();
@@ -124,8 +127,9 @@ function getNewContent(target, collection, opt) {
   startAndEndTags.forEach(function (tagKey) {
     var files = filesPerTags[tagKey];
     var startTag = files[0].startTag;
-    var endTag = files[0].endTag;
+    var endTag = opt.singleTag ? null : files[0].endTag;
     var tagsToInject = getTagsToInject(files, target, opt);
+
     content = inject(content, {
       startTag: startTag,
       endTag: endTag,
@@ -146,7 +150,7 @@ function getNewContent(target, collection, opt) {
   if (opt.empty) {
     var ext = '{{ANY}}';
     var startTag = getTagRegExp(opt.tags.start(targetExt, ext, opt.starttag), ext, opt);
-    var endTag = getTagRegExp(opt.tags.end(targetExt, ext, opt.endtag), ext, opt);
+    var endTag = opt.singleTag ? null : getTagRegExp(opt.tags.end(targetExt, ext, opt.endtag), ext, opt);
 
     content = inject(content, {
       startTag: startTag,
@@ -194,11 +198,13 @@ function inject(content, opt) {
     if (typeof opt.shouldAbort === 'function' && opt.shouldAbort(startMatch)) {
       continue;
     }
-    // Take care of content length change:
-    endTag.lastIndex = startTag.lastIndex;
-    endMatch = endTag.exec(content);
-    if (!endMatch) {
-      throw error('Missing end tag for start tag: ' + startMatch[0]);
+    if (endTag) {
+      // Take care of content length change:
+      endTag.lastIndex = startTag.lastIndex;
+      endMatch = endTag.exec(content);
+      if (!endMatch) {
+        throw error('Missing end tag for start tag: ' + startMatch[0]);
+      }
     }
     var toInject = opt.tagsToInject.slice();
 
@@ -211,29 +217,41 @@ function inject(content, opt) {
 
     if (opt.removeTags) {
       if (opt.empty) {
-        // Take care of content length change:
+        // Account for the tag no longer being included in the content
         startTag.lastIndex -= startMatch[0].length;
       }
     } else {
-      // <startMatch> + <endMatch>
+      // Prepend start tag
       toInject.unshift(startMatch[0]);
-      toInject.push(endMatch[0]);
+
+      if (endTag && endMatch) {
+        // Append end tag
+        toInject.push(endMatch[0]);
+      }
     }
-    var previousInnerContent = content.slice(startTag.lastIndex, endMatch.index);
-    var indent = getLeadingWhitespace(previousInnerContent);
-    // <new inner content>:
-    newContents += toInject.join(indent);
-    // <everything after endMatch>:
-    newContents += content.slice(endTag.lastIndex);
+
+    if (endTag) {
+      const previousInnerContent = content.slice(startTag.lastIndex, endMatch.index);
+      // Capture the leading whitespace from the first line of the inner content
+      const indent = previousInnerContent.match(/^\s*/)[0];
+      // Paste in <new inner content>:
+      newContents += toInject.join(indent);
+      // Paste in <everything after endMatch>:
+      newContents += content.slice(endTag.lastIndex);
+    } else {
+      // Capture the leading whitespace before the start tag
+      const indentMatch = content.slice(0, startMatch.index).match(/\n(\s*)$/);
+      // Indent each injected piece the same as the start tag
+      const indent = indentMatch ? '\n' + indentMatch[1] : '';
+      // Paste in new content
+      newContents += toInject.join(indent) + content.slice(startTag.lastIndex);
+    }
+
     // Replace old content with new:
     content = newContents;
   }
 
   return content;
-}
-
-function getLeadingWhitespace(str) {
-  return str.match(LEADING_WHITESPACE_REGEXP)[0];
 }
 
 function prepareFiles(files, targetExt, opt, target) {

@@ -1,3 +1,5 @@
+/* eslint unicorn/no-array-callback-reference:0 */
+
 'use strict';
 var path = require('path');
 var arrify = require('arrify');
@@ -34,7 +36,7 @@ function unixify(filepath) {
   return filepath.replace(/\\/g, '/');
 }
 function addRootSlash(filepath) {
-  return filepath.replace(/^\/*([^\/])/, '/$1');
+  return filepath.replace(/^\/*([^/])/, '/$1');
 }
 function removeRootSlash(filepath) {
   return filepath.replace(/^\/+/, '');
