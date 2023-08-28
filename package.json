@@ -40,7 +40,7 @@
     "through2": "^3.0.2"
   },
   "devDependencies": {
-    "@commitlint/cli": "^8.3.6",
+    "@commitlint/cli": "^17.7.1",
     "@commitlint/config-angular": "^8.3.6",
     "event-stream": "^4.0.1",
     "husky": "^3.1.0",
@@ -49,7 +49,7 @@
     "should": "^13.2.3",
     "strip-color": "^0.1.0",
     "vinyl": "^2.2.1",
-    "xo": "^0.25.3"
+    "xo": "^0.56.0"
   },
   "engines": {
     "node": ">=8"
