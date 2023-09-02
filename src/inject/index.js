@@ -46,6 +46,7 @@ module.exports = exports = function (sources, opt) {
 
   // Defaults:
   opt.quiet = bool(opt, 'quiet', false);
+  opt.throwErrorIfNoInject = bool(opt, 'throwErrorIfNoInject', false);
   opt.relative = bool(opt, 'relative', false);
   opt.addRootSlash = bool(opt, 'addRootSlash', !opt.relative);
   opt.transform = defaults(opt, 'transform', transform);
@@ -109,6 +110,8 @@ function getNewContent(target, collection, opt) {
     if (filesCount) {
       var pluralState = filesCount > 1 ? 's' : '';
       log(cyan(filesCount) + ' file' + pluralState + ' into ' + magenta(target.relative) + '.');
+    } else if (opt.throwErrorIfNoInject === true) {
+      throw error('Nothing to inject into ' + magenta(target.relative) + '.');
     } else {
       log('Nothing to inject into ' + magenta(target.relative) + '.');
     }
