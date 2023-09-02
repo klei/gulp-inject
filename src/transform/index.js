@@ -1,6 +1,7 @@
 /* eslint max-params:[1, 5] */
 'use strict';
 var extname = require('../extname');
+var attrString = require('../attrString');
 
 /**
  * Constants
@@ -12,7 +13,7 @@ var DEFAULT_TARGET = TARGET_TYPES[0];
 /**
  * Transform module
  */
-var transform = module.exports = exports = function (filepath, i, length, sourceFile, targetFile) {
+var transform = module.exports = exports = function (filepath, attributes, i, length, sourceFile, targetFile) {
   var type;
   if (targetFile && targetFile.path) {
     var ext = extname(targetFile.path);
@@ -47,29 +48,29 @@ TARGET_TYPES.forEach(function (targetType) {
   };
 });
 
-transform.html.css = function (filepath) {
-  return '<link rel="stylesheet" href="' + filepath + '"' + end();
+transform.html.css = function (filepath, attributes) {
+  return '<link rel="stylesheet" href="' + filepath + '"' + attrString(attributes) + end();
 };
 
-transform.html.js = function (filepath) {
-  return '<script src="' + filepath + '"></script>';
+transform.html.js = function (filepath, attributes) {
+  return '<script src="' + filepath + '"' + attrString(attributes) + '></script>';
 };
 transform.html.map = transform.html.js;
 
-transform.html.jsx = function (filepath) {
-  return '<script type="text/jsx" src="' + filepath + '"></script>';
+transform.html.jsx = function (filepath, attributes) {
+  return '<script type="text/jsx" src="' + filepath + '"' + attrString(attributes) + '></script>';
 };
 
-transform.html.html = function (filepath) {
-  return '<link rel="import" href="' + filepath + '"' + end();
+transform.html.html = function (filepath, attributes) {
+  return '<link rel="import" href="' + filepath + '"' + attrString(attributes) + end();
 };
 
-transform.html.coffee = function (filepath) {
-  return '<script type="text/coffeescript" src="' + filepath + '"></script>';
+transform.html.coffee = function (filepath, attributes) {
+  return '<script type="text/coffeescript" src="' + filepath + '"' + attrString(attributes) + '></script>';
 };
 
-transform.html.image = function (filepath) {
-  return '<img src="' + filepath + '"' + end();
+transform.html.image = function (filepath, attributes) {
+  return '<img src="' + filepath + '"' + attrString(attributes) + end();
 };
 
 transform.jade.css = function (filepath) {

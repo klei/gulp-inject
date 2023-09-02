@@ -62,6 +62,18 @@ describe('gulp-inject', function () {
     streamShouldContain(stream, ['defaults.html'], done);
   });
 
+  it('should inject stylesheets and scripts components into desired file with attributes', function (done) {
+    var target = src(['template.html'], {read: true});
+    var sources = src([
+      'lib.js',
+      'styles.css'
+    ]);
+
+    var stream = target.pipe(inject(sources, {attributes: 'test'}));
+
+    streamShouldContain(stream, ['attributes.html'], done);
+  });
+
   it('should inject sources into multiple targets', function (done) {
     var target = src(['template.html', 'template2.html'], {read: true});
     var sources = src([
@@ -271,7 +283,7 @@ describe('gulp-inject', function () {
       ignorePath: 'fixtures',
       starttag: '"{{ext}}": [',
       endtag: ']',
-      transform: function (srcPath, file, i, length) {
+      transform: function (srcPath, arg, file, i, length) {
         return '  "' + srcPath + '"' + (i + 1 < length ? ',' : '');
       }
     }));

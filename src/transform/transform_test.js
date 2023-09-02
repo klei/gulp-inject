@@ -127,6 +127,31 @@ describe('transform', function () {
       transform.html('test-file.jpg').should.equal(transform.html.image('test-file.jpg'));
       transform.html('test-file.jpeg').should.equal(transform.html.image('test-file.jpeg'));
     });
+
+    describe('with attributes', function () {
+      it('should transform javascript to a script tag', function () {
+        transform.html.js('test-file.js', 'test').should.equal('<script src="test-file.js" test></script>');
+      });
+      it('should transform css to a link tag', function () {
+        transform.html.css('test-file.css', 'test').should.equal('<link rel="stylesheet" href="test-file.css" test>');
+      });
+
+      it('should transform html to a link tag', function () {
+        transform.html.html('test-file.html', 'test').should.equal('<link rel="import" href="test-file.html" test>');
+      });
+
+      it('should transform jsx to a script tag', function () {
+        transform.html.jsx('test-file.jsx', 'test').should.equal('<script type="text/jsx" src="test-file.jsx" test></script>');
+      });
+
+      it('should transform coffeescript to a script tag', function () {
+        transform.html.coffee('test-file.coffee', 'test').should.equal('<script type="text/coffeescript" src="test-file.coffee" test></script>');
+      });
+
+      it('should transform an image to an img tag', function () {
+        transform.html.image('test-file.png', 'test').should.equal('<img src="test-file.png" test>');
+      });
+    });
   });
 
   describe('jsx as target', function () {
@@ -478,63 +503,63 @@ describe('transform', function () {
   it('should pick the correct target transformer for html targets', function () {
     var targetFile = fixture('index.html');
     var sourceFile = fixture('style.css');
-    transform(sourceFile.path, null, null, sourceFile, targetFile)
+    transform(sourceFile.path, null, null, null, sourceFile, targetFile)
       .should.equal(transform.html.css(sourceFile.path));
   });
 
   it('should pick the correct target transformer for jsx targets', function () {
     var targetFile = fixture('app.jsx');
     var sourceFile = fixture('app.js');
-    transform(sourceFile.path, null, null, sourceFile, targetFile)
+    transform(sourceFile.path, null, null, null, sourceFile, targetFile)
       .should.equal(transform.jsx.js(sourceFile.path));
   });
 
   it('should pick the correct target transformer for jade targets', function () {
     var targetFile = fixture('index.jade');
     var sourceFile = fixture('image.gif');
-    transform(sourceFile.path, null, null, sourceFile, targetFile)
+    transform(sourceFile.path, null, null, null, sourceFile, targetFile)
       .should.equal(transform.jade.image(sourceFile.path));
   });
 
   it('should pick the correct target transformer for pug targets', function () {
     var targetFile = fixture('index.pug');
     var sourceFile = fixture('image.gif');
-    transform(sourceFile.path, null, null, sourceFile, targetFile)
+    transform(sourceFile.path, null, null, null, sourceFile, targetFile)
       .should.equal(transform.pug.image(sourceFile.path));
   });
 
   it('should pick the correct target transformer for slm targets', function () {
     var targetFile = fixture('index.slm');
     var sourceFile = fixture('image.gif');
-    transform(sourceFile.path, null, null, sourceFile, targetFile)
+    transform(sourceFile.path, null, null, null, sourceFile, targetFile)
       .should.equal(transform.slm.image(sourceFile.path));
   });
 
   it('should pick the correct target transformer for haml targets', function () {
     var targetFile = fixture('index.haml');
     var sourceFile = fixture('image.gif');
-    transform(sourceFile.path, null, null, sourceFile, targetFile)
+    transform(sourceFile.path, null, null, null, sourceFile, targetFile)
       .should.equal(transform.haml.image(sourceFile.path));
   });
 
   it('should pick the correct target transformer for less targets', function () {
     var targetFile = fixture('index.less');
     var sourceFile = fixture('test-file.less');
-    transform(sourceFile.path, null, null, sourceFile, targetFile)
+    transform(sourceFile.path, null, null, null, sourceFile, targetFile)
       .should.equal(transform.less.less(sourceFile.path));
   });
 
   it('should pick the correct target transformer for sass targets', function () {
     var targetFile = fixture('index.sass');
     var sourceFile = fixture('test-file.sass');
-    transform(sourceFile.path, null, null, sourceFile, targetFile)
+    transform(sourceFile.path, null, null, null, sourceFile, targetFile)
       .should.equal(transform.sass.sass(sourceFile.path));
   });
 
   it('should pick the correct target transformer for scss targets', function () {
     var targetFile = fixture('index.scss');
     var sourceFile = fixture('test-file.scss');
-    transform(sourceFile.path, null, null, sourceFile, targetFile)
+    transform(sourceFile.path, null, null, null, sourceFile, targetFile)
       .should.equal(transform.scss.scss(sourceFile.path));
   });
 

@@ -51,6 +51,8 @@ module.exports = exports = function (sources, opt) {
   opt.transform = defaults(opt, 'transform', transform);
   opt.tags = tags();
   opt.name = defaults(opt, 'name', DEFAULT_NAME_FOR_TAGS);
+  opt.attributes = defaults(opt, 'attributes', null);
+
   transform.selfClosingTag = bool(opt, 'selfClosingTag', false);
 
   // Is the first parameter a Vinyl File Stream:
@@ -125,6 +127,7 @@ function getNewContent(target, collection, opt) {
     var files = filesPerTags[tagKey];
     var startTag = files[0].startTag;
     var endTag = files[0].endTag;
+
     var tagsToInject = getTagsToInject(files, target, opt);
     content = inject(content, {
       startTag: startTag,
@@ -276,7 +279,7 @@ function makeWhiteSpaceOptional(str) {
 function getTagsToInject(files, target, opt) {
   return files.reduce(function transformFile(lines, file, i, files) {
     var filepath = getFilepath(file.file, target, opt);
-    var transformedContents = opt.transform(filepath, file.file, i, files.length, target);
+    var transformedContents = opt.transform(filepath, opt.attributes, file.file, i, files.length, target);
     if (typeof transformedContents !== 'string') {
       return lines;
     }
